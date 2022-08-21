@@ -1,6 +1,6 @@
-import React, { createContext,useContext,useEffect,useState } from 'react';
+import React, { createContext,useContext,useEffect,useRef,useState } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router,Routes, Route, Link,Navigate, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router,Routes, Route, Link,Navigate, useNavigate, useLocation } from "react-router-dom";
 import Reg from "./pages/register"
 import Log from "./pages/login"
 import User from "./pages/user"
@@ -8,18 +8,76 @@ import Protect from "./pages/protected"
 import Home from './pages/home';
 import {Protect1} from "./pages/protected"
 import Chat from './pages/chat';
+import Chatid from './pages/chatid';
 import Webcam from './pages/webcam';
-
+import { io } from "socket.io-client";
+import { PushNotifications } from "@capacitor/push-notifications";
+import { Capacitor } from "@capacitor/core";
+import Redirect from "./pages/redirect"
+import Images from './pages/images';
+//import { CameraPreview } from '@capacitor-community/camera-preview';
 export const Pro = createContext()
 
 
 function App() {
+  const loc = useLocation()
+  const vid= useRef(null)
+  const [ s, sets ] = useState(null)
+
+/*     if(loc.pathname!=="/webcam"){
+      if(vid.current!==null&&vid.current.srcObject!==null)
+         {
+          
+           //let stream = vid.current.srcObject.getTracks()
+         
+             window.stream.getTracks().forEach((t) => t.stop())
+           
+          
+       
+     }else if(vid.current!==null){
+    
+ 
+        window.stream.getTracks().forEach((t) => t.stop())
+     
+    
+   }else{
+    if(window.stream){
+      window.stream.getTracks().forEach((t) => t.stop())
+    }
+   }
+   
+  } */
+  
+  let nav =useNavigate()
+  if(Capacitor.getPlatform()!=="web")
+ { PushNotifications.addListener('pushNotificationActionPerformed', async(notification) => { 
+  let ab = notification.notification.data.data
+    nav("/r")
+    setTimeout(() => {
+      nav(`/chat/${ab}`)   
+     
+    }, 0);
+     
+  })}
+  
+
+
+  const socket = useRef()
+  //socket.current=io("http://192.168.2.131:3001")
+/*   useEffect(()=>{
+    socket.current=io("http://192.168.2.131:3001")
+    //return socket.removeAllListeners();
+    return () => socket.current.disconnect();
+  },[]) */
+  
+  //CameraPreview.stop();
   //localStorage.clear()
-   let nav =useNavigate()
+   
    let a = localStorage.getItem("aut")
    let b = JSON.parse(a)
    //let a = localStorage.getItem("aut")
    const [aut,setAut]=useState(b)
+   const [cam,setcam]=useState(false)
   
 /*   function a(){
     window.location.href="/reg"
@@ -27,6 +85,7 @@ function App() {
   } */
   return (
     <Pro.Provider value={{aut,setAut}}>    
+   
     {aut===null ? ( <div> 
      {/* <div className='absolute left-2/4 text-center ' >helo</div> */}
       <button onClick={()=>nav("/reg")} className="w-15 flex absolute right-0 mr-20 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Kaydol</button>
@@ -59,7 +118,7 @@ function App() {
             <Route element={
             <Protect />
           }>
-            <Route path="/login" element={<Log />}/>
+            <Route path="/login" element={<Log/>}/>
             </Route>
             
             <Route element={
@@ -68,10 +127,11 @@ function App() {
             <Route path="/user" element={<User />}/>
             
             </Route>
-            
-            <Route element={<Protect1 />}><Route path="/chat" element={<Chat/>}/></Route>
-            <Route element={<Protect1 />}><Route path="/webcam" element={<Webcam/>}/></Route>
-         
+            <Route element={<Protect1 />}><Route exact path="/r" element={<Redirect sock={socket.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat sock={socket.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/chat/:id" element={<Chatid sock={socket.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route path="/webcam" element={<Webcam ss={sets} v={vid}/>}/></Route>
+            <Route element={<Protect1 />}><Route path="/image" element={<Images ss={sets} v={vid}/>}/></Route>
          
          
          {/*    <Route exact path="/login" element={

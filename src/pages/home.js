@@ -12,7 +12,7 @@ function Home() {
       
      
      return(
-         <div className="min-h-screen bg-[#c4b5fd]">
+         <div className="min-h-screen bg-[#fcfbf4]">
             <div className=' grid place-items-center h-screen' >
             <p className='text-2xl text center text-indigo-700'>Hoşgeldiniz</p>
             </div>

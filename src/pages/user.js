@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import {Pro} from"../App"
 import * as jose from 'jose'
 import SyncLoader from "react-spinners/SyncLoader";
-
+import splash from "./images/ss.svg"
 
 //https://smartifier.herokuapp.com
 function User() {
+ 
+  
  const [Some,setSome]=useState("")
  const [Ome,setOme]=useState(false)
  const [ani, setAni] = useState(false);
@@ -19,7 +21,7 @@ function User() {
  const a = localStorage.getItem("token")
  const na=jose.decodeJwt(a)
  const headers = { Authorization:a};
- const {aut,setAut}=useContext(Pro)
+ //const {aut,setAut}=useContext(Pro)
  //ref.current=d
  localStorage.setItem("aut",JSON.stringify({"isA":true,"name":na.name,"id":na.id}))
  async function d(){
@@ -59,9 +61,9 @@ function User() {
 
   if(ani&&bni){
     return (
-      <div className="min-h-screen bg-[#c4b5fd] flex flex-col justify-center py-12 px-6 lg:px-8">
+      <div className="min-h-screen bg-[#fcfbf4] flex flex-col justify-center py-12 px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img className="mx-auto h-12" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />
+          <img className="mx-auto h-12" src={splash} alt="Workflow" />
         </div>
       
         <div className="mt-8 sm:mx-auto sm:w-80 sm:max-w-md">
@@ -87,7 +89,7 @@ function User() {
 
 
   }else if(ani===true&&bni===false){
-    return (<div className="grid place-items-center h-screen bg-[#c4b5fd]">
+    return (<div className="grid place-items-center h-screen bg-[#fcfbf4]">
     <SyncLoader color={"#F5A620"}  size={15} />
     </div>)
   }else{
@@ -95,7 +97,7 @@ function User() {
       setAni(true)
       //setBni(true)
     }, 150);
-    return (<div className="grid place-items-center h-screen bg-[#c4b5fd]">
+    return (<div className="grid place-items-center h-screen bg-[#fcfbf4]">
     <SyncLoader color={"#F5A620"}  size={15} />
     </div>)
 

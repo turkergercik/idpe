@@ -1,5 +1,7 @@
 {
   "name": "idp3.0",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "react"
 }

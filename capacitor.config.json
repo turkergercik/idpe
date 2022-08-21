@@ -1,0 +1,13 @@
+ {
+  "appId": "com.idp.app",
+  "appName":" idp3.0",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+ }
+}
+
+

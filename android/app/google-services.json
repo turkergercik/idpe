@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "409608921903",
+    "project_id": "react-idp-10",
+    "storage_bucket": "react-idp-10.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409608921903:android:0b829b5c855f79d306b7da",
+        "android_client_info": {
+          "package_name": "com.idp.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409608921903-3u85eu8mgt7svan0nkg7gaedaog6bouq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwMAwhrRwcm9lt2CEdZnN0WtSiGe5NLik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409608921903-3u85eu8mgt7svan0nkg7gaedaog6bouq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

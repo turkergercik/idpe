@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
 import * as jose from 'jose'
+import pp from "../pages/images/splash1.png"
+import del from "../pages/images/del.png"
 
-
-export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm}){
+export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm,messageler}){
   let prt="https://smartifier.herokuapp.com"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
@@ -81,16 +82,7 @@ export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm}){
       }
       cur(up)
       //console.log(vur)
-     await axios.get(`${prt}/messages/${convs._id}`,{headers}).then((res)=>{
-      if(res.data==="tokExp"){
-        localStorage.clear()
-        nav("/login")
-        window.location.reload()
-        //localStorage.setItem("aut",JSON.stringify({"isA":false,"tok":"tokExp"}))
-      }
-       setmessage(res.data)
-       //console.log(message)
-       })
+      nav(`/chat/${convs._id}`)
        setTimeout(() => {
         let sc = document.getElementById("src")
         if(sc){
@@ -105,9 +97,9 @@ export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm}){
         if(convs.members[4]===true){
           return(
             <div className="flex items-center mt-1 bg-indigo-100 rounded-lg p-1">
-                <img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-5 rounded-full md:w-10 " onClick={get}></img>
+                <img src={pp} alt="s" className="xs:w-5 rounded-full md:w-10 " onClick={get}></img>
                 <span className="flex justify-center xs:text-xs md:text-base xs:pr-1 xs:pl-1 xs:break-words" onClick={get} >{de}</span>
-                 <img src="https://www.linkpicture.com/q/res.png" alt="s" className="xs:w-3 flex  md:w-10 md:pr-2 md:ml-5 xs:mr-2" onClick={b}></img>
+                 <img src={del} alt="s" className="xs:w-3 flex  md:w-10 md:pr-2 md:ml-5 xs:mr-2" onClick={b}></img>
             </div>
               )
 
@@ -116,9 +108,9 @@ export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm}){
         if(convs.members[5]===true){
           return(
             <div className="flex items-center mt-1 bg-indigo-100 rounded-lg p-1">
-                <img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-5 rounded-full md:w-10 " onClick={get}></img>
+                <img src={pp} alt="s" className="xs:w-5 rounded-full md:w-10 " onClick={get}></img>
                 <span className="flex justify-center xs:text-xs md:text-base xs:pr-1 xs:pl-1 xs:break-words" onClick={get} >{de}</span>
-                 <img src="https://www.linkpicture.com/q/res.png" alt="s" className="xs:w-3 flex  md:w-10 md:pr-2 md:ml-5 xs:mr-2" onClick={b}></img>
+                 <img src={del} alt="s" className="xs:w-3 flex  md:w-10 md:pr-2 md:ml-5 xs:mr-2" onClick={b}></img>
             </div>
               )
         }
@@ -126,4 +118,4 @@ export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm}){
      }
 
 
-}
+} 
