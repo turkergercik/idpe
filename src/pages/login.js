@@ -24,6 +24,12 @@ function Log() {
       'registration',
       (token) => {
         andtok=token.value
+  /*       PushNotifications.createChannel({
+          "id":"11",
+          "description":"hey",
+          "importance":4,
+        }) */
+       
       }
     )}
 
@@ -101,7 +107,7 @@ function Log() {
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
               <div>
-                <input value={Email} id={"email"} className="required focus:outline-none focus:border-orange-500 border-solid border-indigo-600 border-2 px-1 rounded-md w-full" id="email" onInput={e => setEmail(e.target.value)} name="email" type="email" autoComplete="email" />
+                <input value={Email} id={"email"} className="required focus:outline-none focus:border-orange-500 border-solid border-indigo-600 border-2 px-1 rounded-md w-full" onInput={e => setEmail(e.target.value)} name="email" type="email" autoComplete="email" />
                 <span className="text-xs text-red-700" id="passwordHelp">{ware}</span>
               </div>
             </div>
@@ -109,7 +115,7 @@ function Log() {
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
               <div>
-                <input value={Password} id={"password"} className="focus:outline-none focus:border-orange-500 border-solid border-indigo-600 px-1 border-2 rounded-md w-full" id="password" onInput={e => setPassword(e.target.value)} name="password" type="password" autoComplete="current-password"  />
+                <input value={Password} id="password" className="focus:outline-none focus:border-orange-500 border-solid border-indigo-600 px-1 border-2 rounded-md w-full" onInput={e => setPassword(e.target.value)} name="password" type="password" autoComplete="current-password"  />
                 <span className="text-xs text-red-700" id="passwordHelp">{warp}</span>
               </div>
             </div>

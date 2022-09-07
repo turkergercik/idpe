@@ -8,6 +8,7 @@ import Protect from "./pages/protected"
 import Home from './pages/home';
 import {Protect1} from "./pages/protected"
 import Chat from './pages/chat';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import Chatid from './pages/chatid';
 import Webcam from './pages/webcam';
 import { io } from "socket.io-client";
@@ -15,6 +16,7 @@ import { PushNotifications } from "@capacitor/push-notifications";
 import { Capacitor } from "@capacitor/core";
 import Redirect from "./pages/redirect"
 import Images from './pages/images';
+//import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/';
 //import { CameraPreview } from '@capacitor-community/camera-preview';
 export const Pro = createContext()
 
@@ -58,7 +60,96 @@ function App() {
      
     }, 0);
      
-  })}
+  })
+  const NotificationChannelm = {
+    id:'1',// id must match android/app/src/main/res/values/strings.xml's default_notification_channel_id
+    name: 'Pop notifications',
+    description: 'Pop notifications',                
+    importance: 5,
+    sound:"mesaj.mp3",
+    visibility: 1
+}
+const NotificationChannelf = {
+  id:'2',// id must match android/app/src/main/res/values/strings.xml's default_notification_channel_id
+  name: 'Pop notifications',
+  description: 'Pop notifications',                
+  importance: 5,
+  sound:"foto.mp3",
+  visibility: 1
+}
+
+LocalNotifications.createChannel(NotificationChannelm)
+PushNotifications.createChannel(NotificationChannelm)
+PushNotifications.createChannel(NotificationChannelf)
+LocalNotifications.createChannel(NotificationChannelf)
+
+LocalNotifications.registerActionTypes({
+types:[{id:"new",actions:[{
+
+id:"view",title:"open"
+
+
+},{
+
+  id:"respond",title:"respond",input:true
+}
+
+
+
+
+
+
+]}]
+
+})
+//PushNotifications.createChannel(NotificationChannelf)
+
+//PushNotifications.createChannel(NotificationChannel)
+//LocalNotifications.listChannels().then((e)=>alert(e.channels[0].id))
+//PushNotifications.deleteChannel(NotificationChannel)
+//LocalNotifications.deleteChannel(NotificationChannel)
+PushNotifications.addListener("pushNotificationReceived", async(notification) => { 
+
+if(notification.body==="Resim Gönderdi"){
+ 
+  await LocalNotifications.schedule({
+    notifications: [
+      {
+        title: notification.title,
+        body: notification.body,
+        id: 2,
+        attachments: null,
+        actionTypeId: "new",
+        extra: null,
+        sound:"foto.mp3",
+        channelId:"2"
+      }
+    ]
+  })
+
+
+
+}else{
+
+   await LocalNotifications.schedule({
+    notifications: [
+      {
+        title: notification.title,
+        body: notification.body,
+        id: 1,
+        attachments: null,
+        actionTypeId: "new",
+        extra: null,
+        sound:"mesaj.mp3",
+        channelId:"1"
+      }
+    ]
+  })
+}
+    })
+
+
+}
   
 
 

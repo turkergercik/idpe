@@ -6,6 +6,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 import Convs2 from "../comp/convs2";
 import Viewer from 'react-viewer';
 import Possib, { b } from "../comp/posib";
+
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Camera, CameraResultType,CameraSource } from '@capacitor/camera';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
@@ -22,6 +23,8 @@ import { CameraPreview } from '@capacitor-community/camera-preview';
 import { async } from "@firebase/util";
 import goni from "./images/gon.png"
 import carpı from "./images/carpı.png"
+import gallery from "./images/gallery.png" 
+import camera from "./images/camera.png" 
 import { FilePond, File, registerPlugin } from 'react-filepond'
 import FilePondPluginImageResize from 'filepond-plugin-image-resize';
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
@@ -132,15 +135,7 @@ let touchendY = 0;
     }else{
       resized =image.dataUrl
     }
-    const fileName = new Date().getTime() + '.jpeg';
-    const savedFile = await Filesystem.writeFile({
-      path: fileName,
-      data: resized,
-      directory: Directory.Documents
-    })
-    console.log("ok")
-    console.log(savedFile)
-    console.log("1")
+   
     //await ExportBase64ImageToGallery.exportImageToGallery({data:resized});
       setsendimage([resized])
     };
@@ -239,8 +234,8 @@ let touchendY = 0;
      conv()
     },[])
   
-      let clas=" scrollbar md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-indigo-100  scrollbar-thumb-indigo-500  pr-4"        
-      let clas1=" scrollbar  md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-indigo-100  scrollbar-thumb-indigo-100  pr-4 "
+      let clas=" scrollbar md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-indigo-100  scrollbar-thumb-indigo-500 xs:pr-1.5 sm:pr-2 md:pr-2.5"        
+      let clas1=" scrollbar  md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-indigo-100  scrollbar-thumb-indigo-100 xs:pr-1.5 sm:pr-2 md:pr-2.5 "
       
       let scro= src.current
       let time
@@ -632,29 +627,30 @@ setimage(false) }}  className="absolute right-2 top-2 bg-indigo-600">
             
              
             </div>
-            <form className="pb-2 flex justify-center items-center">
-            
-               <input id="tex" className="focus:outline-none w-5/6 ml-1 focus:border-orange-500 border-solid border-indigo-600 px-1 border-2 rounded-md"
+            {!isopened && <form className="pb-1 relative justify-center items-center pl-1">
+          
+               <input id="tex" className="focus:outline-none w-full h-7 pr-20 focus:border-orange-500 border-solid border-indigo-600 px-1 border-2 rounded-md"
                //onInput={e => {setwrite(e.target.value)}} 
                
                name="password" type="text" autoComplete="text"/>
-             <button id="kk" onClick={gon} className="w-12 flex justify-end py-[2px]  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">
-              <img className="mx-auto h-5" src={goni} alt="Workflow"/></button>
+             <button id="kk" onClick={gon} className="w-8 h-7 absolute right-0 bottom-1  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">
+              <img className="mx-auto h-7 py-1" src={goni} alt="Workflow"/></button>
+              <div className="absolute content-center right-9 bottom-3 h-4  ">
               <button onClick={ (e)=> {
               e.preventDefault()
               opengallery()
               //nav("/image")
              //setimage(p=>!p)             
-            }} className="w-12 flex justify-end py-[2px]  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">
-              <span className="mx-auto h-5">+</span></button>
+            }} className="w-6 items-center  bg border border-transparent focus:outline-none rounded-md  text-sm font-medium text-white hover:bg-indigo-700  active:bg-indigo-600">
+              <img className="mx-auto h-4" src={gallery}></img></button>
               <button onClick={ (e)=> {
               e.preventDefault()
               //nav("/image")
               takePicture()            
-            }} className="w-12 flex justify-end py-[2px]  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">
-              <span className="mx-auto h-5">+</span></button>
-           
-           </form>
+            }} className="w-6  items-center  border border-transparent rounded-md text-sm focus:outline-none font-medium text-white  hover:bg-indigo-700  active:bg-indigo-600">
+               <img className="mx-auto h-4" src={camera}></img></button>
+              </div>
+           </form>}
              </div>
            
        </div>):(   <div className="bg-indigo-100 grid place-items-center xs:text-md md:text-xl text-indigo-700 md:pl-3 pr-1 xs:pl-2 rounded-lg sm:px-30 col-span-4 mt-3 mb-3 pt-1"> 

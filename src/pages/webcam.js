@@ -1,12 +1,8 @@
 import { useEffect, useState,useRef } from "react";
-import { LocalNotifications } from '@capacitor/local-notifications';
+
 import axios from "axios";
 import SyncLoader from "react-spinners/SyncLoader";
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-
-
-
-
 //import {Camera} from "react-camera-pro";
 //import { CameraPreview, CameraPreviewPictureOptions, CameraPreviewOptions, CameraPreviewDimensions } from '@awesome-cordova-plugins/camera-preview/'
 //import { CameraPreview,CameraPreviewOptions } from '@capacitor-community/camera-preview';
