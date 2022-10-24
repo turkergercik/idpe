@@ -10,7 +10,6 @@ android {
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
     implementation project(':capacitor-community-camera-preview')
-    implementation project(':capacitor-community-fcm')
     implementation project(':capacitor-app')
     implementation project(':capacitor-camera')
     implementation project(':capacitor-filesystem')
@@ -19,10 +18,10 @@ dependencies {
     implementation project(':capacitor-local-notifications')
     implementation project(':capacitor-push-notifications')
     implementation project(':capacitor-status-bar')
-    implementation project(':export-base64-image-to-gallery')
     implementation "androidx.exifinterface:exifinterface:1.2.0"
+    implementation "com.onesignal:OneSignal:4.8.2"
 }
-
+apply from: "../../node_modules/onesignal-cordova-plugin/build-extras-onesignal.gradle"
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()

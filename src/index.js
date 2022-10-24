@@ -5,7 +5,6 @@ import App from "./App";
 import { Provider as AlertProvider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
 import reportWebVitals from "./reportWebVitals";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration"
 import { BrowserRouter } from "react-router-dom";
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 
@@ -19,6 +18,5 @@ root.render(
   </BrowserRouter>
   //</React.StrictMode>
 );
-serviceWorkerRegistration.register();
 defineCustomElements(window);
 reportWebVitals();

@@ -54,7 +54,7 @@ const messaging = getMessaging(app);
 function requestPermission() {
   console.log('Requesting permission...');
   Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
+    if (permission === 'ed') {
       getToken(messaging,{vapidKey:"BCOCQQRtNbKgZPMt70i4zUR9yct9gSKEaw6mGxs0gBiQO1gCaDFZRWd8scr9NegczrXMY2lmaOEpUNWVDRax844"}).then((currentToken) => {
         if (currentToken) {
           // Send the token to your server and update the UI if necessary
@@ -97,7 +97,7 @@ async function ac({vi}) {
   console.log("ok") */
 }
 
-export default function Webcam({ss,v}){
+export default function Webcam({ss,v,sock}){
   const [ani, setAni] = useState(false);
   const [bni, setBni] = useState(false);
   const a = localStorage.getItem("token")
@@ -154,7 +154,7 @@ export default function Webcam({ss,v}){
    front.audio={echoCancellation:true}
 
 let tream
-    socket.current = io(prt)
+    sock.current = io(prt)
     const getUserMedia = async () => {
       try {
      tream = await navigator.mediaDevices.getUserMedia(c)
@@ -185,7 +185,8 @@ let tream
         v.current.srcObject = stream
       }, 0);
 		}) */
-    socket.current.on("ended",()=>{
+    if(sock.current){
+    sock.current.on("ended",()=>{
       console.log("bitti")
       setCallEnded(false)
       //peer.destroy()
@@ -195,27 +196,27 @@ let tream
     
 
     })
-  socket.current.emit("no",na.id)
-  socket.current.on("get",e=>console.log(e))
-  socket.current.on("m",(r)=>{
+  sock.current.emit("no",na.id)
+  sock.current.on("get",e=>console.log(e))
+  sock.current.on("m",(r)=>{
     //console.log(r.socketId)
     setIdToCall(r.socketId)
     id.current = r.socketId
   })
-	socket.current.on("me",(r) => {
+	sock.current.on("me",(r) => {
     //console.log(r)
 			setMe(r)
 		})
-	  socket.current.on("calling", (data) => {
+	  sock.current.on("calling", (data) => {
 			setReceivingCall(true)
 			setCaller(data.from)
 			setCallerSignal(data.signal)
       setname(data.name)
-		})
+		})}
     return () => {
       //connectionRef.current.destroy()
       if(tream){ tream.getTracks().forEach((t) => t.stop())}
-      socket.current.disconnect()
+     // sock.current.disconnect()
 }
 	}, [])
  
@@ -259,7 +260,7 @@ let tream
     }) */
   
 		peer1.current.on("signal", (data) => {
-			socket.current.emit("callUser", {
+			sock.current.emit("callUser", {
 				userToCall: id.current,
 				signalData: data,
 				from: me,
@@ -271,7 +272,7 @@ let tream
 				userVideo.current.srcObject = stream
 			
 		})
-		socket.current.on("callAccepted", (signal) => {
+		sock.current.on("callAccepted", (signal) => {
 			setCallAccepted(true)
       peer1.current.signal(signal)
 
@@ -295,7 +296,7 @@ let tream
 		})
     peer.current=peer2.current
 		peer2.current.on("signal", (data) => {
-			socket.current.emit("answerCall", { signal: data, to: caller })
+			sock.current.emit("answerCall", { signal: data, to: caller })
 		})
 		peer2.current.on("stream", (stream) => {
 			userVideo.current.srcObject = stream
@@ -309,7 +310,7 @@ let tream
 	const leaveCall = () => {
    // console.log({me:me,caller:caller,receiver:idToCall})
 
-    socket.current.emit("ending",idToCall,me,caller)
+    sock.current.emit("ending",idToCall,me,caller)
 		//setCallEnded(true)
     //setReceivingCall(false)
 		//connectionRef.current.destroy()
@@ -464,7 +465,7 @@ return(
         Kişiler
        </div>
     
-       {mpeop.map((c,i)=> (<Convfv key={i} roomid={room}  call={callUser}soc={socket.current} changeconv={setmpeop} cur={setcurrent} convs={mpeop[i]}/>)
+       {mpeop.map((c,i)=> (<Convfv key={i} roomid={room}  call={callUser}soc={sock.current} changeconv={setmpeop} cur={setcurrent} convs={mpeop[i]}/>)
     
 
     )}

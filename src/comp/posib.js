@@ -4,18 +4,31 @@ import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
 import * as jose from 'jose'
+import { setOptions } from "filepond";
 
 
 
 
-export default function Possib({current,mesa,message,person}){
+export default function Possib({current,mesa,message,person,flag1,setflag1,setno,no,click,nos}){
   //const[mpeo,setmpeo]=useState([])
   let prt="https://smartifier.herokuapp.com"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
   const headers = { Authorization:a}; 
   let mpeo=[]
-  async function b(){   
+
+ 
+  async function b(){  
+    if(nos!==undefined) {
+      console.log("1ew")
+      nos.current=nos.current
+      console.log(nos.current)
+     // setno(!no)
+     // no(true)
+      //no=true
+      //setflag1(new Array(flag1?.length).fill(false))
+    
+    }
     await axios.get(`${prt}/conversations/${na.id}`,{headers})
     .then((res)=>{
         mpeo=res.data

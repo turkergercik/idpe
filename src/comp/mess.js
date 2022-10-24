@@ -13,6 +13,7 @@ export default function Mess({own,message,setmessage,images,open,on}){
   const na=jose.decodeJwt(a)
   const mes=message.text
   const mest=message.createdAt
+  let media = message.media
 const alert =useAlert()
  // console.log(mes)
    if(own===na.id){
@@ -22,11 +23,11 @@ const alert =useAlert()
   return(
 <div className="s">
 {own ? (<><div className="flex items-center  pt-1 pl-2">
-{message.media ? <><div className=""><img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-7 rounded-full md:w-10  mb-1"></img><img onClick={async()=>{
+{media ? <><div className=""><img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-7 rounded-full md:w-10  mb-1"></img><img onClick={async()=>{
  const fileName = new Date().getTime() + '.jpeg';
   const ok = await Filesystem.writeFile({
    path: fileName,
-   data: message.media,
+   data: media,
    directory: Directory.Documents
    
  })
@@ -37,27 +38,27 @@ const alert =useAlert()
 }} src={d} alt="s" className="xs:w-7 rounded-full md:w-10 "></img></div><img onClick={() => {
           open(true);
           on(true);
-          
-          images.current = message.media;
-        } } src={message.media} alt="s" className="h-1/6 w-5/6 rounded-xl pl-1"></img></>:<><img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-7 rounded-full md:w-10 mr-1"></img><span className=" xs:text-xs md:text-base bg-white break-all flex rounded-xl px-2 ml-1 text-black border-solid border-2 border-indigo-400 max-w-xl ">{mes}</span></>
+          console.log(media)
+          images.current = media;
+        } } src={media} alt="s" className="h-1/6 w-5/6 rounded-xl pl-1"></img></>:<><img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-7 rounded-full md:w-10 mr-1"></img><span className=" xs:text-xs md:text-base bg-white break-all flex rounded-xl px-2 ml-1 text-black border-solid border-2 border-indigo-400 max-w-xl ">{mes}</span></>
  }
 
       </div><div className="md:text-xs  xs:text-xxs text-indigo-600 ml-2">{format(mest)}</div></>):(
       
     <> 
       <div className="flex items-center justify-end pt-1 ml-2  ">
-        {message.media ? <><img onClick={() => {
+        {media ? <><img onClick={() => {
 
                 open(true);
 
                 on(true);
-                images.current = message.media;
+                images.current = media;
 
-              } } src={message.media} alt="s" className="h-1/6  w-5/6 rounded-xl pr-1"></img><div><img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-7  rounded-full md:w-10  mb-1"></img><img  onClick={async()=>{
+              } } src={media} alt="s" className="h-1/6  w-5/6 rounded-xl pr-1"></img><div><img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-7  rounded-full md:w-10  mb-1"></img><img  onClick={async()=>{
                 const fileName = new Date().getTime() + '.jpeg';
                  const ok = await Filesystem.writeFile({
                   path: fileName,
-                  data: message.media,
+                  data: media,
                   directory: Directory.Documents
                 })
                if(ok){
@@ -68,6 +69,7 @@ const alert =useAlert()
          
 
 </div>
+
 <div className="md:text-xs  xs:text-xxs  text-indigo-600  flex justify-end">{format(mest)}</div>
  </>)}
 

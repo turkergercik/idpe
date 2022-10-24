@@ -39,6 +39,13 @@
   dependencies:
     "@types/cordova" "latest"
 
+"@awesome-cordova-plugins/onesignal@^5.45.0":
+  "integrity" "sha512-A9Vq1HhQHi/KYcckM4ZM3mK0to/uOZlIpxpNmAjIUX8WYH8M7x7pVcz0DHmUnpUnKt4+Axcib35jNi6WG395Ig=="
+  "resolved" "https://registry.npmjs.org/@awesome-cordova-plugins/onesignal/-/onesignal-5.45.0.tgz"
+  "version" "5.45.0"
+  dependencies:
+    "@types/cordova" "latest"
+
 "@awesome-cordova-plugins/photo-viewer@^5.44.0":
   "integrity" "sha512-lmsQapwfkOJbfzvFfUBTKJ4wuNNTwiF3Uug4QHb+mc0cIEwVNL58sxZug0jb+dMm/bXZ8RlqM8NcWTjU4V22OA=="
   "resolved" "https://registry.npmjs.org/@awesome-cordova-plugins/photo-viewer/-/photo-viewer-5.44.0.tgz"
@@ -1096,17 +1103,10 @@
   dependencies:
     "@capacitor/core" "latest"
 
-"@capacitor-community/fcm@^2.0.2":
-  "integrity" "sha512-O/xxizQyPdD6AejJjmhZC+WBquy1UHrS0KvmnVf58Ji9TtQiaCb6iQhZMjTidNqOHJIj1YxeIFGAcXlt8nqgyw=="
-  "resolved" "https://registry.npmjs.org/@capacitor-community/fcm/-/fcm-2.0.2.tgz"
-  "version" "2.0.2"
-  dependencies:
-    "@capacitor/core" "^3.0.1"
-
-"@capacitor/android@^3.5.0":
-  "integrity" "sha512-1SiTMMdd+urvDRrSLDmrFUU9Ldm8B2mUzVNvx8u1zgagZVPNQLoMY4WX8EkpPjt4+D6YIoBjdqb72LID9Iip6A=="
-  "resolved" "https://registry.npmjs.org/@capacitor/android/-/android-3.5.0.tgz"
-  "version" "3.5.0"
+"@capacitor/android@^3.7.0":
+  "integrity" "sha512-SF06sqvEKvRnev+T+k4jjfDIdsqcDiGnzGld7oTtJipiO16xVkKPG0kEbFZEWkrMvhqRn6jNyl+ZHn5/9JR7nA=="
+  "resolved" "https://registry.npmjs.org/@capacitor/android/-/android-3.7.0.tgz"
+  "version" "3.7.0"
 
 "@capacitor/app@1.1.1":
   "integrity" "sha512-8ADkldHnoE1xkWvPUsGlERVGm6/Zvcxy6hCI80AxydIKyaCG7kbDAvUclebbnw/eFRxj2zBoVatGLjmJNvTbYw=="
@@ -1140,10 +1140,10 @@
     "tslib" "^2.1.0"
     "xml2js" "^0.4.23"
 
-"@capacitor/core@^3.0.1", "@capacitor/core@3.5.1", "@capacitor/core@latest":
-  "integrity" "sha512-UTROxB7q/hZBnhDLcCN7mVsAX3SxXNMhVuPbtddsDOUCm4hExLXN62gPD7rjgmumhfHMjeXmkw/EfRzSjttL1g=="
-  "resolved" "https://registry.npmjs.org/@capacitor/core/-/core-3.5.1.tgz"
-  "version" "3.5.1"
+"@capacitor/core@^3.7.0", "@capacitor/core@latest":
+  "integrity" "sha512-Y6Wrt1Im246fIfAIAsOElqPkBgzV1w9jG/NnBtxCb5kJ6IGtszl9fOvJ3WdGAfh9UOnEBr4m3iaz2L7ZGkQzWg=="
+  "resolved" "https://registry.npmjs.org/@capacitor/core/-/core-3.7.0.tgz"
+  "version" "3.7.0"
   dependencies:
     "tslib" "^2.1.0"
 
@@ -1162,10 +1162,10 @@
   "resolved" "https://registry.npmjs.org/@capacitor/keyboard/-/keyboard-1.2.2.tgz"
   "version" "1.2.2"
 
-"@capacitor/local-notifications@^1.1.0":
-  "integrity" "sha512-l6S9rBylxGPq/U+xpJzZcOL4l2s8I2Igq7uDTidR4imIxxX3bLRz9nDSQREWsbQkFx7ALFm/5Y8PJGz2C6qKPw=="
-  "resolved" "https://registry.npmjs.org/@capacitor/local-notifications/-/local-notifications-1.1.0.tgz"
-  "version" "1.1.0"
+"@capacitor/local-notifications@^4.1.0":
+  "integrity" "sha512-bdbo3nGGdNhui7VL6wsU7N5pq7jScWNK08M1x3CcNALLXwHUgz1LRY5oD/LpW9d+/CswMQXWIM+krjS31+h+uQ=="
+  "resolved" "https://registry.npmjs.org/@capacitor/local-notifications/-/local-notifications-4.1.0.tgz"
+  "version" "4.1.0"
 
 "@capacitor/push-notifications@^4.0.1":
   "integrity" "sha512-M6MQbs6rP/8JvQVF0UI1jq0dKRcfi0MGEKQLOOjLI6p4pqp4FVi6gpc+Ww2mtvXJGcIhyhIwziuH9dRl0FTT5Q=="
@@ -1826,6 +1826,13 @@
     "@ionic/core" "^6.1.8"
     "ionicons" "^6.0.2"
     "tslib" "*"
+
+"@ionic/storage@^3.0.6":
+  "integrity" "sha512-sw+zSJINIpbQCGZR9mEtb9N0WmZLuhcMVqOZJBqLuDACAMdXqG39zmp5nSVqhGI1/9X3nd0K5gVn6icyVfUnUg=="
+  "resolved" "https://registry.npmjs.org/@ionic/storage/-/storage-3.0.6.tgz"
+  "version" "3.0.6"
+  dependencies:
+    "localforage" "^1.9.0"
 
 "@ionic/utils-array@2.1.5":
   "integrity" "sha512-HD72a71IQVBmQckDwmA8RxNVMTbxnaLbgFOl+dO5tbvW9CkkSFCv41h6fUuNsSEVgngfkn0i98HDuZC8mk+lTA=="
@@ -4058,6 +4065,18 @@
   "resolved" "https://registry.npmjs.org/cordova-plugin-camera-preview/-/cordova-plugin-camera-preview-0.12.3.tgz"
   "version" "0.12.3"
 
+"cordova-sqlite-storage-dependencies@4.0.0":
+  "integrity" "sha512-dTBxYaX/RGzH6+pp49o4sb3FuHCvhrssaKn1XMJ4LL3f9dnvz3rhFK2LdcWrdFkhOLOndnW/azUkbzZd+WWhRA=="
+  "resolved" "https://registry.npmjs.org/cordova-sqlite-storage-dependencies/-/cordova-sqlite-storage-dependencies-4.0.0.tgz"
+  "version" "4.0.0"
+
+"cordova-sqlite-storage@^6.0.0":
+  "integrity" "sha512-njRloA3AICaUFztKHXoFfVcwlL7zbvyFxtdZIkK7P+MA3umILXtSKhYAQkSe2GtHr0LBNzJI5xUUqAlZl/Js0A=="
+  "resolved" "https://registry.npmjs.org/cordova-sqlite-storage/-/cordova-sqlite-storage-6.0.0.tgz"
+  "version" "6.0.0"
+  dependencies:
+    "cordova-sqlite-storage-dependencies" "4.0.0"
+
 "core-js-compat@^3.21.0", "core-js-compat@^3.22.1":
   "integrity" "sha512-rEF75n3QtInrYICvJjrAgV03HwKiYvtKHdPtaba1KucG+cNZ4NJnH9isqt979e67KZlhpbCOTwnsvnIr+CVeOg=="
   "resolved" "https://registry.npmjs.org/core-js-compat/-/core-js-compat-3.22.5.tgz"
@@ -5186,11 +5205,6 @@
     "jest-get-type" "^27.5.1"
     "jest-matcher-utils" "^27.5.1"
     "jest-message-util" "^27.5.1"
-
-"export-base64-image-to-gallery@^0.0.5":
-  "integrity" "sha512-bw+yBU1IwltGYGIqIOzGX+dTESQy/ck008q1dcLUjQwjkAnAPEy3+DasHDbiAkz374baMer4McOCrzWCi5JspA=="
-  "resolved" "https://registry.npmjs.org/export-base64-image-to-gallery/-/export-base64-image-to-gallery-0.0.5.tgz"
-  "version" "0.0.5"
 
 "express-ws@^5.0.2":
   "integrity" "sha512-0uvmuk61O9HXgLhGl3QhNSEtRsQevtmbL94/eILaliEADZBHZOQUAiHFrGPrgsjikohyrmSG5g+sCfASTt0lkQ=="
@@ -7032,6 +7046,13 @@
   dependencies:
     "immediate" "~3.0.5"
 
+"lie@3.1.1":
+  "integrity" "sha512-RiNhHysUjhrDQntfYSfY4MU24coXXdEOgw9WGcKHNeEwffDYbF//u87M1EWaMGzuFoSbqW0C9C6lEEhDOAswfw=="
+  "resolved" "https://registry.npmjs.org/lie/-/lie-3.1.1.tgz"
+  "version" "3.1.1"
+  dependencies:
+    "immediate" "~3.0.5"
+
 "lilconfig@^2.0.3", "lilconfig@^2.0.5":
   "integrity" "sha512-xaYmXZtTHPAw5m+xLN8ab9C+3a8YmV3asNSPOATITbtwrfbwaLJj8h66H1WMIpALCkqsIzK3h7oQ+PdX+LQ9Eg=="
   "resolved" "https://registry.npmjs.org/lilconfig/-/lilconfig-2.0.5.tgz"
@@ -7060,6 +7081,20 @@
   "integrity" "sha512-HVl9ZqccQihZ7JM85dco1MvO9G+ONvxoGa9rkhzFsneGLKSUg1gJf9bWzhRhcvm2qChhWpebQhP44qxjKIUCaQ=="
   "resolved" "https://registry.npmjs.org/loader-utils/-/loader-utils-3.2.0.tgz"
   "version" "3.2.0"
+
+"localforage-cordovasqlitedriver@^1.8.0":
+  "integrity" "sha512-AeYiVPURow8gPAGHNOiGMS9rlgv81wUuQLtnyCP6Eh1mq+IsqNl9fwAOP+RiTi6aO/Wfy3TTWiW2WtbTdJaUnQ=="
+  "resolved" "https://registry.npmjs.org/localforage-cordovasqlitedriver/-/localforage-cordovasqlitedriver-1.8.0.tgz"
+  "version" "1.8.0"
+  dependencies:
+    "localforage" ">=1.5.0"
+
+"localforage@^1.9.0", "localforage@>=1.5.0":
+  "integrity" "sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg=="
+  "resolved" "https://registry.npmjs.org/localforage/-/localforage-1.10.0.tgz"
+  "version" "1.10.0"
+  dependencies:
+    "lie" "3.1.1"
 
 "locate-path@^2.0.0":
   "integrity" "sha512-NCI2kiDkyR7VeEKm27Kda/iQHyKJe1Bu0FlTbYp3CqJu+9IFe9bLyAjMxf5ZDDbEg+iMPzB5zYyUTSm8wVTKmA=="
@@ -7630,6 +7665,11 @@
   "version" "1.4.0"
   dependencies:
     "wrappy" "1"
+
+"onesignal-cordova-plugin@^3.1.1":
+  "integrity" "sha512-oKaKa+QhJ0OAnuiimXMLuhSxPRAOyABhpnpqFI1OW39Vdr0piEvvLv9hW1LegSIjpwffK7SeIdoOxXvJyMRnyw=="
+  "resolved" "https://registry.npmjs.org/onesignal-cordova-plugin/-/onesignal-cordova-plugin-3.1.1.tgz"
+  "version" "3.1.1"
 
 "onetime@^5.1.2":
   "integrity" "sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg=="
@@ -8881,6 +8921,13 @@
   "version" "0.12.0"
   dependencies:
     "@emotion/react" "^11.4.1"
+
+"react-swipe-to-delete-component@^1.0.8":
+  "integrity" "sha512-5XnZ1qF5ykx44593ZLmT1E0+0AFwuZ01XJgv7WrHlVb67gtOHGoot1aI9Tn+OS/It+fbuN95JSFGCpPQE5Rv/g=="
+  "resolved" "https://registry.npmjs.org/react-swipe-to-delete-component/-/react-swipe-to-delete-component-1.0.8.tgz"
+  "version" "1.0.8"
+  dependencies:
+    "@babel/runtime" "^7.12.5"
 
 "react-transition-group@^2.5.0":
   "integrity" "sha512-+HzNTCHpeQyl4MJ/bdE0u6XRMe9+XG/+aL4mCxVN4DnPBQ0/5bfHWPDuOZUzYdMj94daZaZdCCc1Dzt9R/xSSg=="

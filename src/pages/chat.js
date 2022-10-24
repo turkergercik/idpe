@@ -12,7 +12,7 @@ import { render } from "timeago.js";
 import { io } from "socket.io-client";
 import { CameraPreview } from '@capacitor-community/camera-preview';
 
-function Chat({}) {
+function Chat({sock,db,setflag1}) {
   let prt="https://smartifier.herokuapp.com"
     const [current, setcurrent] = useState({cid:"",cnm:""});
     const [write, setwrite] = useState('');
@@ -29,15 +29,17 @@ function Chat({}) {
     const headers = { Authorization:a};
     let nav = useNavigate()
     let n=[]
-    const socket = useRef()
+    const [click,setclick]=useState(true)
+    //const socket = useRef()
     useEffect(()=>{
-      socket.current=io(prt)
-      socket.current.emit("no",na.id)
-      /* socket.current.on("ho",(e)=> console.log(e)) */
-      socket.current.on("get",(e)=> {
+      if(sock.current){
+      //sock.current=io(prt)
+      sock.current.emit("no",na.id)
+      /* sock.current.on("ho",(e)=> console.log(e)) */
+      sock.current.on("get",(e)=> {
         setall(e)
       console.log(e)})
-      socket.current.on("getm",(e)=> {
+      /* sock.current.on("getm",(e)=> {
          n ={
           sender:e.sender,
           text:e.text,
@@ -46,8 +48,9 @@ function Chat({}) {
         }
         setne(n)
         //setmessages((p)=>[...p,n])
-        })
-        return () => socket.current.disconnect()
+        }) */
+      }
+        //return () => sock.current.disconnect()
     },[current])
 /*     async function a(event){
       setBni(false)
@@ -105,7 +108,8 @@ function Chat({}) {
           //localStorage.setItem("aut",JSON.stringify({"isA":false,"tok":"tokExp"}))
         }
         setmpeop(res.data)
-       //console.log(res.data)
+        setflag1(new Array(res.data.length).fill(true))
+       console.log(res.data.length)
     }).catch((err)=>{
         console.log("hata")
       })
@@ -159,7 +163,7 @@ function Chat({}) {
      
     
    if(t.value !==""){
-    socket.current.emit("send",{sender:na.id,receiver:current.cri,text:t.value})
+    sock.current.emit("send",{sender:na.id,receiver:current.cri,text:t.value})
      await axios.post(`${prt}/messages`,{
       conversationid:current.cid,
       sender:na.id,
@@ -188,7 +192,7 @@ function Chat({}) {
       <div className="flex items-center justify-center md:text-xl xs:text-xs text-white mt-1 bg-indigo-100 rounded-lg p-1">
       <span className="bg-indigo-700 p-1 rounded-lg md:px-2">Mesajlar</span>
 </div>
-    {mpeop.map((c,i)=> (<Conv key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} cur={setcurrent} convs={mpeop[i]} setnewm={ne}/>)
+    {mpeop.map((c,i)=> (<Conv db={db}  key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} cur={setcurrent} convs={mpeop[i]} setnewm={ne}/>)
     
 
     )}
@@ -205,7 +209,7 @@ function Chat({}) {
         <div className="flex items-center justify-center md:text-xl xs:text-xs text-white mt-1 bg-indigo-100 rounded-lg p-1">
       <span className="bg-indigo-700 p-1 rounded-lg md:px-2">Kişiler</span>
 </div>
-        {peop.map((c,i)=> (<Possib key={i}  cur={setcurrent} mesa={mpeop} message={setmpeop} person={peop[i]}/>)
+        {peop.map((c,i)=> (<Possib key={i} click={setclick}  cur={setcurrent} mesa={mpeop} message={setmpeop} person={peop[i]}/>)
      
 
      )}

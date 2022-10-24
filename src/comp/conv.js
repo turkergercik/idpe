@@ -7,7 +7,7 @@ import * as jose from 'jose'
 import pp from "../pages/images/splash1.png"
 import del from "../pages/images/del.png"
 
-export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm,messageler}){
+export default function Conv({k,mesa,convs,db,changeconv,setmessage,cur,setnewm,messageler}){
   let prt="https://smartifier.herokuapp.com"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
@@ -27,6 +27,9 @@ export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm,mes
       convs.members[5]=false
     } */
     async function b(){
+   await db.remove(convs._id)
+
+
       if(convs.members[0]===na.id){ 
        
         mesa.splice(k,1)
@@ -99,7 +102,7 @@ export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm,mes
             <div className="flex items-center mt-1 bg-indigo-100 rounded-lg p-1">
                 <img src={pp} alt="s" className="xs:w-5 rounded-full md:w-10 " onClick={get}></img>
                 <span className="flex justify-center xs:text-xs md:text-base xs:pr-1 xs:pl-1 xs:break-words" onClick={get} >{de}</span>
-                 <img src={del} alt="s" className="xs:w-3 flex  md:w-10 md:pr-2 md:ml-5 xs:mr-2" onClick={b}></img>
+                 <img src={del} alt="s" className="xs:w-3 flex md:w-10 mr-2 mx-auto" onClick={b}></img>
             </div>
               )
 
@@ -110,7 +113,7 @@ export default function Conv({k,mesa,convs,changeconv,setmessage,cur,setnewm,mes
             <div className="flex items-center mt-1 bg-indigo-100 rounded-lg p-1">
                 <img src={pp} alt="s" className="xs:w-5 rounded-full md:w-10 " onClick={get}></img>
                 <span className="flex justify-center xs:text-xs md:text-base xs:pr-1 xs:pl-1 xs:break-words" onClick={get} >{de}</span>
-                 <img src={del} alt="s" className="xs:w-3 flex  md:w-10 md:pr-2 md:ml-5 xs:mr-2" onClick={b}></img>
+                 <img src={del} alt="s" className="xs:w-3 flex md:w-10 mr-2 mx-auto" onClick={b}></img>
             </div>
               )
         }

@@ -4,10 +4,6 @@
 		"classpath": "com.ahm.capacitor.camera.preview.CameraPreview"
 	},
 	{
-		"pkg": "@capacitor-community/fcm",
-		"classpath": "com.getcapacitor.community.fcm.FCMPlugin"
-	},
-	{
 		"pkg": "@capacitor/app",
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
 	},
@@ -38,9 +34,5 @@
 	{
 		"pkg": "@capacitor/status-bar",
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
-	},
-	{
-		"pkg": "export-base64-image-to-gallery",
-		"classpath": "com.butterflyray.plugins.exportimage.ExportBase64ImageToGalleryPlugin"
 	}
 ]
