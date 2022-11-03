@@ -5,20 +5,31 @@ import { useNavigate } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
 import * as jose from 'jose'
 import { setOptions } from "filepond";
+import pp from "../pages/images/splash1.png"
 
 
 
-
-export default function Possib({current,mesa,message,person,flag1,setflag1,setno,no,click,nos}){
+export default function Possib({current,mesa1,message,person,flag1,setflag1,setno,no,click,nos,setisOpened,convs,cur}){
   //const[mpeo,setmpeo]=useState([])
+  let focusborder="focus:border-[#097EFE]"
+  let darktext="dark:text-[#F0EFE9]"
+  let svgsearch="#60ACFF"
+  let focusvgsearch="focus:border-[#097EFE]"
+  let textcolorblue="text-[#459DFF]"
+  let divisioncolor="divide-[#90C5FF]"
+  let divisioncolorforfirstline="border-[#90C5FF]"
+  let maincolor="bg-white"
+  let bg="bg-[#E8E8E8]"
+  let bordercolor="border-[#60ACFF]"
   let prt="https://smartifier.herokuapp.com"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
   const headers = { Authorization:a}; 
   let mpeo=[]
-
- 
+  let de =person.name
+  let nav =useNavigate()
   async function b(){  
+    setisOpened(false)
     if(nos!==undefined) {
       console.log("1ew")
       nos.current=nos.current
@@ -32,7 +43,7 @@ export default function Possib({current,mesa,message,person,flag1,setflag1,setno
     await axios.get(`${prt}/conversations/${na.id}`,{headers})
     .then((res)=>{
         mpeo=res.data
-        //console.log(mesa)
+        //console.log(mesa1)
        
       })
       //herhangi silinme durunumun 
@@ -103,15 +114,57 @@ export default function Possib({current,mesa,message,person,flag1,setflag1,setno
 
 
    }
+   async function get(){
+    console.log(mesa1)
+    let up={}
+
+    let m = mesa1.filter(v=>v.members[1]===person._id||v.members[0]===person._id)
+    console.log(m)
+    
+   
+    if(na.id===m[0].members[0]){
+      up ={cid:m[0]._id,cnm:de,cri:m[0].members[1],csi:m[0].members[0],cam:[m[0].members[1],m[0].members[0]]}}
+   else{
+
+      up ={cid:m[0]._id,cnm:de,cri:m[0].members[0],csi:m[0].members[1],cam:[m[0].members[1],m[0].members[0]]}
+   }
+   cur(up)
+   //console.log(up)
+   //console.log(vur)
+   nav(`/chat/${m[0]._id}`)
+    setTimeout(() => {
+     let sc = document.getElementById("src")
+     if(sc){
+      sc.scrollTop=sc.scrollHeight
+     }
+    }, 0);
+   
+   
   /*  if(mpeop!==undefined){
     console.log(mpeop.members[4])
-   } */
+   } */}
+  function bb(){
+    
+
+    /* console.log(mesa1[2].members[1]===person._id)
+    console.log(mesa1[2].members[0]) */
+   
   
+    get()
+    b()
+ 
+      
+    
+   
+    //get()
+  }
   if(person._id!==na.id){
     return(
-      <div className="flex items-center mt-1 bg-indigo-100 rounded-lg p-1 " onClick={b}>
-          <img src="https://www.linkpicture.com/q/splash_2.png" alt="s" className="xs:w-5 rounded-full md:w-10 "></img>
-          <span className="flex justify-center xs:text-xs md:text-base xs:pr-1 xs:pl-1 xs:break-words" >{person.name}</span>
+      <div className="flex flex-row items-center">
+         <div id="sr" className={`flex items-center dark:bg-black  ${maincolor}  ${bordercolor} rounded-lg p-1 mt-1 h-[4.5rem]`}>
+         <img src={pp} alt="s" className="xs:w-10 rounded-full md:w-10 mr-2 " onClick={b}></img>
+         <span className={`flex justify-start text w-full ${darktext} ${textcolorblue} font-semibold   xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={bb}>{person.name}</span>
+       </div>
       </div>
         )
       

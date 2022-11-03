@@ -5,6 +5,7 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  darkMode:"class",
   theme: {
     screens: {
 
@@ -42,8 +43,9 @@ module.exports = {
     },
     extend: {
    colors:{
-    spec:"#c4b5fd"
-
+    spec:"#c4b5fd",
+    scroll:"#60ACFF",
+    dark:"#F0EFE9"
    },
 
     },

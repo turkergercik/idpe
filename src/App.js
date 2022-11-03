@@ -15,7 +15,7 @@ import Webcam from './pages/webcam';
 import { io } from "socket.io-client";
 import { PushNotifications } from "@capacitor/push-notifications";
 import { Capacitor } from "@capacitor/core";
-import Redirect from "./pages/redirect"
+import Redirect1 from "./pages/redirect"
 import Images from './pages/images';
 import * as jose from 'jose'
 import { Storage,Drivers } from '@ionic/storage';
@@ -23,13 +23,14 @@ import OneSignal from "onesignal-cordova-plugin"
 import { create } from 'filepond';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
 import { async } from '@firebase/util';
-
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 //import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/';
 //import { CameraPreview } from '@capacitor-community/camera-preview';
 export const Pro = createContext()
 
 function App() {
+  const [isDarkMode, setDarkMode]=useState(false)
   const curref =useRef(["null"])
   const[messages,setmessages]=useState([])
   const[mpeop,setmpeop]=useState([])
@@ -44,6 +45,10 @@ function App() {
   let prt="https://smartifier.herokuapp.com"
 const socket = useRef()
 async function as() {
+  if(Capacitor.getPlatform()!=="web"){await StatusBar.setStyle({ style: Style.Light});
+  
+  StatusBar.setOverlaysWebView({ overlay:true});}
+  //await StatusBar.setBackgroundColor({color:"#000000"})
   const contents = await Filesystem.readFile({
     path: 'out.json',
     directory: Directory.Data,
@@ -53,7 +58,8 @@ async function as() {
   console.log("bok")
   let ab =JSON.parse(contents.data).conversationid
 
-  if(ab!==""){
+  if(ab!==undefined&&ab!==""){
+
   nav(`/chat/${ab}`)
   }
   await Filesystem.writeFile({
@@ -267,14 +273,16 @@ LocalNotifications.createChannel(NotificationChannelf)
  element={<Navigate to="/reg" replace />}
   } */
   return (
-    <Pro.Provider value={{aut,setAut}}>    
+    <div className={isDarkMode ? "dark":null}>
+    <Pro.Provider  value={{aut,setAut}}>    
    
     {aut===null ? ( <div> 
      {/* <div className='absolute left-2/4 text-center ' >helo</div> */}
-      <button onClick={()=>nav("/reg")} className="w-15 flex absolute right-0 mr-20 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Kaydol</button>
+<button onClick={()=>nav("/reg")} className="w-15 flex absolute right-0 mr-20 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Kaydol</button>
  <button onClick={()=>nav("/login")} className="w-15 flex absolute right-2 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Giriş</button>
  </div>
-):(<div>  <button onClick={async()=>{ localStorage.clear()
+):(<div className=""> 
+ {/*   <button onClick={async()=>{ localStorage.clear()
   await store.current.clear()
   setTimeout(() => {
     nav("/login")
@@ -282,43 +290,39 @@ LocalNotifications.createChannel(NotificationChannelf)
   
    window.location.reload()}
  } 
-   className="w-15 flex absolute right-2 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Çıkış</button>
+   className="w-15 flex absolute right-2 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Çıkış</button> */}
 {/*     <div className='py-4 ml-72 px-96  absolute justify-center items-center bg-[#c4b5fd] text-xl text-indigo-700'>{aut.name} hoşgeldiniz</div>
 
 
 */} 
 
  
- <button onClick={()=>nav("/chat")} className="w-15 flex absolute left-20 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Chat</button>
-
- <button onClick={()=>nav("/user")} className="w-15 flex absolute left-2 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Alan</button>
- <button onClick={()=>nav("/webcam")} className="w-15 flex absolute left-40 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Webcam</button>
    </div>)
 
 
     }
       <Routes>
       
-        <Route exact path="/" element={aut===null ?<Home/>:<User />}/>
+        <Route exact path="/" element={aut===null ?<Navigate to="/login"/>:<Navigate to="/chat"  />}/>
         <Route element={<Protect />}><Route path="/reg" element={<Reg />}/>
             </Route>
             <Route element={
             <Protect />
           }>
-            <Route path="/login" element={<Log/>}/>
+            <Route exact path="/login" element={<Log/>}/>
             </Route>
             
             <Route element={
             <Protect1 />
           }>
-            <Route path="/user" element={<User />}/>
+           {/*  <Route path="/user" element={<User />}/> */}
             
             </Route>
-            <Route element={<Protect1 />}><Route exact path="/r" element={<Redirect sock={socket.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat mpeop={mpeop} setmpeop={setmpeop} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/chat/:id" element={<Chatid ne={ne} setflag1={setflag1} flag1={flag1} mpeop={mpeop} setmpeop={setmpeop} db={store.current} setcur={setcur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
-            <Route element={<Protect1 />}><Route path="/webcam" element={<Webcam sock={socket} ss={sets} v={vid}/>}/></Route>
-            <Route element={<Protect1 />}><Route path="/image" element={<Images ss={sets} v={vid}/>}/></Route>
+            <Route element={<Protect1 />}><Route  path="/r" element={<Redirect1 sock={socket.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat setDarkMode={setDarkMode} isDarkMode={isDarkMode} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid ne={ne} setflag1={setflag1} flag1={flag1}  db={store.current} setcur={setcur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam sock={socket} ss={sets} v={vid}/>}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid}/>}/></Route>
          
          
          {/*    <Route exact path="/login" element={
@@ -343,6 +347,7 @@ LocalNotifications.createChannel(NotificationChannelf)
      </Routes> 
    
     </Pro.Provider>
+    </div>
   );
 }
 

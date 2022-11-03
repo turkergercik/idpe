@@ -12,8 +12,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   //<React.StrictMode>
   <BrowserRouter>
-  <AlertProvider template={AlertTemplate} >
-    <App />
+  <AlertProvider template={AlertTemplate}>
+    <App/>
     </AlertProvider>
   </BrowserRouter>
   //</React.StrictMode>

@@ -37,6 +37,10 @@ import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import { LocalNotifications } from "@capacitor/local-notifications";
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import { ReactComponent as Camera1 } from "../pages/images/camera.svg"
+import { ReactComponent as Gallery1 } from "../pages/images/gallery.svg"
+import { ReactComponent as Send1 } from "../pages/images/send.svg"
+import { ReactComponent as Back } from "../pages/images/back.svg"
 // Register the plugins
 registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,FilePondPluginFileEncode, FilePondPluginImagePreview,FilePondPluginFileValidateType,FilePondPluginImageResize)
 
@@ -45,18 +49,27 @@ registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,F
 
 
 function Chatid({db,setmessages,messages,sock,curref,setcur,ne,flag1,setflag1}) {
-
+  let svgback="text-[#FFFFFF]"
+  let bgblue ="bg-[#097EFE]"
+  let textcolorblue="text-[#097EFE]"
+  let bginput="bg-[#F0EFE9]"
+  let darkborderinput="dark:border-[#F0EFE9]"
+  let buttonbg="bg-[#097EFE]"
+  let svgcamera="text-[#097EFE]"
+  let send="text-[#FFFFFF]"
+  let bordercolor="border-[#60ACFF]"
+  let bg="bg-white"
   let prt="https://smartifier.herokuapp.com"
   const [current, setcurrent] = useState({});
   const [write, setwrite] = useState('');
- // const no = useRef(false)
+  //const no = useRef(false)
   const [no1,no] =useState(false)
   const nos = useRef(false)
   const [sendimage, setsendimage] = useState([]);
-  const [ani, setAni] = useState(false);
+  const [ani, setAni] = useState(true);
   const [image, setimage] = useState(false);
   const ready = useRef(null)
-  const [bni, setBni] = useState(false);
+  const [bni, setBni] = useState(true);
   const [Files, setFiles] = useState([]);
   const[peop,setpeop]=useState([])
   const[all,setall]=useState([])
@@ -75,12 +88,12 @@ function Chatid({db,setmessages,messages,sock,curref,setcur,ne,flag1,setflag1}) 
   const flag =useRef(true)
   //const curref =useRef(null)
   const[mpeop,setmpeop]=useState([])
- // const[flag1,setflag1]=useState([])
+  //const[flag1,setflag1]=useState([])
   const[flag2,setflag2]=useState([])
   const[isopened,setisopened]=useState(false)
- // const[messages,setmessages]=useState([])
+  //const[messages,setmessages]=useState([])
  
- // const[ne,setne]=useState([])
+  //const[ne,setne]=useState([])
   let nav = useNavigate()
   const imgRef = useRef();
   let n=[]
@@ -94,7 +107,6 @@ let touchstartY = 0;
 let touchendX = 0;
 let touchendY = 0;
 const messagesfromdb = useRef(null)
-
 
 
 forwardRef((p,ref)=>{
@@ -219,6 +231,8 @@ return
     useEffect(()=>{ 
         
       async function conv(){
+        
+        console.log(`${prt}/conversations/exact/${id}`)
         await axios.get(`${prt}/conversations/exact/${id}`,{headers}).then(async(e)=>{
         let arr=[e]
         let up={}
@@ -243,8 +257,9 @@ return
       }
       setcurrent(up)
       let abo
-      //console.log("1",up.cid)
-       messagesfromdb.current = await db.get(up.cid)//===null
+      console.log("1",up.cid)
+       messagesfromdb.current = await db.get(id)//===null
+       console.log(messagesfromdb)
       if(messagesfromdb.current===null){
       console.log("var")
       if(up.cid){const convers = await axios.get(`${prt}/messages/${id}`,{headers}).then(async(res)=>{
@@ -277,14 +292,15 @@ return
        // console.log(messagesfromdb.current)
       }
         }).catch((err)=>{
-          nav("/chat")
+          console.log(err)
+          //nav("/chat")
         })
       }
      conv()
-    },[])
-  
-      let clas=" scrollbar md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-indigo-100  scrollbar-thumb-indigo-500 xs:pr-1.5 sm:pr-2 md:pr-2.5"        
-      let clas1=" scrollbar  md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-indigo-100  scrollbar-thumb-indigo-100 xs:pr-1.5 sm:pr-2 md:pr-2.5 "
+     console.log("4")
+    },[db])
+      let clas=`scrollbar ml-2.5 mr-0.5  h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll pr-2`   
+      let clas1=" scrollbar ml-2.5 mr-0.5 h-screen md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent pr-2"
       
       let scro= src.current
       let time
@@ -349,7 +365,10 @@ return
         //load.current=true
       },[current])
       async function asa(){
-        if(scro.offsetHeight+(-Math.floor(scro.scrollTop))>=scro.scrollHeight&& load.current===false){          
+      /*   console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
+        console.log()
+        console.log(scro.scrollHeight) */
+        if(scro.offsetHeight+2+(-Math.floor(scro.scrollTop))>=scro.scrollHeight&&load.current===false){          
           load.current=true
           
           if(window.screen.height>scro.offsetHeight+(-Math.floor(scro.scrollTop))){
@@ -533,13 +552,15 @@ scro.addEventListener("scroll",asa)
   
 
     useEffect(()=>{
+      setmessages([])
  if(sock.current){
       //sock.current=io(prt)
       sock.current.emit("no",na.id)
       /* sock.current.on("ho",(e)=> console.log(e)) */
       sock.current.on("get",(e)=> {
         setall(e)
-      console.log(e)})}
+      //console.log(e)
+    })}
       /* sock.current.on("getm",async(e)=> {
          n ={
           sender:e.sender,
@@ -570,7 +591,7 @@ scro.addEventListener("scroll",asa)
     } */
 
   useEffect(()=>{
-    console.log("ok")
+  
     if(current.cam!==undefined){
     if(current.cam.includes(ne.sender)&&current.cam.includes(ne.receiver))
    { 
@@ -641,6 +662,7 @@ scro.addEventListener("scroll",asa)
  
    useEffect(()=>{
     async function a(){
+      console.log(`${prt}/conversations/${na.id}`)
       const convers = await axios.get(`${prt}/conversations/${na.id}`,{headers}).then((res)=>{
         if(res.data==="tokExp"){
           localStorage.clear()
@@ -650,7 +672,6 @@ scro.addEventListener("scroll",asa)
         }
         setmpeop(res.data)
         //console.log("444")
-        console.log(res.data.length)
         let trues = new Array(res.data.length).fill(true)
         setflag1(trues)
        //console.log(res.data)
@@ -659,7 +680,7 @@ scro.addEventListener("scroll",asa)
       })
     }
    a()
-    console.log("1212")
+
    },[ne])
 
 /*    useEffect(()=>{
@@ -861,24 +882,22 @@ gestureZone?.addEventListener('touchend', function(event) {
   }
 
 },[flag2]) */
-
+let goback = window.onpopstate = e => {
+  //your code...
+  //setmessages([])
+  nav(-1)
+  
+}
     if(ani&&bni){
       return(
-      
-      <div id="modal" className="bg-[#fcfbf4] min-h-screen justify-center  px-2 lg:px-2 grid grid-cols-8  gap-2 ">
+      <div className="">
+      <div id="modal" className={`${bg} dark:bg-black min-h-screen justify-center `}>
+
              {/* {image ?  <div className="w-screen absolute right-0 left-0 mx-auto"><FilePond allowImageTransform onupdatefiles={setFiles}  allowImageResize={true} files={Files} allowFileEncode  imageResizeTargetHeight={1280} imageResizeTargetWidth={720} labelIdle="Sürükle Bırak veya Dokun" imagePreviewHeight={avv? avv:1024}  acceptedFileTypes={["image/*"]} 
            imagePreviewUpscale={true} credits={false} ></FilePond></div>:null} */}
-      <div className="h-min sm:mx-auto sm:w-full sm:max-w-md pt-14 col-span-2">
-      <input className="focus:outline-none focus:border-orange-500 border-solid border-indigo-600 border-2 rounded-md w-full" id="name"  name="name" type="text" autoComplete="name" />
-      <div className="flex items-center justify-center md:text-xl xs:text-xs text-white mt-1 bg-indigo-100 rounded-lg p-1">
-      <span className="bg-indigo-700 p-1 rounded-lg md:px-2">Mesajlar</span>
-</div>
-    {mpeop.map((c,i)=> 
-      (<Convs2 flag1={flag1} nos={nos} setpop={setmpeop} setflag1={setflag1} flag2={setflag2} setno={no} no={no1}  key={i} page={page} mfd={mfd} k={i} db={db} load={load.current} curt={takp} pages={page} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages}  cur={setcurrent} convs={mpeop[i]} setnewm={ne}/>)
-    
-
-    )}
-   
+      
+{/*       <input className="focus:outline-none focus:border-orange-500 border-solid border-indigo-600 border-2 rounded-md w-full" id="name"  name="name" type="text" autoComplete="name" />
+ */}   
 {isopened && <div>
 <div  id="rr" className="bg-[#fcfbf4] block opacity-90 blur-sm absolute top-0 bottom-0 right-0 left-0"></div>
 <button onClick={()=> {setisopened(false) 
@@ -892,14 +911,19 @@ setimage(false) }}  className="absolute right-2 top-2 bg-indigo-600">
             </TransformWrapper></div></div>
            
             }
-      </div>
-        {current.cid!==""?(<div id="src3" className="flex flex-col h-screen  rounded-lg sm:px-30 col-span-4  pt-14 "> 
-         <div id="src2" className="min-h-full justify-end flex flex-col rounded-lg pr-1 bg-indigo-100 pt-1 ">
+     
+        {current.cid!==""?(<div id="src3" className={`flex flex-col h-screen ${bg} dark:bg-black rounded-lg sm:px-30 pt-1`}>
+
+         <div id="src2" className={`min-h-full w-full justify-end flex flex-col ${bg} dark:bg-black rounded-lg pr-1  pt-1 `}>
+          
+         <div className={`flex justify-center items-center mr-1 ml-2  h-[5rem] text-white  ${bgblue} xs:text-lg font-medium md:text-lg rounded-md md`}>{!image? current.cnm:null}
+         <Back className="absolute left-4 " width="1.5rem" height="1.7rem" onClick={()=>goback()} />
+         </div>
 
          
          <div id="src" ref={src}className={clas}>
-            <span className="fixed top-[60px] z-1 text-indigo-800  xs:text-xs md:text-xl ml-1 px-1 xs:rounded-sm md:rounded-md  bg-[#c4b5fd]">{!image? current.cnm:null}</span>
-            {messages?.map((c,i)=>{
+{/*             <div className="flex justify-start  z-1 text-indigo-800 w-full  xs:text-xs md:text-xl ml-1 px-1 xs:rounded-sm md:rounded-md  bg-[#c4b5fd]">{!image? current.cnm:null}</div>
+ */}            {messages?.map((c,i)=>{
        
               if(i === 0 ) {
 
@@ -915,28 +939,31 @@ setimage(false) }}  className="absolute right-2 top-2 bg-indigo-600">
             
              
             </div>
-            {!isopened && <form className="pb-1 relative justify-center items-center pl-1">
+            {!isopened && <form className="pb-1 pl-1 relative justify-center items-center w-full">
           
-               <input id="tex" className="focus:outline-none w-full h-7 pr-20 focus:border-orange-500 border-solid border-indigo-600 px-1 border-2 rounded-md"
+               <input id="tex" className={`focus:outline-none w-full h-10  pb-0.5 pl-1.5 focus:border-orange-500 border-solid ${bordercolor} ${textcolorblue} ${bginput} ${darkborderinput} border-[0.15rem] rounded-md`}
                //onInput={e => {setwrite(e.target.value)}} 
                
                name="password" type="text" autoComplete="text"/>
-             <button id="kk" onClick={gon} className="w-8 h-7 absolute right-0 bottom-1  border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">
-              <img className="mx-auto h-7 py-1" src={goni} alt="Workflow"/></button>
-              <div className="absolute content-center right-9 bottom-3 h-4  ">
+             <button id="kk" onClick={gon} className={`w-14  h-10 absolute right-0 bottom-1  border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${buttonbg} dark:bg-black border-solid border-2 ${bordercolor} dark:border-white drop-shadow-2xl hover:bg-indigo-700 focus:outline-none  focus:ring-indigo-500 active:bg-indigo-600`}>
+             <Send1 className={`h-9 absolute left-1/2 -translate-x-1/2  -translate-y-1/2 right-1/2 ${send} `} width="2rem" height="2rem"/>
+             </button>
+              <div className="absolute  right-[3.8rem] bottom-3 h-10  ">
               <button onClick={ (e)=> {
               e.preventDefault()
               opengallery()
               //nav("/image")
              //setimage(p=>!p)             
-            }} className="w-6 items-center  bg border border-transparent focus:outline-none rounded-md  text-sm font-medium text-white hover:bg-indigo-700  active:bg-indigo-600">
-              <img className="mx-auto h-4" src={gallery}></img></button>
+            }} className="w-8.5 h-8 items-center mt-3  bg border border-transparent focus:outline-none rounded-md  text-sm font-medium text-white hover:bg-indigo-700  active:bg-indigo-600">
+              <Gallery1 className={`h-6 ${svgcamera} dark:text-black`} width="2rem" height="2rem"/>
+              </button>
               <button onClick={ (e)=> {
               e.preventDefault()
               //nav("/image")
               takePicture()            
-            }} className="w-6  items-center  border border-transparent rounded-md text-sm focus:outline-none font-medium text-white  hover:bg-indigo-700  active:bg-indigo-600">
-               <img className="mx-auto h-4" src={camera}></img></button>
+            }} className="w-8.5 h-8  items-center  border border-transparent rounded-md text-sm focus:outline-none font-medium text-white  hover:bg-indigo-700  active:bg-indigo-600">
+              <Camera1 className={`h-6 ${svgcamera} dark:text-black`} width="2rem" height="2rem"/>
+              </button>
               </div>
            </form>}
              </div>
@@ -945,19 +972,9 @@ setimage(false) }}  className="absolute right-2 top-2 bg-indigo-600">
             
             Lütfen bir sohbet seçiniz
        </div>)}
-     
-        <div className=" h-min pt-[51px] col-span-2">
-        <div className="flex items-center justify-center md:text-xl xs:text-xs text-white mt-1 bg-indigo-100 rounded-lg p-1">
-      <span className="bg-indigo-700 p-1 rounded-lg md:px-2">Kişiler</span>
-</div>
-        {peop.map((c,i)=> (<Possib  nos={nos} key={i} flag1={flag1} setflag1={setflag1} setno={no} no={no1} click={click}  cur={setcurrent} mesa={mpeop} message={setmpeop} person={peop[i]}/>)
-     
-
-     )}
-     
-
-        </div>
-    </div>)
+    </div>
+    </div>
+    )
     }  else if(ani===false&&bni===false){
       return (<div className="grid place-items-center h-screen bg-[#fcfbf4]">
       <SyncLoader color={"#F5A620"}  size={15} />

@@ -7,7 +7,7 @@ function Protect(){
     if (aut===null) {
       return <Outlet/>
       }
-      return <Navigate to="/user" replace/>;
+      return <Navigate to="/chat" replace/>;
   /*   else if(aut.isA===true)
       return <Navigate to="/user" replace/>;
     else if(aut.tok ==="tokExp"){
