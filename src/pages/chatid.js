@@ -48,9 +48,11 @@ registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,F
 
 
 
-function Chatid({db,setmessages,messages,sock,curref,setcur,ne,flag1,setflag1}) {
+function Chatid({db,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1}) {
   let svgback="text-[#FFFFFF]"
-  let bgblue ="bg-[#097EFE]"
+  let bgblue ="bg-[#F0EFE9]"
+  let specialwhitebg="bg-[#F0EFE9]"
+  let specialwhitetext="text-[#F0EFE9]"
   let textcolorblue="text-[#097EFE]"
   let bginput="bg-[#F0EFE9]"
   let darkborderinput="dark:border-[#F0EFE9]"
@@ -60,7 +62,7 @@ function Chatid({db,setmessages,messages,sock,curref,setcur,ne,flag1,setflag1}) 
   let bordercolor="border-[#60ACFF]"
   let bg="bg-white"
   let prt="https://smartifier.herokuapp.com"
-  const [current, setcurrent] = useState({});
+  //const [current, setcurrent] = useState({});
   const [write, setwrite] = useState('');
   //const no = useRef(false)
   const [no1,no] =useState(false)
@@ -109,11 +111,7 @@ let touchendY = 0;
 const messagesfromdb = useRef(null)
 
 
-forwardRef((p,ref)=>{
 
-return 
-
-})
    /*  const memoizedResult = useMemo(() => {
       return expensiveFunction(propA, propB);
     }, [propA, propB]); */
@@ -189,19 +187,19 @@ return
      }
      setsendimage([resized])
     };
-    
+ 
     useEffect(()=>{
    
       async function send(){
         
         if(sendimage.length!==0)
-     {   setmessages(prev =>[{sender:na.id,receiver:current.cri,media:sendimage[0]},...prev])
-        sock.current.emit("send",{sender:na.id,receiver:current.cri,media:sendimage[0],conversationid:current.cid})
+     {   setmessages(prev =>[{sender:na.id,receiver:cur.cri,media:sendimage[0]},...prev])
+        sock.current.emit("send",{sender:na.id,receiver:cur.cri,media:sendimage[0],conversationid:cur.cid})
          await axios.post(`${prt}/messages`,{
-          conversationid:current.cid,
+          conversationid:cur.cid,
           sender:na.id,
           media:sendimage[0],
-          receiver:current.cri,
+          receiver:cur.cri,
           name:na.name
          }).then(async(res)=>{ 
           console.log(res.data)
@@ -213,7 +211,7 @@ return
       }
           messagesfromdb.current=addnewmessage
           console.log(addnewmessage)
-           await db.set(current.cid,messagesfromdb.current)
+           await db.set(cur.cid,messagesfromdb.current)
          
           //setwrite("")
           
@@ -229,37 +227,75 @@ return
     },[sendimage])
 
     useEffect(()=>{ 
-        
+    
+      setmessages([])
+     
+      
+      setcur([])
       async function conv(){
-        
-        console.log(`${prt}/conversations/exact/${id}`)
+        console.log("1")
+       /*  console.log(`${prt}/conversations/exact/${id}`)
         await axios.get(`${prt}/conversations/exact/${id}`,{headers}).then(async(e)=>{
-        let arr=[e]
+        let cur=[e]
         let up={}
         let de
-       if(!arr[0].data.members.includes(na.id)){
+       if(!cur[0].members.includes(na.id)){
         console.log("yok")
         localStorage.clear()
         nav("/login")
         window.location.reload()
-      }else if(arr[0].data.members[0]===na.id){
+      }else if(cur[0].members[0]===na.id){
    
-       de =arr[0].data.members[3]
+       de =cur[0].members[3]
       }else{
-        de =arr[0].data.members[2]
+        de =cur[0].members[2]
 
       }
-       if(na.id===arr[0].data.members[0]){
-         up ={cid:arr[0].data._id,cnm:de,cri:arr[0].data.members[1],csi:arr[0].data.members[0],cam:[arr[0].data.members[1],arr[0].data.members[0]]}}
+       if(na.id===cur[0].members[0]){
+         up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[1],csi:cur[0].members[0],cam:[cur[0].members[1],cur[0].members[0]]}}
       else{
 
-         up ={cid:arr[0].data._id,cnm:de,cri:arr[0].data.members[0],csi:arr[0].data.members[1],cam:[arr[0].data.members[1],arr[0].data.members[0]]}
+         up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[0],csi:cur[0].members[1],cam:[cur[0].members[1],cur[0].members[0]]}
       }
-      setcurrent(up)
+      setcur(up) */
+      let de
+      let up
+      if(db!==undefined&&db!==null){
+        console.log("1")
+      let chats =await db.get("chats")
+      if(chats){
+        
+        let cur=(chats.filter(v=>v._id===id))
+        if(cur[0]!==undefined&&cur[0]!==null){
+        if(!cur[0].members.includes(na.id)){
+          console.log("yok")  
+          localStorage.clear()
+          nav("/login")
+          window.location.reload()
+        }else if(cur[0].members[0]===na.id){
+     
+         de =cur[0].members[3]
+        }else{
+          de =cur[0].members[2]
+  
+        }
+         if(na.id===cur[0].members[0]){
+           up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[1],csi:cur[0].members[0],cam:[cur[0].members[1],cur[0].members[0]]}}
+        else{
+  
+           up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[0],csi:cur[0].members[1],cam:[cur[0].members[1],cur[0].members[0]]}
+        }
+       
+      }
+      }
       let abo
-      console.log("1",up.cid)
+      setcur(up)
+      curref.current=cur.cid
+      //console.log(up.cnm)
+      //console.log("1",up.cid)
        messagesfromdb.current = await db.get(id)//===null
-       console.log(messagesfromdb)
+       //console.log(messagesfromdb)
+
       if(messagesfromdb.current===null){
       console.log("var")
       if(up.cid){const convers = await axios.get(`${prt}/messages/${id}`,{headers}).then(async(res)=>{
@@ -271,7 +307,7 @@ return
         }
         setmessages(res.data)
 
-        const obj = {[up.cid]: res.data}
+        //const obj = {[up.cid]: res.data}
         await db.set(up.cid,res.data)
      }).catch((err)=>{
        
@@ -291,33 +327,38 @@ return
         }
        // console.log(messagesfromdb.current)
       }
-        }).catch((err)=>{
+     /*    }).catch((err)=>{
           console.log(err)
           //nav("/chat")
-        })
+        }) */}
       }
      conv()
-     console.log("4")
+     
+  
     },[db])
-      let clas=`scrollbar ml-2.5 mr-0.5  h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll pr-2`   
-      let clas1=" scrollbar ml-2.5 mr-0.5 h-screen md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent pr-2"
+      let clas=`scrollbar ml-1.5 mr-0.5  h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark pr-4`   
+      let clas1=" scrollbar ml-1.5 mr-0.5 h-screen md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent  pr-4"
       
       let scro= src.current
       let time
       useEffect(()=>{
         //setmessages([])  
-        load.current=true  
+        load.current=false  
         page.current=1
        //console.log(page.current)
-       curref.current=current.cid
-       setcur(current.cid)
+       //curref.current=cur.cid
+       //console.log(cur.cid)
+      console.log("2")
        takp.current=true
-       //setflag1(new Array(flag1.length).fill(true))
+       //setflag1(new curay(flag1.length).fill(true))
        async function as() {
+        
         if(db!==null){
-          messagesfromdb.current= await db.get(current.cid)
+          console.log("n")
+        console.log(curref.current)
+          messagesfromdb.current= await db.get(id)
           
-        const  a = await db.get("page")
+        const a = await db.get("page")
         if(a!==null)  await db.set("page",1)
        }
        
@@ -326,31 +367,16 @@ return
          a.scrollIntoView({behavior:"smooth",block:"center"})
          load.current=false
        }
-        /* const contents = await Filesystem.readFile({
-          path: 'out.json',
-          directory: Directory.Data,
-          encoding: Encoding.UTF8,
-        }).catch(()=>{})
-        if(contents){
-        let ab =JSON.parse(contents.data).conversationid
-        if(ab!==""){
-        nav(`/chat/${ab}`)
-        }
-        await Filesystem.writeFile({
-          path: 'out.json',
-          data: JSON.stringify({conversationid:""}),
-          directory: Directory.Data,
-          encoding: Encoding.UTF8,
-        });} */
+      console.log(cur.cid)
         await Filesystem.writeFile({
           path: 'con.json',
-          data: JSON.stringify({cconversationid:current.cid}),
+          data: JSON.stringify({cconversationid:cur.cid}),
           directory: Directory.Data,
           encoding: Encoding.UTF8,
         })
       
       }
-      as()
+       if(cur.cid!==undefined) as()
       async function asa1(){
         await Filesystem.writeFile({
           path: 'con.json',
@@ -363,18 +389,19 @@ return
        
        return () => asa1()
         //load.current=true
-      },[current])
+      },[db,cur])
       async function asa(){
-      /*   console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
+        /* console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
         console.log()
         console.log(scro.scrollHeight) */
         if(scro.offsetHeight+2+(-Math.floor(scro.scrollTop))>=scro.scrollHeight&&load.current===false){          
           load.current=true
-          
+          console.log("o")
           if(window.screen.height>scro.offsetHeight+(-Math.floor(scro.scrollTop))){
 
           
           }else{
+        
           page.current=page.current+1
           const pagep =  await db.get("page") || 1
         
@@ -552,13 +579,13 @@ scro.addEventListener("scroll",asa)
   
 
     useEffect(()=>{
-      setmessages([])
+      //setmessages([])
  if(sock.current){
       //sock.current=io(prt)
       sock.current.emit("no",na.id)
       /* sock.current.on("ho",(e)=> console.log(e)) */
       sock.current.on("get",(e)=> {
-        setall(e)
+       setall(e)
       //console.log(e)
     })}
       /* sock.current.on("getm",async(e)=> {
@@ -592,8 +619,8 @@ scro.addEventListener("scroll",asa)
 
   useEffect(()=>{
   
-    if(current.cam!==undefined){
-    if(current.cam.includes(ne.sender)&&current.cam.includes(ne.receiver))
+    if(cur.cam!==undefined){
+    if(cur.cam.includes(ne.sender)&&cur.cam.includes(ne.receiver))
    { 
     console.log("bok")
     //setmessages((p)=>[ne,...p])
@@ -641,7 +668,7 @@ scro.addEventListener("scroll",asa)
 
 
   
-   useEffect(()=>{
+  /*  useEffect(()=>{
     async function get1(){
       const convers = await axios.get(`${prt}/all`,{headers}).then((res)=>{
         if(res.data==="tokExp"){
@@ -658,9 +685,9 @@ scro.addEventListener("scroll",asa)
       })
     }
    get1()
-   },[all])
+   },[all]) */
  
-   useEffect(()=>{
+   /* useEffect(()=>{
     async function a(){
       console.log(`${prt}/conversations/${na.id}`)
       const convers = await axios.get(`${prt}/conversations/${na.id}`,{headers}).then((res)=>{
@@ -672,7 +699,7 @@ scro.addEventListener("scroll",asa)
         }
         setmpeop(res.data)
         //console.log("444")
-        let trues = new Array(res.data.length).fill(true)
+        let trues = new curay(res.data.length).fill(true)
         setflag1(trues)
        //console.log(res.data)
     }).catch((err)=>{
@@ -681,7 +708,7 @@ scro.addEventListener("scroll",asa)
     }
    a()
 
-   },[ne])
+   },[ne]) */
 
 /*    useEffect(()=>{
     setTimeout(() => {
@@ -708,9 +735,9 @@ scro.addEventListener("scroll",asa)
     value = t.value.trim()
     t.focus()
    if(value !==""){
-    setmessages(prev =>[{sender:na.id,receiver:current.cri,text:value},...prev])
+    setmessages(prev =>[{sender:na.id,receiver:cur.cri,text:value},...prev])
     t.value=""
-    sock.current.emit("send",{sender:na.id,receiver:current.cri,text:value,conversationid:current.cid,createdAt:time})
+    sock.current.emit("send",{sender:na.id,receiver:cur.cri,text:value,conversationid:cur.cid,createdAt:time})
 
     /* const addnewmessage = [{sender:current.csi,text:value,conversationid:current.cid},...messagesfromdb.current]
     messagesfromdb.current=addnewmessage
@@ -718,10 +745,10 @@ scro.addEventListener("scroll",asa)
 
      console.log(messagesfromdb.current)
      await axios.post(`${prt}/messages`,{
-      conversationid:current.cid,
+      conversationid:cur.cid,
       sender:na.id,
       text:value,
-      receiver:current.cri,
+      receiver:cur.cri,
       name:na.name
      }).then(async(res)=>{ 
       console.log(res.data)
@@ -733,7 +760,7 @@ scro.addEventListener("scroll",asa)
       }
       
       messagesfromdb.current=addnewmessage
-       await db.set(current.cid,messagesfromdb.current)
+       await db.set(cur.cid,messagesfromdb.current)
       //console.log(addnewmessage)
       
       //setwrite("")
@@ -876,7 +903,7 @@ gestureZone?.addEventListener('touchend', function(event) {
   if(flag1.filter(Boolean).length>=2){
     console.log("heyo")
     let dis=flag1.filter(Boolean).length
-    let newart=new Array(dis).fill(true)
+    let newart=new curay(dis).fill(true)
     //  setflag1(newart)
     console.log(flag1)
   }
@@ -884,8 +911,11 @@ gestureZone?.addEventListener('touchend', function(event) {
 },[flag2]) */
 let goback = window.onpopstate = e => {
   //your code...
-  //setmessages([])
-  nav(-1)
+  setmessages([])
+  setTimeout(() => {
+    nav(-1)
+  }, 0);
+  
   
 }
     if(ani&&bni){
@@ -899,25 +929,26 @@ let goback = window.onpopstate = e => {
 {/*       <input className="focus:outline-none focus:border-orange-500 border-solid border-indigo-600 border-2 rounded-md w-full" id="name"  name="name" type="text" autoComplete="name" />
  */}   
 {isopened && <div>
-<div  id="rr" className="bg-[#fcfbf4] block opacity-90 blur-sm absolute top-0 bottom-0 right-0 left-0"></div>
+<div  id="rr" className="bg-black block opacity-90 blur-sm absolute inset-0 max-h-screen max-w-screen"></div>
 <button onClick={()=> {setisopened(false) 
 setimage(false) }}  className="absolute right-2 top-2 bg-indigo-600">
 <img className="mx-auto h-5" src={carpı} alt=""/>
 </button>
-<div className="absolute  bg-slate-50 top-1/2 left-1/2 xs:w-screen sm:w-fit -translate-x-1/2 -translate-y-1/2"><TransformWrapper>
+<div className="absolute  bg-slate-50 top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2"><TransformWrapper>
               <TransformComponent>
-                <img className=" max-h-screen" src={sendedimage.current} alt="test" />
+                <img className="" src={sendedimage.current} alt="test" />
               </TransformComponent>
             </TransformWrapper></div></div>
            
             }
      
-        {current.cid!==""?(<div id="src3" className={`flex flex-col h-screen ${bg} dark:bg-black rounded-lg sm:px-30 pt-1`}>
+        {cur.cid!==""?(<div id="src3" className={`flex flex-col h-screen ${bg} dark:bg-black rounded-lg sm:px-30 pt-1`}>
 
          <div id="src2" className={`min-h-full w-full justify-end flex flex-col ${bg} dark:bg-black rounded-lg pr-1  pt-1 `}>
           
-         <div className={`flex justify-center items-center mr-1 ml-2  h-[5rem] text-white  ${bgblue} xs:text-lg font-medium md:text-lg rounded-md md`}>{!image? current.cnm:null}
-         <Back className="absolute left-4 " width="1.5rem" height="1.7rem" onClick={()=>goback()} />
+         <div className={`flex justify-center dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1 ml-2  h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
+          <span className={`bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
+          <Back className={`absolute left-4 ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />
          </div>
 
          
@@ -941,12 +972,12 @@ setimage(false) }}  className="absolute right-2 top-2 bg-indigo-600">
             </div>
             {!isopened && <form className="pb-1 pl-1 relative justify-center items-center w-full">
           
-               <input id="tex" className={`focus:outline-none w-full h-10  pb-0.5 pl-1.5 focus:border-orange-500 border-solid ${bordercolor} ${textcolorblue} ${bginput} ${darkborderinput} border-[0.15rem] rounded-md`}
+               <input id="tex" className={`focus:outline-none w-full h-10  pb-0.5 pl-1.5 focus:border-orange-500 border-solid ${bordercolor} ${textcolorblue} ${bginput} ${darkborderinput} border-[0.15rem] rounded-2xl`}
                //onInput={e => {setwrite(e.target.value)}} 
                
                name="password" type="text" autoComplete="text"/>
-             <button id="kk" onClick={gon} className={`w-14  h-10 absolute right-0 bottom-1  border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${buttonbg} dark:bg-black border-solid border-2 ${bordercolor} dark:border-white drop-shadow-2xl hover:bg-indigo-700 focus:outline-none  focus:ring-indigo-500 active:bg-indigo-600`}>
-             <Send1 className={`h-9 absolute left-1/2 -translate-x-1/2  -translate-y-1/2 right-1/2 ${send} `} width="2rem" height="2rem"/>
+             <button id="kk" onClick={gon} className={`w-14 bg-gradient-to-r from-[#0295FF] via-[#664BFF] to-[#B50BBA] h-10 absolute right-0 bottom-1  border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white ${buttonbg} dark:bg-black border-solid border-2 ${bordercolor} dark:border-white hover:bg-indigo-700 focus:outline-none  focus:ring-indigo-500 active:bg-indigo-600`}>
+             <Send1 className={`h-9  absolute left-1/2 -translate-x-1/2  -translate-y-1/2 right-1/2  `} width="1.7rem" height="1.7em"/>
              </button>
               <div className="absolute  right-[3.8rem] bottom-3 h-10  ">
               <button onClick={ (e)=> {

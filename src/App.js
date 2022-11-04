@@ -80,7 +80,9 @@ async function as() {
   const vid= useRef(null)
   const store= useRef(null)
   const [ s, sets ] = useState(null)
+  
   useEffect(()=>{
+    
     store.current = new Storage({
       name: 'mydb.db',
       //driverOrder:[CordovaSQLiteDriver._driver, Drivers.IndexedDB, Drivers.LocalStorage]
@@ -272,6 +274,7 @@ LocalNotifications.createChannel(NotificationChannelf)
     window.location.href="/reg"
  element={<Navigate to="/reg" replace />}
   } */
+  console.log(cur)
   return (
     <div className={isDarkMode ? "dark":null}>
     <Pro.Provider  value={{aut,setAut}}>    
@@ -319,8 +322,8 @@ LocalNotifications.createChannel(NotificationChannelf)
             
             </Route>
             <Route element={<Protect1 />}><Route  path="/r" element={<Redirect1 sock={socket.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat setDarkMode={setDarkMode} isDarkMode={isDarkMode} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid ne={ne} setflag1={setflag1} flag1={flag1}  db={store.current} setcur={setcur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid ne={ne} setflag1={setflag1} flag1={flag1}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
             <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam sock={socket} ss={sets} v={vid}/>}/></Route>
             <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid}/>}/></Route>
          

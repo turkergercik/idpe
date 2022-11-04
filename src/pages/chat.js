@@ -18,7 +18,7 @@ import { ReactComponent as Logout } from "../pages/images/log-out.svg"
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 //70A1D7
 let mp
-function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode}) {
+function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
   let bgblue ="bg-[#A6D1FF]"
   let focusborder="focus:border-[#097EFE]"
   let svgsearch="text-[#60ACFF]"
@@ -34,11 +34,11 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode}) {
   let bg="bg-[#E8E8E8]"
   let bordercolor="border-[#60ACFF]"
   let prt="https://smartifier.herokuapp.com"
-    const [current, setcurrent] = useState({cid:"",cnm:""});
+    //const [current, setcurrent] = useState({cid:"",cnm:""});
     const [write, setwrite] = useState('');
     const [Some, setSome] = useState('');
-    const [ani, setAni] = useState(false);
-    const [bni, setBni] = useState(false);
+    const [ani, setAni] = useState(true);
+    const [bni, setBni] = useState(true);
     const [height, setheight] = useState();
     const[peop,setpeop]=useState([])
     const[all,setall]=useState([])
@@ -84,7 +84,7 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode}) {
         }) */
       }
         //return () => sock.current.disconnect()
-    },[current])
+    },[cur])
    
 /*     async function a(event){
       setBni(false)
@@ -112,7 +112,7 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode}) {
     //if(current)
 
   },[current,ne]) */
-  
+  console.log(cur)
    useEffect(()=>{
     async function get1(){
       const convers = await axios.get(`${prt}/all`,{headers}).then((res)=>{
@@ -133,9 +133,15 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode}) {
    get1()
    },[all])
    useEffect(()=>{
-    console.log("1")
+    setmessages([])
+    let sd
     async function a(){
-      const convers = await axios.get(`${prt}/conversations/${na.id}`,{headers}).then((res)=>{
+    setcur([])
+    if(db!=null){
+      let mp = await db.get("chats")
+      if(mp===null){
+        console.log("mp")
+      const convers = await axios.get(`${prt}/conversations/${na.id}`,{headers}).then(async(res)=>{
         if(res.data==="tokExp"){
           localStorage.clear()
           nav("/login")
@@ -145,19 +151,27 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode}) {
         setmpeop(res.data)
         setmpeopbackup(res.data)
         mpeopbackupref.current=res.data
+        sd = res.data
         mp = res.data
         setflag1(new Array(res.data.length).fill(true))
+        if(db!==undefined&&db!==null){
+        await db.set("chats",mp)}
        //console.log(res.data.length)
     }).catch((err)=>{
         console.log("hata")
-      })
-    }
+      })}else{
+        console.log("1")
+        let mp1=await db.get("chats")
+        console.log(mp1)
+        setmpeop(mp1)
+        setflag1(new Array(mp1.length).fill(true))
+      }
+    }}
    a()
-    
-   },[ne])
+   },[ne,db])
 
    useEffect(()=>{
-    console.log("q")
+  
     if(Some!==undefined){
     setmpeop([])
 mpeopbackup.filter(val=>{
@@ -365,8 +379,8 @@ if(aa){
             <span className="flex items-center ml-5 mt-1">
            <Setting className={`font-medium ${textcolorblue} ${darktext} mr-1 dark:opacity-100`} width="1.7rem" height="1.7rem" onClick={async()=>{opensettings()}} />
            </span>
-           <span className="flex ml-auto mt-2" >
-           <DarkModeSwitch className=""
+           <span className="flex ml-auto mt-2">
+           <DarkModeSwitch className=" focus:outline-black focus:invisible"
       style={{ marginBottom: '' }}
       checked={isDarkMode}
       onChange={()=>setDarkMode(!isDarkMode)}
@@ -380,7 +394,7 @@ if(aa){
      </div>
      <div id="scrollable" className={clas}>
    
-    {mpeop.map((c,i)=> (<Conv db={db} height={height} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} cur={setcurrent} convs={mpeop[i]} setnewm={ne}/> )
+    {mpeop.map((c,i)=> (<Conv db={db} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne}/> )
     
 
     )}
@@ -420,7 +434,7 @@ if(aa){
 
 
 
-     { peop.map((c,i)=> (<Possib key={i} setisOpenedPeople={setisOpenedPeople} flag1={flag1} setflag1={setflag1} click={click}  cur={setcurrent} mesa1={mp}  message={setmpeop}  person={peop[i]}  convs={mpeopbackup[i]}/>)
+     { peop.map((c,i)=> (<Possib key={i} setisOpenedPeople={setisOpenedPeople} flag1={flag1} setflag1={setflag1} click={click}  setcur={setcur} mesa1={mp}  message={setmpeop}  person={peop[i]}  convs={mpeopbackup[i]}/>)
      
 
      )}

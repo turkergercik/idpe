@@ -9,7 +9,7 @@ import pp from "../pages/images/splash1.png"
 
 
 
-export default function Possib({current,mesa1,message,person,flag1,setflag1,setno,no,click,nos,setisOpened,convs,cur}){
+export default function Possib({current,mesa1,message,person,flag1,setflag1,setno,no,click,nos,setisOpenedPeople,convs,setcur}){
   //const[mpeo,setmpeo]=useState([])
   let focusborder="focus:border-[#097EFE]"
   let darktext="dark:text-[#F0EFE9]"
@@ -29,7 +29,7 @@ export default function Possib({current,mesa1,message,person,flag1,setflag1,setn
   let de =person.name
   let nav =useNavigate()
   async function b(){  
-    setisOpened(false)
+    setisOpenedPeople(false)
     if(nos!==undefined) {
       console.log("1ew")
       nos.current=nos.current
@@ -115,6 +115,7 @@ export default function Possib({current,mesa1,message,person,flag1,setflag1,setn
 
    }
    async function get(){
+    console.log("et")
     console.log(mesa1)
     let up={}
 
@@ -128,7 +129,7 @@ export default function Possib({current,mesa1,message,person,flag1,setflag1,setn
 
       up ={cid:m[0]._id,cnm:de,cri:m[0].members[0],csi:m[0].members[1],cam:[m[0].members[1],m[0].members[0]]}
    }
-   cur(up)
+   setcur(up)
    //console.log(up)
    //console.log(vur)
    nav(`/chat/${m[0]._id}`)

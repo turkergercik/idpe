@@ -8,7 +8,7 @@ import pp from "../pages/images/splash1.png"
 import del from "../pages/images/del.png"
 import delet from "../pages/images/delete.png"
 import { ReactComponent as Arrow } from "../pages/images/arrow.svg"
-export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,setmessage,cur,setnewm,messageler}){
+export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
   let svgslide="text-[#90C5FF]"
   let svgslidedark="dark:text-[#F0EFE9]"
   let textcolorblue="text-[#459DFF]"
@@ -230,6 +230,7 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
     
     }
     async function b(){
+      console.log("yazdım")
       nos.current=!nos.current
    await db.remove(convs._id)
 
@@ -247,7 +248,7 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
         senderdel:false,
       }).then((res)=>{
         resp=[res.data.members[4],res.data.members[5]]
-        cur(aftersilme)
+        setcur(aftersilme)
 
         //console.log("oldu")
       })
@@ -262,7 +263,7 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
         receiverdel:false,
       }).then((res)=>{
         resp=[res.data.members[4],res.data.members[5]]
-        cur(aftersilme)
+        setcur(aftersilme)
     
        
         //console.log("bu da")
@@ -272,18 +273,20 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
     if(resp[0]===false&&resp[1]===false){
       await axios.delete(`${prt}/messages/${convs._id}`)
       .then(()=>{
-        cur(aftersilme)
+        setcur(aftersilme)
         })
       .catch((err)=>{console.log(err)})
       await axios.delete(`${prt}/conversations/${convs.members[1]}`)
       .then(()=>{
-       cur(aftersilme)
+       setcur(aftersilme)
         })
       .catch((err)=>{console.log(err)})
       setmessage([])
     }
      }
      async function get(){
+      //setmessage([])
+      console.log("r")
        let up={}
        if(na.id===convs.members[0]){
          up ={cid:convs._id,cnm:de,cri:convs.members[1],csi:convs.members[0],cam:[convs.members[1],convs.members[0]]}}
@@ -291,10 +294,13 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
 
          up ={cid:convs._id,cnm:de,cri:convs.members[0],csi:convs.members[1],cam:[convs.members[1],convs.members[0]]}
       }
-      cur(up)
+      setcur(up)
       console.log(up)
       //console.log(vur)
-      nav(`/chat/${convs._id}`)
+      setTimeout(() => {
+        nav(`/chat/${convs._id}`)
+      }, 0);
+      
        setTimeout(() => {
         let sc = document.getElementById("src")
         if(sc){
