@@ -30,6 +30,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 export const Pro = createContext()
 
 function App() {
+  
   const [isDarkMode, setDarkMode]=useState(false)
   const curref =useRef(["null"])
   const[messages,setmessages]=useState([])
@@ -80,7 +81,7 @@ async function as() {
   const vid= useRef(null)
   const store= useRef(null)
   const [ s, sets ] = useState(null)
-  
+ 
   useEffect(()=>{
     
     store.current = new Storage({
@@ -99,7 +100,24 @@ async function as() {
 
 
   },[])
+  console.log(isDarkMode  )
   useEffect(()=>{
+    let x =localStorage.getItem("darkmode")
+   if(x!==null) {
+    if(x==="true"){
+      setDarkMode(true)
+    }else{
+      setDarkMode(false)
+    }
+  
+      
+   
+   
+    
+   }else{
+    console.log("kk")
+    setDarkMode(false)
+   }
    
   
     async function asas(){
@@ -202,7 +220,9 @@ socket.current.emit("send",{
       })
       return () => socket.current.disconnect()
   },[])
- 
+ useEffect(()=>{
+  setmessages([])
+ },[cur])
 
 
 /*     if(loc.pathname!=="/webcam"){

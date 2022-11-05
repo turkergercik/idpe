@@ -37,7 +37,7 @@ const alert =useAlert()
 <div className={media? `${bgfordarkmode} ${bg} flex p-2 flex-col justify-center items-start bg-white rounded-t-xl rounded-br-xl`:
 `${bgfordarkmode} ${bg} flex p-1 flex-row-reverse justify-start items-end bg-white rounded-t-xl rounded-br-xl`}>
 {media ?<div className="flex flex-row items-center">
-  <Download className={`${svgcolor} ${bg} ${specialwhitetext} ${whitefordark} xs:w-10 h-10 rounded-full md:w-10 `} width="3rem" height="3rem" onClick={async()=>{
+  <Download className={`${svgcolor}  ${specialwhitetext}  ${whitefordark} xs:w-10 h-10 rounded-full md:w-10 `} width="3rem" height="3rem" onClick={async()=>{
    const fileName = new Date().getTime() + '.jpeg';
    const ok = await Filesystem.writeFile({
    path: fileName,

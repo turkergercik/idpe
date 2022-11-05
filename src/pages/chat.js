@@ -374,19 +374,19 @@ if(aa){
       
          
            <div id="msj" className={`flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white rounded-lg p-1`}>
-           <span className={` font-bold bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] py-8 rounded-lg md:px-1 text-[2.3rem] ${textcolorblue}`} onClick={async()=>{ 
+           <span className={` font-bold bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] py-8 mt-1 rounded-lg md:px-1 text-[2.3rem] ${textcolorblue}`} onClick={async()=>{ 
             close()}}>Sohbetler</span>
-            <span className="flex items-center ml-5 mt-1">
-           <Setting className={`font-medium ${textcolorblue} ${darktext} mr-1 dark:opacity-100`} width="1.7rem" height="1.7rem" onClick={async()=>{opensettings()}} />
+            <span className="flex items-center ml-auto pl-1 mt-1">
+           <Setting className={`flex  font-medium ${textcolorblue} ${darktext} mr-1 dark:opacity-100`} width="1.7rem" height="1.7rem" onClick={async()=>{opensettings()}} />
            </span>
-           <span className="flex ml-auto mt-2">
+          {/*  <span className="flex ml-auto mt-2">
            <DarkModeSwitch className=" focus:outline-black focus:invisible"
       style={{ marginBottom: '' }}
       checked={isDarkMode}
       onChange={()=>setDarkMode(!isDarkMode)}
       size={30}
     />
-           </span>
+           </span> */}
            </div>
     <div className="h-10 relative">
      <input value={Some} ref={searchInput} onFocus={()=>close()} className={`${darkborderinput}  focus:outline-none pl-2 ${textcolorblue} h-10 ${bginput} ${focusborder} ${bordercolor} border-solid border-[0.15rem]  rounded-xl w-full`} id="name" onInput={e => setSome(e.target.value)}  name="name" type="text" autoComplete="name"/>
@@ -442,13 +442,31 @@ if(aa){
      {isOpenedSettings ? <><div className={`absolute inset-0 h-screen opacity-90 dark:opacity-95  bg-[#C0C0C0] dark:bg-[#242424] ${bordercolor}  ${divisioncolor}`} onClick={()=>setisOpenedSettings(false)}></div>
      <div className={`absolute inset-0 px-2  h-screen w-4/6 top-0 left-auto rounded-l-2xl dark:bg-black bg-white dark:border-opacity-100 ${darkborderinput}  ${bordercolor} border-4 ${divisioncolor}`}>
             
-            <div className="flex py-1 px-1 flex-col h-full ">
-              
-              <span className={`font-bold w-32 bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] text-[2rem] px-1 py-7`}>Ayarlar</span>
-              <span className={`absolute top-3 right-2 rotate-45 rounded-full bg-white dark:bg-black ${textcolorblue} `} onClick={() => { close(); } }>
-                <Add width="2rem" height="2rem" className={`${svgsearch} ${darktext} dark:opacity-100`}/>
+            <div className="flex py-1  flex-col h-full ">
+            <span className={`mt-1 w-[2rem] h-[2rem] rotate-45 flex self-end rounded-full  bg-white dark:bg-black ${textcolorblue} `} onClick={() => { close(); } }>
+                <Add width="1.8rem" height="1.8rem" className={`${svgsearch} ${darktext} dark:opacity-100`}/>
               </span>
+              <div className="flex flex-row items-start ">
+              <span className={`pb-7 font-bold w-32 bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] text-[2rem] px-1 `}>Ayarlar</span>
               
+              <span className="flex ml-auto mt-2 mr-0.5">
+           <DarkModeSwitch className=" focus:outline-black focus:invisible"
+      style={{ marginBottom: '' }}
+      checked={isDarkMode}
+      onChange={()=>{
+        if(isDarkMode){
+          let x= localStorage.setItem("darkmode",false)
+          setDarkMode(false)
+        }else{
+          let x= localStorage.setItem("darkmode",true)
+          setDarkMode(true)
+        }
+        
+      }}
+      size={30}
+    />
+           </span>
+           </div>
 
               <div className={`flex scrollbar-track-transparent scrollbar-thumb-scroll dark:bg-black bg-white divide-opacity-75   ${divisioncolor}`}>
                 <span className={`flex mt-2 bg-[#F0F0F0] dark:bg-[#141414] text-center text-base font-medium items-center justify-center w-full h-12 rounded-xl mb-1 ${darktext} ${textcolorblue}`}>Profil Ayarları</span>

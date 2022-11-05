@@ -52,6 +52,7 @@ function Chatid({db,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag
   let svgback="text-[#FFFFFF]"
   let bgblue ="bg-[#F0EFE9]"
   let specialwhitebg="bg-[#F0EFE9]"
+  let specialwhitetextdark="dark:text-[#F0EFE9]"
   let specialwhitetext="text-[#F0EFE9]"
   let textcolorblue="text-[#097EFE]"
   let bginput="bg-[#F0EFE9]"
@@ -93,6 +94,7 @@ function Chatid({db,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag
   //const[flag1,setflag1]=useState([])
   const[flag2,setflag2]=useState([])
   const[isopened,setisopened]=useState(false)
+  const[isopenedm,setisopenedm]=useState(false)
   //const[messages,setmessages]=useState([])
  
   //const[ne,setne]=useState([])
@@ -343,7 +345,10 @@ const messagesfromdb = useRef(null)
       let time
       useEffect(()=>{
         //setmessages([])  
-        load.current=false  
+     
+          load.current=false  
+     
+        
         page.current=1
        //console.log(page.current)
        //curref.current=cur.cid
@@ -431,7 +436,9 @@ const messagesfromdb = useRef(null)
         }
    
        
-            load.current=false
+        load.current=false
+       
+           
        
         
         
@@ -928,17 +935,32 @@ let goback = window.onpopstate = e => {
       
 {/*       <input className="focus:outline-none focus:border-orange-500 border-solid border-indigo-600 border-2 rounded-md w-full" id="name"  name="name" type="text" autoComplete="name" />
  */}   
-{isopened && <div>
-<div  id="rr" className="bg-black block opacity-90 blur-sm absolute inset-0 max-h-screen max-w-screen"></div>
-<button onClick={()=> {setisopened(false) 
-setimage(false) }}  className="absolute right-2 top-2 bg-indigo-600">
+{isopened && <div className="absolute inset-0 h-screen w-screen">
+
+{/* <button onClick={()=> {setisopened(false) 
+setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
 <img className="mx-auto h-5" src={carpı} alt=""/>
-</button>
-<div className="absolute  bg-slate-50 top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2"><TransformWrapper>
-              <TransformComponent>
-                <img className="" src={sendedimage.current} alt="test" />
-              </TransformComponent>
-            </TransformWrapper></div></div>
+</button> */}
+
+  
+
+
+
+<div className="flex justify-center h-full items-center bg-white dark:bg-black " onClick={()=>setisopenedm(!isopenedm)}>
+             <TransformWrapper >
+              <TransformComponent > 
+                <img className="h-screen w-screen object-contain" src={sendedimage.current} alt=""/>
+                </TransformComponent>
+               </TransformWrapper>
+             </div>
+             {isopenedm ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div><Back className={`absolute left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
+              setisopened(false);
+              setimage(false);
+              setisopenedm(false);
+
+            } } /><div className="absolute bottom-0 opacity-60   bg-black w-full  h-20"></div></>:null}
+             </div>
+             
            
             }
      
@@ -948,7 +970,7 @@ setimage(false) }}  className="absolute right-2 top-2 bg-indigo-600">
           
          <div className={`flex justify-center dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1 ml-2  h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
           <span className={`bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
-          <Back className={`absolute left-4 ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />
+          {!isopened ?<Back className={`absolute left-4 ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
          </div>
 
          
