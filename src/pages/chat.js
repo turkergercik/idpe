@@ -18,7 +18,9 @@ import { ReactComponent as Logout } from "../pages/images/log-out.svg"
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 //70A1D7
 let mp
-function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
+let sd
+function Chat({sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
+  
   let bgblue ="bg-[#A6D1FF]"
   let focusborder="focus:border-[#097EFE]"
   let svgsearch="text-[#60ACFF]"
@@ -112,8 +114,9 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref})
     //if(current)
 
   },[current,ne]) */
-  console.log(cur)
+  //console.log(cur)
    useEffect(()=>{
+    
     async function get1(){
       const convers = await axios.get(`${prt}/all`,{headers}).then((res)=>{
         if(res.data==="tokExp"){
@@ -133,12 +136,13 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref})
    get1()
    },[all])
    useEffect(()=>{
+    console.log("ok")
     setmessages([])
     let sd
     async function a(){
     setcur([])
     if(db!=null){
-      let mp = await db.get("chats")
+       mp = await db.get("chatsbackup")
       if(mp===null){
         console.log("mp")
       const convers = await axios.get(`${prt}/conversations/${na.id}`,{headers}).then(async(res)=>{
@@ -148,6 +152,7 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref})
           window.location.reload()
           //localStorage.setItem("aut",JSON.stringify({"isA":false,"tok":"tokExp"}))
         }
+        //.sort((a,b)=>a.members[3].localeCompare(b.members[3]))
         setmpeop(res.data)
         setmpeopbackup(res.data)
         mpeopbackupref.current=res.data
@@ -155,20 +160,30 @@ function Chat({sock,db,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref})
         mp = res.data
         setflag1(new Array(res.data.length).fill(true))
         if(db!==undefined&&db!==null){
-        await db.set("chats",mp)}
+        //await db.set("chats",mp)
+         await db.set("chatsbackup",mp)
+      }
        //console.log(res.data.length)
     }).catch((err)=>{
         console.log("hata")
       })}else{
-        console.log("1")
-        let mp1=await db.get("chats")
-        console.log(mp1)
-        setmpeop(mp1)
-        setflag1(new Array(mp1.length).fill(true))
+        console.log(mp)
+        let mp1=await db.get("chatsbackup")
+        /* mp1.forEach((v)=>{
+v.members[4]=true
+v.members[5]=true
+
+        }) */
+        //console.log(mp1)
+        await db.set("chatsbackup",mp)
+        setmpeopbackup(mp)
+        setmpeop(mp)
+        setflag1(new Array(mp.length).fill(true))
       }
     }}
    a()
-   },[ne,db])
+   },[ne,db,e])
+   
 
    useEffect(()=>{
   
@@ -366,11 +381,13 @@ if(aa){
   })
 
 
+
 }
-  if(ani&&bni){
+//console.log(mpeop)
+if(ani&&bni){
       return(
-        <div className="" >
-      <div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
+        <div className="overscroll-y-contain overflow-y-scroll" >
+          <div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
       
          
            <div id="msj" className={`flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white rounded-lg p-1`}>
@@ -389,12 +406,16 @@ if(aa){
            </span> */}
            </div>
     <div className="h-10 relative">
-     <input value={Some} ref={searchInput} onFocus={()=>close()} className={`${darkborderinput}  focus:outline-none pl-2 ${textcolorblue} h-10 ${bginput} ${focusborder} ${bordercolor} border-solid border-[0.15rem]  rounded-xl w-full`} id="name" onInput={e => setSome(e.target.value)}  name="name" type="text" autoComplete="name"/>
+     <input value={Some} ref={searchInput} onFocus={()=>close()} className={`${darkborderinput} focus:outline-none pl-2 ${textcolorblue} h-10 ${bginput} ${focusborder} ${bordercolor} border-solid border-[0.15rem]  rounded-xl w-full`} id="name" onInput={e => setSome(e.target.value)}  name="name" type="text" autoComplete="name"/>
      <Search className={`absolute right-3 top-2 ${svgsearch} dark:text-black`} width="1.5rem" height="1.5rem"/>
      </div>
      <div id="scrollable" className={clas}>
    
-    {mpeop.map((c,i)=> (<Conv db={db} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne}/> )
+    {mpeop.sort(function(a, b) {
+  if(a.updatedAt< b.updatedAt) return 1;
+  if(a.updatedAt > b.updatedAt) return -1;
+  return 0;
+ }).map((c,i)=> (<Conv db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne}/> )
     
 
     )}
@@ -434,7 +455,7 @@ if(aa){
 
 
 
-     { peop.map((c,i)=> (<Possib key={i} setisOpenedPeople={setisOpenedPeople} flag1={flag1} setflag1={setflag1} click={click}  setcur={setcur} mesa1={mp}  message={setmpeop}  person={peop[i]}  convs={mpeopbackup[i]}/>)
+     { peop.map((c,i)=> (<Possib db={db} key={i} setisOpenedPeople={setisOpenedPeople} flag1={flag1} setflag1={setflag1} click={click}  setcur={setcur} mesa1={mp}  message={setmpeop}  person={peop[i]}  convs={mpeopbackup[i]}/>)
      
 
      )}

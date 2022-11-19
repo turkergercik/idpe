@@ -4,6 +4,7 @@ package com.idp.app;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.RemoteInput;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,7 +35,6 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -80,7 +80,7 @@ static List<Message> Messages= new ArrayList<com.idp.app.Message>();
             //final String CHANNEL_ID = "HEADS_UP_NOTIFICATION";
             user =name;
             other=title;
-            Conversation=conversationid;
+            //Conversation=conversationid;
 
 
             File f = new File("/data/data/com.idp.app/files/con.json");
@@ -90,6 +90,7 @@ static List<Message> Messages= new ArrayList<com.idp.app.Message>();
             JSONObject jsonObject=null;
             JSONObject jsonObject1=new JSONObject();
             String cconversationid = null;
+            //System.out.println("format");
             //güncel chatin takibi ona göre bildirim atmama
             if (f.exists()){
 
@@ -111,7 +112,7 @@ static List<Message> Messages= new ArrayList<com.idp.app.Message>();
                 }
 
             }
-            String format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date());
+            String format = new Date().toString();
             //System.out.println(format);
             //System.out.println(capitalCities);
            String media= null;
@@ -192,9 +193,9 @@ if(image1!=null){
         baos.flush();
         media = Base64.getEncoder().withoutPadding().encodeToString(baos.toByteArray()).replace("\\","");
         // encodeToString(baos.toByteArray(), Base64.DEFAULT);
-        System.out.println(media);
+        //System.out.println(media);
 jo.put("media","data:image/jpeg;base64,"+media);
-        System.out.println(jo);
+        //System.out.println(jo);
     } catch (Exception e) {
         Log.d("Error", e.toString());
     }
@@ -209,12 +210,12 @@ jo.put("media","data:image/jpeg;base64,"+media);
                     JSONArray ya= (JSONArray) mainObj.get(conversationid);
                     ya.put(jo);
                     //System.out.println(mainObj.get("employ"));
-                    System.out.println("var");
-                    System.out.println(mainObj);
+                    //System.out.println("var");
+                    //System.out.println(mainObj);
                 }else{
                     mainObj.put(conversationid,ja);
-                    System.out.println(mainObj);
-                    System.out.println("boş");
+                    //System.out.println(mainObj);
+                    //System.out.println("boş");
                 }
 
 
@@ -222,19 +223,30 @@ jo.put("media","data:image/jpeg;base64,"+media);
                 e.printStackTrace();
             }
             try {
-                fos.write(mainObj.toString().getBytes());
-                System.out.println(mainObj);
+                if(MainActivity.isVisible==false) {
+                    fos.write(mainObj.toString().getBytes());
+                }
+                //System.out.println(mainObj);
                 // mainObj=null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            PendingIntent p;
+            PendingIntent pe;
             if (MainActivity.isVisible == false || (!cconversationid.equals(conversationid))) {
-
+                int i=(int) System.currentTimeMillis();
+                System.out.println(i);
                 Intent intent1 = new Intent(getApplicationContext(), MainActivity.class);
                 Intent intent2 = new Intent(getApplicationContext(), MyReceiver.class);
-                intent1.setAction(conversationid);
-                intent2.setAction(conversationid);
-
+                //intent1.setAction(conversationidint);
+                //intent2.setAction(String.valueOf(i));
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                stackBuilder.addParentStack(MainActivity.class);
+                stackBuilder.addNextIntent(intent2);
+                //Intent intentEmailView = new Intent (this, MyReceiver.class);
+                //intent2.putExtra("EmailId","you can Pass emailId here");
+                //stackBuilder.addNextIntent(intent2);
+                //PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 intent1.putExtra("conversationid", conversationid);
                 intent2.putExtra("conversationid", conversationid);
                 intent2.putExtra("conversationidint", conversationidint);
@@ -243,8 +255,9 @@ jo.put("media","data:image/jpeg;base64,"+media);
                 intent2.putExtra("receiver", receiver);
                 intent2.putExtra("title", title);
                 intent2.putExtra("channel", channel);
+//sendBroadcast(intent2);
                 //startForegroundService(intent2);
-                //getApplicationContext().startService(intent2);
+                //getApplicationContext().startService(intent1);
                  if(capitalCities.containsKey(conversationid)){
                      capitalCities.get(conversationid).add(new com.idp.app.Message(text,title,conversationid));
                   }else{
@@ -255,21 +268,27 @@ jo.put("media","data:image/jpeg;base64,"+media);
 
                  //Messages.add(new com.idp.app.Message(text,title,conversationid));
 
+
+
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent p = PendingIntent.getActivity(getApplicationContext(), 0, intent1,0);
-                PendingIntent pe = PendingIntent.getBroadcast(getApplicationContext(), 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                //intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                 p = PendingIntent.getActivity(getApplicationContext(),Integer.parseInt(conversationidint), intent1,0);
+                //PendingIntent pe = stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                 pe = PendingIntent.getBroadcast(getApplicationContext(),Integer.parseInt(conversationidint), intent2,PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-                System.out.println(capitalCities);
+                //System.out.println(conversationidint);
                 if(channel.equals("2")){
     Bitmap image = null;
     try {
         URL url = new URL(image1);
         image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
     } catch(IOException e) {
-        System.out.println(e);
+        //System.out.println(e);
     }
-    System.out.println("llll");
+    //System.out.println("llll");
 
     nb = new Notification.Builder(getApplicationContext(), channel)
             .setSmallIcon(R.drawable.ic_ss)
@@ -278,19 +297,12 @@ jo.put("media","data:image/jpeg;base64,"+media);
             .setAutoCancel(true)
             .setLargeIcon(image)
             .setStyle(new Notification.BigPictureStyle().bigPicture(image))
-            .setContentIntent(p)
+            //.setContentIntent(p)
             .setColor(Color.argb(1, 138, 0, 0));
 
 
 }else{
-    nb = new Notification.Builder(getApplicationContext(), channel)
-            .setSmallIcon(R.drawable.ic_ss)
-            .setContentTitle(title)
-            .setContentText(text)
-            .setAutoCancel(true)
-            .setStyle(style(capitalCities.get(Conversation)))
-            .setContentIntent(p)
-            .setColor(Color.argb(1, 138, 0, 0));
+    nb = builder(getApplicationContext(),conversationid,channel,pe,p);
 
 }
 
@@ -301,7 +313,7 @@ jo.put("media","data:image/jpeg;base64,"+media);
                                 .setGroupSummary(true);
 
 */
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+             /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     RemoteInput remoteInput = new RemoteInput.Builder("key")
                             .setLabel("yanıtla")
                             .build();
@@ -310,13 +322,15 @@ jo.put("media","data:image/jpeg;base64,"+media);
                             .build();
                     nb.addAction(action);
 
-                }
+                }*/
 
                 //nm.notify(1,notificationg.build());
 
 
 
                 nm.notify(Integer.parseInt(conversationidint),nb.build());
+
+
                 /*String format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date());
                 try {
                     jsonObject1.put("conversationid", conversationid);
@@ -334,13 +348,36 @@ jo.put("media","data:image/jpeg;base64,"+media);
                 dbHelper.insertuserdata(conversationid,jsonObject1);
          */
 
-
-            } if(MainActivity.isVisible == false){
+            } if(MainActivity.isVisible == true){
 
             }
                 super.onMessageReceived(remoteMessage);
             }
+@RequiresApi(api = Build.VERSION_CODES.O)
+public  static Notification.Builder builder(Context c, String conversationid, String channel,PendingIntent pe,PendingIntent p){
+    nb = new Notification.Builder(c, channel)
+            .setSmallIcon(R.drawable.ic_ss)
+            //.setContentTitle(title)
+            //.setContentText(text)
+            .setAutoCancel(true)
+            .setStyle(style(capitalCities.get(conversationid),user,other))
+            .setContentIntent(p)
+            .setColor(Color.argb(1, 138, 0, 0));
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        RemoteInput remoteInput = new RemoteInput.Builder("key")
+                .setLabel("yanıtla")
+                .build();
+        Notification.Action action = new Notification.Action.Builder(R.drawable.ic_launcher_background, "yanıtla", pe)
+                .addRemoteInput(remoteInput)
+                .build();
+        nb.addAction(action);
+
+    }
+
+        return  nb;
+
+}
 
             public static void savetodb(String conversationid, JSONObject jsonObject,Context context){
 
@@ -362,7 +399,7 @@ jo.put("media","data:image/jpeg;base64,"+media);
         dbHelper.insertuserdatastr(conversationid,jsonObject);
 
     }
-            public static Notification.MessagingStyle style(List<Message> list){
+            public static Notification.MessagingStyle style(List<Message> list,String user,String other){
                 ns = new Notification.MessagingStyle(user);
                 ns.setConversationTitle(other);
 

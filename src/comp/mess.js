@@ -35,7 +35,7 @@ const alert =useAlert()
 <div className="">
 {own ? (<><div className="flex items-center pt-2 pl-2">
 <div className={media? `${bgfordarkmode} ${bg} flex p-2 flex-col justify-center items-start bg-white rounded-t-xl rounded-br-xl`:
-`${bgfordarkmode} ${bg} flex p-1 flex-row-reverse justify-start items-end bg-white rounded-t-xl rounded-br-xl`}>
+`${bgfordarkmode} ${bg} max-w-[20rem] flex p-1 flex-row-reverse justify-start items-end bg-white rounded-t-xl rounded-br-xl`}>
 {media ?<div className="flex flex-row items-center">
   <Download className={`${svgcolor}  ${specialwhitetext}  ${whitefordark} xs:w-10 h-10 rounded-full md:w-10 `} width="3rem" height="3rem" onClick={async()=>{
    const fileName = new Date().getTime() + '.jpeg';
@@ -58,7 +58,7 @@ const alert =useAlert()
       </div>
         
         :<>
-        <div className={`flex ml-1  xs:text-lg md:text-xl ${bg} ${bgfordarkmode} ${darktext} dark:border-[#1a1a1a] border-solid border-2 break-words pl-1.5 ${specialwhitetext} ${bordercolor} rounded-lg  mr-1`}>{mes}
+        <div className={`flex ml-1  [word-break:break-word]   xs:text-lg md:text-xl ${bg} ${bgfordarkmode} ${darktext} dark:border-[#1a1a1a] border-solid border-2 pl-1.5 ${specialwhitetext} ${bordercolor} rounded-lg  mr-1`}>{mes}
 
                </div>
        </>
@@ -69,7 +69,7 @@ const alert =useAlert()
     <> 
       <div className={`flex  items-center justify-end  pt-2 ml-2 w-full`}>
       <div className={media ? `${bgfordarkmode} ${bg} flex p-2 flex-col justify-center bg-white rounded-t-xl rounded-bl-xl`:
-      `${bgfordarkmode} ${bg} flex p-1 pb-0 flex-row justify-start bg-white rounded-t-xl rounded-bl-xl`}>
+      `${bgfordarkmode} ${bg} [word-wrap:break-word] flex p-1 max-w-[20rem]  pb-0 flex-row justify-end bg-white rounded-t-xl rounded-bl-xl`}>
         {media ? <div className=" flex flex-row-reverse items-center">
                 <Download  className={`${svgcolor}  ${specialwhitetext}   ${whitefordark} xs:w-10 h-10 rounded-full md:w-10`} width="3rem" height="3rem" onClick={async()=>{
                 const fileName = new Date().getTime() + '.jpeg';
@@ -90,7 +90,7 @@ const alert =useAlert()
 
                    }} src={media} alt="s" className="h-1/6   w-5/6 rounded-xl mr-1"></img>
                </div>:<>
-               <div className={`flex mb-1 items-center xs:text-lg md:text-xl ${bg} ${bgfordarkmode} ${darktext} dark:border-[#1a1a1a] break-words border-solid border-2 ${bordercolor} rounded-lg  mx-1 pr-1.5 ${specialwhitetext}`}>{mes}
+               <div className={`flex align-start [word-break:break-word] mb-1 items-center xs:text-lg md:text-xl ${bg} ${bgfordarkmode} ${darktext} dark:border-[#1a1a1a]  border-solid border-2 ${bordercolor} rounded-lg  mx-1 pr-1.5 ${specialwhitetext}`}>{mes}
 
                </div></>
 }

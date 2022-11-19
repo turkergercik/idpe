@@ -30,26 +30,42 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 export const Pro = createContext()
 
 function App() {
-  
+  let nav =useNavigate()
   const [isDarkMode, setDarkMode]=useState(false)
   const curref =useRef(["null"])
   const[messages,setmessages]=useState([])
   const[mpeop,setmpeop]=useState([])
+  const[e,sete]=useState()
+  const[f,setf]=useState()
   const[cur,setcur]=useState([])
+  const[cur1,setcur1]=useState([])
   const no = useRef(false)
   const [flag1,setflag1] = useState([])
   const[ne,setne]=useState([])
   let na 
   const aa = localStorage.getItem("token")
-  if(aa){
-     na=jose.decodeJwt(aa)}
+  if(aa&&localStorage.getItem("is_reloaded")!==null&&localStorage.getItem("is_reloaded")){
+    
+     na=jose.decodeJwt(aa)
+    }else{
+    if(Capacitor.getPlatform()==="web") localStorage.clear()
+
+    //await store.current.remove("chatsbackup")
+   
+
+      //nav("/login")
+   
+         
+
+     }
   let prt="https://smartifier.herokuapp.com"
 const socket = useRef()
 async function as() {
-  if(Capacitor.getPlatform()!=="web"){await StatusBar.setStyle({ style: Style.Light});
+  if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});
   
-  StatusBar.setOverlaysWebView({ overlay:true});}
-  //await StatusBar.setBackgroundColor({color:"#000000"})
+  ///StatusBar.setOverlaysWebView({ overlay:true});
+  await StatusBar.setBackgroundColor({color:"#000000"})
+}
   const contents = await Filesystem.readFile({
     path: 'out.json',
     directory: Directory.Data,
@@ -62,6 +78,7 @@ async function as() {
   if(ab!==undefined&&ab!==""){
 
   nav(`/chat/${ab}`)
+
   }
   await Filesystem.writeFile({
     path: 'out.json',
@@ -83,25 +100,81 @@ async function as() {
   const [ s, sets ] = useState(null)
  
   useEffect(()=>{
+
+   /*  document.addEventListener("visibilitychange", (event) => {
+      if(sessionStorage.getItem("is_reloaded")){
+
+
+      }else{
+      if (document.visibilityState == "visible") {
+        sessionStorage.setItem("is_reloaded",true)
+      } else {
+        sessionStorage.clear()
+      }}
+    }); */
+
+    document.addEventListener("visibilitychange", (event) => {
+   
+      if (document.visibilityState == "visible") {
+        localStorage.setItem("is_reloaded",true)
+      } else {
+        localStorage.setItem("is_reloaded",false)
+       
+      }
+    });
     
     store.current = new Storage({
-      name: 'mydb.db',
+      name: 'mystore.current.db',
       //driverOrder:[CordovaSQLiteDriver._driver, Drivers.IndexedDB, Drivers.LocalStorage]
     });
     async function create(){
      //let aa=await store.current.defineDriver(CordovaSQLiteDriver);
      
      let bb=await store.current.create();
-
+ await store.current.set("socket",false)
      console.log(store.current)
+if(Capacitor.getPlatform()==="web"){
+  console.log("evet")
+    if(localStorage.getItem("is_reloaded")){
+console.log("ok")
+    }else{
+      console.log("pl")
+      localStorage.clear()
+      await store.current.clear()
+    }
+  
+  }
     }
         
   create()
 
 
   },[])
-  console.log(isDarkMode  )
   useEffect(()=>{
+
+
+      as()
+
+   
+
+  },[f])
+ // console.log(isDarkMode  )
+  useEffect(()=>{
+
+    //sete([])
+  /*   async function del(){
+      if(Capacitor.getPlatform()==="Web"){
+        console.log("heyyı")
+        await store.current.remove()
+        //sete([])
+       
+
+
+      }
+
+    }
+del() */
+
     let x =localStorage.getItem("darkmode")
    if(x!==null) {
     if(x==="true"){
@@ -115,15 +188,14 @@ async function as() {
    
     
    }else{
-    console.log("kk")
+    //console.log("kk")
     setDarkMode(false)
    }
    
   
     async function asas(){
-      let a = await store.current.get("socket")
-      //alert(a)
-      if(!a){
+      
+      if(Capacitor.getPlatform()!=="web"){
     const contents1 = await Filesystem.readFile({
       path: 'sync.json',
       directory: Directory.Data,
@@ -142,82 +214,209 @@ if(newme!==null){
 
   //alert(no)
   //alert("var")
-      newme=[...ab[k].reverse(),...newme ]
+      newme=[...ab[k].reverse(),...newme]
       await store.current.set(k,newme)
+      setf([])
+     //setf([])
+     setTimeout(() => {
+       sete([])
+      
+     }, 0);
+      //setne([])
+      //setmessages(newme)
 }else{
   
   if(ab[k]!==null){
   newme=[ab[k][0]]
   await store.current.set(k,newme)
+ /*  let newchat = store.current.get("chats")
+  if(newchat!==null){
+let newc= [...newchat,]
+    await store.current.set("chats")
+  } */
 
 }}
+/* let chat =await store.current.get("chatsbackup")
+    let result 
+    //const time=new Date(Date.now()).toISOString()
+     chat.forEach((v,i) => {
+      if(v._id===k){
+        console.log(chat[i])
+        result = i
+      }
+    })
+    console.log(chat)
+    chat[result].updatedAt= k.createdAt
+    console.log(chat)
+  await store.current.set("chatsbackup",chat) */
+   
+
 
     })
       
-
-  
-    }
-    /* await Filesystem.deleteFile({
+    await Filesystem.deleteFile({
       path: 'sync.json',
       directory: Directory.Data
-    }).catch(()=>{}) */
-}else{
-  await store.current.set("socket",false)
+    }).then(()=>{}).catch(()=>{})
+  
+    }
+    
+
 }
   }
   
 asas()
+async function bb(){
+ 
+  
+  let n
+  socket.current=io(prt)
+  socket.current.emit("no",na?.id)
+  /* socket.current.on("ho",(e)=> console.log(e)) */
+  socket.current.on("get",(e)=> {
+  //  setall(e)
+//  console.log(e)
+})
+  socket.current.on("getm",async(e)=> {
+     n ={
+      sender:e.sender,
+      text:e.text,
+      createdAt:e.createdAt,
+      receiver:e.receiver,
+      media:e.media,
+      conversationid:e.conversationid,
+      isNotification:e.isNotification
+    }
     
-    let n
-    socket.current=io(prt)
-    socket.current.emit("no",na?.id)
-    /* socket.current.on("ho",(e)=> console.log(e)) */
-    socket.current.on("get",(e)=> {
-    //  setall(e)
-  //  console.log(e)
-  })
-    socket.current.on("getm",async(e)=> {
-       n ={
-        sender:e.sender,
-        text:e.text,
-        createdAt:e.createdAt,
-        receiver:e.receiver,
-        media:e.media,
-        conversationid:e.conversationid,
-        isNotification:e.isNotification
-      }
-      setne(n)
-      //no.current=false
-      //alert(e.isNotification)
-      if(e.isNotification){
+    setne(n)
+    //no.current=false
+    //alert(e.isNotification)
+    if(e.isNotification){
 socket.current.emit("send",{
-        sender:e.sender,
-        text:e.text,
-        createdAt: e.createdAt,
-        receiver:e.sender,
-        conversationid:e.conversationid
+      sender:e.sender,
+      text:e.text,
+      createdAt: e.createdAt,
+      receiver:e.sender,
+      conversationid:e.conversationid
 })
 
 
-      }
-      console.log(n)
-      console.log(cur)
-      await store.current.set("socket",true)
-      if(e.conversationid===curref.current){
-   
-        setmessages((p)=>[n,...p])
-        console.log("evet")
-      }
-      let newm = await store.current.get(e.conversationid)
-      console.log(newm)
-      if(newm){
-      newm  = [n,...newm]
-      await store.current.set(e.conversationid,newm)
+    }
+    console.log(n)
+    console.log(cur)
+    await store.current.set("socket",true)
+    if(e.conversationid===curref.current){
+ 
+      setmessages((p)=>[n,...p])
+      console.log("evet")
+    }
+    
+    let newm = await store.current.get(e.conversationid)
+    let chats = await store.current.get("chatsbackup")
+    console.log(newm)
+    if(newm){
+      /* chats=[{members:["62e00593f164d9c569bd635a","sadas","trk","vfg",true,true]},...chats]
+    
+      await store.current.set("chatsbackup",chats)
+      sete(chats) */
+    newm  = [n,...newm]
+    await store.current.set(e.conversationid,newm)
 
-      }else{
-        await store.current.set(e.conversationid,[n])
-      }
+    }else{
+    /*   chats=[{members:["62e00593f164d9c569bd635a","sadas","trk","vfg",true,true]},...chats]
+    
+    await store.current.set("chatsbackup",chats)
+    sete(chats) */
+
+      await store.current.set(e.conversationid,[n])
+    }
+    if(chats!=null){
+      console.log("1")
+      let filtered 
+      chats.forEach((v,i)=>{
+
+       if(v._id===e.conversationid){
+           filtered=i
+       }
+     
       })
+      if(filtered!==undefined){
+        console.log(filtered)
+     let x=[chats[filtered]]
+     console.log(x)
+    
+     if(x.length===0){
+        
+        await store.current.remove("chatsbackup",)
+        sete([])
+     }else{
+      
+      const time=new Date(Date.now()).toISOString()
+        chats[filtered].updatedAt=time
+      console.log("var")
+      /* if(x[0].members[4]===true&&x[0].members[5]===true){
+        await store.current.remove("chatsbackup")
+        sete([])
+      
+      }
+    alert(x) */
+    
+      if(x[0].members[0]===na.id&&x[0].members[4]===false){
+        chats[filtered].members[4]=true
+       
+        await store.current.set("chatsbackup",chats)
+        await store.current.remove(e.conversationid )
+        sete([])
+        await axios.put(`${prt}/conversations/${e.conversationid}`,{
+          senderdel:true,
+        }).then((res)=>{
+          console.log(res)
+          //resp=[res.data.members[4],res.data.members[5]]
+          //setcur()
+      
+         
+          //console.log("bu da")
+        }).catch((e)=> console.log(e))
+  
+      }else if((x[0].members[1]===na.id&&x[0].members[5]===false)){
+        chats[filtered].members[5]=true
+        alert(2)
+        const time=new Date(Date.now()).toISOString()
+        chats[filtered].updatedAt=time
+        await store.current.set("chatsbackup",chats)
+        await store.current.remove(e.conversationid )
+        sete([])
+        await axios.put(`${prt}/conversations/${e.conversationid}`,{
+          receiverdel:true,
+        }).then((res)=>{
+          console.log(res)
+          //resp=[res.data.members[4],res.data.members[5]]
+         // setcur()
+      
+         
+          //console.log("bu da")
+        }).catch((e)=> console.log(e))
+   
+      }else {
+        
+        await store.current.set("chatsbackup",chats)
+        sete([])
+
+      }
+ 
+      
+     
+     }}else{
+      await store.current.remove("chatsbackup",)
+        sete([])
+      console.log("yok")
+   
+     }
+    }
+    
+    })
+}
+bb()
       return () => socket.current.disconnect()
   },[])
  useEffect(()=>{
@@ -249,7 +448,7 @@ socket.current.emit("send",{
    
   } */
 
-  let nav =useNavigate()
+  
   if(Capacitor.getPlatform()!=="web")
  { /* PushNotifications.addListener("pushNotificationActionPerformed", async(notification) => { 
   let ab = notification.notification.data.data
@@ -289,14 +488,18 @@ LocalNotifications.createChannel(NotificationChannelf)
    //let a = localStorage.getItem("aut")
    const [aut,setAut]=useState(b)
    const [cam,setcam]=useState(false)
-  if(a) as()
+ /*  if(a){
+    as()
+  
+  } */
 /*   function a(){
     window.location.href="/reg"
  element={<Navigate to="/reg" replace />}
   } */
-  console.log(cur)
+  //gconsole.log(cur)
   return (
-    <div className={isDarkMode ? "dark":null}>
+    <div  className={isDarkMode ? "dark unselectable":"unselectable"}>
+      <div>{cur1}</div>
     <Pro.Provider  value={{aut,setAut}}>    
    
     {aut===null ? ( <div> 
@@ -342,8 +545,8 @@ LocalNotifications.createChannel(NotificationChannelf)
             
             </Route>
             <Route element={<Protect1 />}><Route  path="/r" element={<Redirect1 sock={socket.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid ne={ne} setflag1={setflag1} flag1={flag1}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat e={e} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid ne={ne}  setflag1={setflag1} flag1={flag1}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
             <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam sock={socket} ss={sets} v={vid}/>}/></Route>
             <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid}/>}/></Route>
          

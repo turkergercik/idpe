@@ -8,7 +8,8 @@ import pp from "../pages/images/splash1.png"
 import del from "../pages/images/del.png"
 import delet from "../pages/images/delete.png"
 import { ReactComponent as Arrow } from "../pages/images/arrow.svg"
-export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
+import { async } from "@firebase/util";
+export default function Conv({k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
   let svgslide="text-[#90C5FF]"
   let svgslidedark="dark:text-[#F0EFE9]"
   let textcolorblue="text-[#459DFF]"
@@ -25,9 +26,12 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
   let de
   const nos = useRef(false)
   const l = useRef(null)
+  const f = useRef(null)
   const swiperightBol1 = useRef(true)
   const[flag,setflag]=useState(true)
   const [leftx,setleft]=useState(0)
+  const [last,setlast]=useState()
+  const [time,settime]=useState()
   const [divw,setdiv]=useState()
   let resp=[]
   if(convs.members[1]===na.id){
@@ -76,7 +80,7 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
       }
     
      touchsurface.addEventListener("touchstart",aa=function(e){
-        console.log("deli")
+        //console.log("deli")
           //touchsurface.innerHTML = ''
           var touchobj = e.changedTouches[0]
           dist = 0
@@ -85,13 +89,46 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
           startTime = new Date().getTime() // record time when finger first makes contact with surface
           //if (e.cancelable) e.preventDefault();
       }, false)
+      touchsurface.addEventListener("touchmove",aa=function(e){
+        var touchobj = e.changedTouches[0]
+        console.log(Math.round(touchobj.pageX))
+        setleft(Math.round(touchobj.pageX)-startX)
+
+        if(touchobj.pageX<=startX){
+        
+          if((Math.abs(touchobj.pageX-startX)>=divw1/7)){
+            
+            console.log(touchobj.pageX-startX)
+           
+            setleft(-divw2*1.5)
+            //swiperightBol1.current=false
+            //slide(true)
+            f.current=true
+
+          }else{
+            f.current=false
+          }
+          //Math.round(touchobj.pageX)-startX<=(divw1/3)
+          console.log("ok")
+
+         
+        }else{
+          console.log("değil")
+          f.current=false
+          setleft(0)
+          //swiperightBol1.current=true
+          //setleft(0)
+        }
     
-     touchsurface.addEventListener('touchmove',bb =function(e){
+
+
+      }, false)
+    /*  touchsurface.addEventListener('touchmove',bb =function(e){
         var touchobj = e.changedTouches[0]
         //console.log(Math.round(touchobj.pageX))
         let distance = Math.round(touchobj.pageX)
         //console.log(divw1,divw2)
-        setleft(Math.round(touchobj.pageX)-startX+"px")
+        //setleft(Math.round(touchobj.pageX)-startX+"px")
        if(distance<=(divw1/3)){
         
           //slide()
@@ -101,28 +138,29 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
     
       
       //if (e.cancelable) e.preventDefault(); // prevent scrolling when inside DIV
-      }, false)
+      }, false) */
           touchsurface.addEventListener('touchend',cc=function(e){
           var touchobj = e.changedTouches[0]
           dist = touchobj.pageX - startX // get total dist traveled by finger while in contact with surface
           elapsedTime = new Date().getTime() - startTime // get time elapsed
           // check that elapsed time is within specified, horizontal dist traveled >= threshold, and vertical dist traveled <= 100
           var swiperightBol = (elapsedTime <= allowedTime && dist <= -divw1/3 && Math.abs(touchobj.pageY - startY) <= 100)
-          if(swiperightBol&&swiperightBol1.current) {
+          if(f.current) {
             swiperightBol1.current=false
           //console.log(flag1)
           slide(true)
           
           console.log("rrrr")
-          }else if(!swiperightBol&&dist>=divw1/3){
-            
+          }else if(!f.current){
+            setleft(0)
+            console.log("78")
             //console.log(flag1)
             //console.log(no.current)
           slide(false)
           //swiperightBol1.current=true
           }else if(Math.abs(touchobj.pageY - startY) <=window.screen.availHeight){
-            console.log("yukarı")
-            console.log(window.screen.availHeight)
+           // console.log("yukarı")
+           // console.log(window.screen.availHeight)
           } else if(dist<=20){
          
             get()
@@ -155,7 +193,7 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
       let eee = new Array(flag1.length).fill(true)
        eee[k]=false
      setflag1(eee)
-     setleft(-divw2-10)
+     //setleft(-divw2*1.5)
      setflag(true)
       } else{
         swiperightBol1.current=true
@@ -178,7 +216,17 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
   
      },[flag1[k]])
     useEffect(()=>{
-      
+      async function lastm(){
+
+        let last =  await db.get(convs._id)
+        if(last!==null&&last.length!==0){
+          setlast(last[0].text)
+          const mest=new Date(last[0].createdAt).toLocaleTimeString("tr",{hour: '2-digit', minute:'2-digit'})
+settime(mest)
+        }
+        
+      }
+      lastm()
       let divw2= document.getElementById("sr2")?.offsetWidth
   
       let eee = new Array(flag1.length+1).fill(true)
@@ -189,7 +237,7 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
       //nos.current=!nos.current
   
   
-     },[nos.current])
+     },[nos.current,mesa])
   function slide(bool){
     /* setTimeout(() => {
       swiperightBol1.current=true
@@ -232,13 +280,32 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
     async function b(){
       console.log("yazdım")
       nos.current=!nos.current
-   await db.remove(convs._id)
+      await db.remove(convs._id)
+      let x = await db.get("chatsbackup") 
+      let result
+      console.log(x)
+      let filtered= x.forEach((v,i) => {
+    
+        if(v._id===convs._id){
+          result=i
+        }
+      
 
+   })
+   //x.splice(result,1)
+   
+   
+   //let y= await db.set("chatsbackup",x)
+   
 
       if(convs.members[0]===na.id){ 
-       let mes = [...mesa]
-        mes.splice(k,1)
-        changeconv(mes)
+        x[result].members[4]=false
+        console.log(x[result],"pl")
+        await db.set("chatsbackup",x)
+        changeconv(x)
+       /* let mes = [...mesa]
+        mes.splice(k,1) */
+        
       
         //let a=chec.filter(()=> chec._id===convs._id)
         //console.log(a)
@@ -247,21 +314,30 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
         
         senderdel:false,
       }).then((res)=>{
+        console.log(res.data)
         resp=[res.data.members[4],res.data.members[5]]
         setcur(aftersilme)
 
         //console.log("oldu")
-      })
+      }).catch(()=>{console.log("olmadı bee")})
         
         
     }else if(convs.members[1]===na.id){
+      x[result].members[5]=false
+      console.log(x[result],"pl")
+      await db.set("chatsbackup",x)
+      changeconv(x)
+
+/* 
+
       let mes = [...mesa]
       mes.splice(k,1)
-      changeconv(mes)
+      changeconv(mes) */
       await axios.put(`${prt}/conversations/${convs._id}`,{
 
         receiverdel:false,
       }).then((res)=>{
+        console.log(res)
         resp=[res.data.members[4],res.data.members[5]]
         setcur(aftersilme)
     
@@ -271,6 +347,9 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
     }
     
     if(resp[0]===false&&resp[1]===false){
+      console.log("silindi")
+      x.slice(result,1)
+      await db.set("chatsbackup",x)
       await axios.delete(`${prt}/messages/${convs._id}`)
       .then(()=>{
         setcur(aftersilme)
@@ -286,7 +365,7 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
      }
      async function get(){
       //setmessage([])
-      console.log("r")
+      //console.log("r")
        let up={}
        if(na.id===convs.members[0]){
          up ={cid:convs._id,cnm:de,cri:convs.members[1],csi:convs.members[0],cam:[convs.members[1],convs.members[0]]}}
@@ -295,7 +374,7 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
          up ={cid:convs._id,cnm:de,cri:convs.members[0],csi:convs.members[1],cam:[convs.members[1],convs.members[0]]}
       }
       setcur(up)
-      console.log(up)
+      //console.log(up)
       //console.log(vur)
       setTimeout(() => {
         nav(`/chat/${convs._id}`)
@@ -313,41 +392,35 @@ export default function Conv({k,mesa,flag1,height,setflag1,convs,db,changeconv,s
       //silme()
 
 
-    if(convs.members[0]===na.id){
-        if(convs.members[4]===true){
+    if((convs.members[0]===na.id&&convs.members[4]===true)||(convs.members[1]===na.id&&convs.members[5]===true)){
+       
           return(
-            <div className="relative  ">
-            <div className="absolute top-0" style={{ right:`${6}px` }}><img id="sr2" src={delet} alt="s" className="xs:w-10 rounded-full md:w-10 mt-[1.1rem] " onClick={b}></img></div>
+            <div className="overflow-hidden">
+            <div className="relative max-w-screen ">
+            <div className="absolute top-[2.5px] " style={{ right:`${8}px` }}><img id="sr2" src={delet} alt="s" className="xs:w-[2rem] rounded-full md:w-[2rem] mt-[1.1rem] " onClick={b}></img></div>
               <div id="sr1" className=" "  ref={l} style={{ position: "relative", left: `${leftx}px`}}>
-              <div id="sr" className={`flex items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
+              <div id="sr" className={`flex  flex-row max-w-full  items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
               <img src={pp} alt="s" className="xs:w-10 rounded-full md:w-10 mr-2 " onClick={get}></img>
-              <span className={`flex justify-start text w-full ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={get}>{de}</span>
               
+              <div className={`flex w-full  justify-end  overflow-hidden  flex-col   ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={get}>
               
-              {swiperightBol1.current ? <Arrow className={`mr-1 ${svgslide} ${svgslidedark}`} width="3rem" height="3rem" onClick={slide}/>:null}
+              <span className="relative"  >{de}</span>
+              <span className={`relative ${darktext} font-normal ${textcolorblue} truncate  text-base`}  >{last}</span>
               </div>
-            </div></div>
+              <span className={`relative ${textcolorblue} ${darktext} ml-auto text-sm text- self-center mr-2 font-normal`}  >{time}</span>
+   
+              
+              
+         
+              <div className="flex self-end justify-end w-[3rem] h-[3rem]"> 
+             
+              {swiperightBol1.current ?  <Arrow className={` mr-1 w-[2rem] h-[2rem] ${svgslide} ${svgslidedark}`}  onClick={slide}/>:<div className="mr-1 w-[2rem] h-[2rem]" ></div>}
+              </div>
+              </div>
+             
+            </div></div></div>
               )
 
-        }
-     }else if(convs.members[1]===na.id){
-        if(convs.members[5]===true){
-          return(
-            <div className="relative  ">
-            <div className="absolute top-0" style={{ right:`${6}px` }}><img id="sr2" src={delet} alt="s" className="xs:w-10 rounded-full md:w-10 mt-[1.1rem] " onClick={b}></img></div>
-              <div id="sr1" className=" "  ref={l} style={{ position: "relative", left: `${leftx}px`}}>
-              <div id="sr" className={`flex items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
-              <img src={pp} alt="s" className="xs:w-10 rounded-full md:w-10 mr-2 " onClick={get}></img>
-              <span className={`flex justify-start text w-full ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={get}>{de}</span>
-              
-              
-              {swiperightBol1.current ? <Arrow className={`mr-1 ${svgslide} ${svgslidedark}`} width="3rem" height="3rem" onClick={slide}/>:null}
-              </div>
-            </div></div>
-              )
-        }
-    
+        
      }
-
-
 } 

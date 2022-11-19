@@ -65,6 +65,7 @@ function Log() {
           else {
           localStorage.setItem("token",response.data.token)
           localStorage.setItem("aut",JSON.stringify({"isA":true}))
+          localStorage.setItem("is_reloaded", true);
           window.location.reload()
          /*  setTimeout(() => {
             nav("/user")

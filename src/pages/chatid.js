@@ -48,10 +48,10 @@ registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,F
 
 
 
-function Chatid({db,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1}) {
+function Chatid({db,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
   let svgback="text-[#FFFFFF]"
   let bgblue ="bg-[#F0EFE9]"
-  let specialwhitebg="bg-[#F0EFE9]"
+  let specialwhitebg="bg-white"
   let specialwhitetextdark="dark:text-[#F0EFE9]"
   let specialwhitetext="text-[#F0EFE9]"
   let textcolorblue="text-[#097EFE]"
@@ -87,13 +87,21 @@ function Chatid({db,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag
   const messageobs =useRef(null)
   const mfd =useRef(null)
   const scroll =useRef(null)
+  const doubletap =useRef(false)
+  const [doubletap1,setdoubletap1] =useState(false)
+  const [update,setupdate]=useState()
   const src =useRef(null)
   const flag =useRef(true)
   //const curref =useRef(null)
   const[mpeop,setmpeop]=useState([])
   //const[flag1,setflag1]=useState([])
   const[flag2,setflag2]=useState([])
+  const[n1,setn1]=useState()
   const[isopened,setisopened]=useState(false)
+  //const[zoom,setzoom]=useState(false)
+  const zoom=useRef(false)
+  const img=useRef()
+  const n2=useRef()
   const[isopenedm,setisopenedm]=useState(false)
   //const[messages,setmessages]=useState([])
  
@@ -235,7 +243,7 @@ const messagesfromdb = useRef(null)
       
       setcur([])
       async function conv(){
-        console.log("1")
+        //console.log("1")
        /*  console.log(`${prt}/conversations/exact/${id}`)
         await axios.get(`${prt}/conversations/exact/${id}`,{headers}).then(async(e)=>{
         let cur=[e]
@@ -263,10 +271,11 @@ const messagesfromdb = useRef(null)
       let de
       let up
       if(db!==undefined&&db!==null){
-        console.log("1")
-      let chats =await db.get("chats")
+        //console.log("1")
+      let chats =await db.get("chatsbackup")
       if(chats){
-        
+        //let chat =await db.get("chatsbackup")
+       
         let cur=(chats.filter(v=>v._id===id))
         if(cur[0]!==undefined&&cur[0]!==null){
         if(!cur[0].members.includes(na.id)){
@@ -289,13 +298,19 @@ const messagesfromdb = useRef(null)
         }
        
       }
+      }else{
+        
       }
       let abo
       setcur(up)
       curref.current=cur.cid
       //console.log(up.cnm)
       //console.log("1",up.cid)
-       messagesfromdb.current = await db.get(id)//===null
+     
+        messagesfromdb.current = await db.get(id)
+    
+      
+       //===null
        //console.log(messagesfromdb)
 
       if(messagesfromdb.current===null){
@@ -337,9 +352,33 @@ const messagesfromdb = useRef(null)
      conv()
      
   
-    },[db])
-      let clas=`scrollbar ml-1.5 mr-0.5  h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark pr-4`   
-      let clas1=" scrollbar ml-1.5 mr-0.5 h-screen md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent  pr-4"
+    },[db,e])
+
+    useEffect(()=>{
+    async function ff(){
+    let chat =await db.get("chatsbackup")
+    let result 
+    const time=new Date(Date.now()).toISOString()
+     chat.forEach((v,i) => {
+      if(v._id===id){
+        console.log(chat[i])
+        result = i
+      }
+    })
+    console.log(chat)
+    chat[result].updatedAt= time
+    console.log(chat)
+  await db.set("chatsbackup",chat)
+    console.log(time)
+
+
+    }
+     if(db!==null&&update)ff()
+
+
+    },[update,db])
+      let clas=`scrollbar  mt-2 ml-1.5 mr-0.5 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark pr-4`   
+      let clas1=" scrollbar ml-1.5 mr-0.5 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent  pr-4"
       
       let scro= src.current
       let time
@@ -353,16 +392,15 @@ const messagesfromdb = useRef(null)
        //console.log(page.current)
        //curref.current=cur.cid
        //console.log(cur.cid)
-      console.log("2")
+      //console.log("2")
        takp.current=true
        //setflag1(new curay(flag1.length).fill(true))
        async function as() {
         
         if(db!==null){
-          console.log("n")
-        console.log(curref.current)
+          //console.log("n")
+        //console.log(curref.current)
           messagesfromdb.current= await db.get(id)
-          
         const a = await db.get("page")
         if(a!==null)  await db.set("page",1)
        }
@@ -372,7 +410,7 @@ const messagesfromdb = useRef(null)
          a.scrollIntoView({behavior:"smooth",block:"center"})
          load.current=false
        }
-      console.log(cur.cid)
+      //console.log(cur.cid)
         await Filesystem.writeFile({
           path: 'con.json',
           data: JSON.stringify({cconversationid:cur.cid}),
@@ -638,6 +676,7 @@ scro.addEventListener("scroll",asa)
 
   }}
   async function fun(){
+if(messagesfromdb.current!==null){
 
     let ee = [ne,...messagesfromdb.current]
     messagesfromdb.current=ee
@@ -646,6 +685,9 @@ scro.addEventListener("scroll",asa)
     //await db.set(curref.current,messagesfromdb.current)
   }
   }
+
+
+}
  // fun()
     //if(current)
 
@@ -733,16 +775,30 @@ scro.addEventListener("scroll",asa)
 //2022-10-06T14:47:06.269Z
    async function gon(event){
     const time=new Date(Date.now()).toISOString()
-    console.log(time)
+    //event.preventDefault()
+    /* let chat =await db.get("chatsbackup")
+    let result 
+     chat.forEach((v,i) => {
+      if(v._id===id){
+        console.log(chat[i])
+        result = i
+      }
+    })
+    console.log(chat)
+    chat[result].updatedAt= time
+    console.log(chat)
+  await db.set("chatsbackup",chat)
+    console.log(time) */
     event.preventDefault()
-    event.stopPropagation()
+    setupdate(true)
+    //event.stopPropagation()
     let t
     let value
     t = document.getElementById("tex")
     value = t.value.trim()
     t.focus()
    if(value !==""){
-    setmessages(prev =>[{sender:na.id,receiver:cur.cri,text:value},...prev])
+    setmessages(prev =>[{sender:na.id,receiver:cur.cri,text:value,createdAt:time},...prev])
     t.value=""
     sock.current.emit("send",{sender:na.id,receiver:cur.cri,text:value,conversationid:cur.cid,createdAt:time})
 
@@ -850,7 +906,14 @@ const onUpdate = useCallback(({ x, y, scale }) => {
 
 
 
-function handleGesture() {
+function handleGesture(event,elapsedTime) {
+  //setn1(event.touches.length)
+   //alert(n2.current)
+  console.log(zoom.current)
+  if(n2.current==1&&elapsedTime!==0&&elapsedTime<=200&&zoom.current===false){
+  
+
+    console.log("ewq")
     if (touchendX < touchstartX) {
 
         //alert('Swiped left');
@@ -862,40 +925,107 @@ function handleGesture() {
     
     }
     
-    if (touchendY < touchstartY) {
-      
-      //document.getElementById("tex").focus()
-      //up
-      
- 
-    }
     
-    if (touchendY > touchstartY) {
+    
+    if (touchendY-touchstartY>=100) {
       //down
+      console.log("kks")
       setimage(false)
      setisopened(false)
      
       //setisopened(false);
+    }else if(touchstartY-touchendY&&touchstartY-touchendY>=100) {
+    
+      //document.getElementById("tex").focus()
+      //up
+      setimage(false)
+     setisopened(false)
+ 
     }
     
     if (touchendY === touchstartY) {
        //tap
-    }
+    }}
+}
+var tapedTwice = false;
+let x=0
+useEffect(()=>{
+  
+  let im = document.getElementById("img")
+  if(im!==null){
+    setTimeout(() => {
+      let x = im.getBoundingClientRect()
+      img.current=x.height
+      //alert(img.current)
+    }, 1000);
+ 
+
+  //setn1(x.left)
 }
 
-
-useEffect(()=>{
-  const gestureZone =   document.getElementById("rr")
+  let gestureZone = document.getElementById("rr"),startTime,elapsedTime
+  
+  if(gestureZone){
   gestureZone?.addEventListener('touchstart', function(event) {
     touchstartX = event.changedTouches[0].screenX;
     touchstartY = event.changedTouches[0].screenY;
+    startTime = new Date().getTime()
+    //alert(event.touches.length)
+    setn1(event.touches.length)
+    n2.current=event.touches.length
+    handleGesture(event,0)
+   
+    //alert("dy")
+        if(!tapedTwice) {
+          console.log("ok")
+            tapedTwice = true;
+            setTimeout( function() { tapedTwice = false; }, 300 );
+            return false;
+        }else{
+          x=x+1
+         
+          if(x%2==0){
+            console.log(x)
+            zoom.current=false
+            doubletap.current=true
+            setdoubletap1(true)
+          }else{
+            zoom.current=true
+            doubletap.current=false
+            setdoubletap1(false)
+          }
+          
+          
+          console.log('You tapped me Twice !!!');
+        }
+        //event.preventDefault();
+        //action on double tap goes below
+       
+     
+    
+    
 }, false);
+gestureZone?.addEventListener('dblclick', (event) => {
+
+  console.log("ok")
+});
+gestureZone?.addEventListener('touchmove', function(event) {
+  console.log("a")
+ //handleGesture(event,0)
+ 
+}, false); 
 
 gestureZone?.addEventListener('touchend', function(event) {
     touchendX = event.changedTouches[0].screenX;
     touchendY = event.changedTouches[0].screenY;
-    handleGesture();
-}, false); 
+    elapsedTime = new Date().getTime() - startTime 
+    //alert(event.touches.length)
+  
+              
+   
+    handleGesture(event,elapsedTime);
+   
+}, false); }
 
 
 
@@ -925,6 +1055,35 @@ let goback = window.onpopstate = e => {
   
   
 }
+
+const coreMarkets = [
+  { iso2: 'at', name: 'Austria' },
+  { iso2: 'ch', name: 'Switzerland' },
+  { iso2: 'de', name: 'Germany' },
+  { iso2: 'es', name: 'Spain' },
+  { iso2: 'fi', name: 'Finland' },
+  { iso2: 'gb', name: 'Great Britain' },
+  { iso2: 'it', name: 'Italy' }
+]
+const marketFocus = ['de', 'fi', 'it', 'gb', 'ch', 'es', 'at']
+  
+const sortMarkets = (array, sortArray) => {
+  return [...array].sort(
+    (a, b) => sortArray.indexOf(a.iso2) - sortArray.indexOf(b.iso2)
+  )
+}
+//console.log(sortMarkets(coreMarkets,marketFocus))
+
+useEffect(()=>{
+if(doubletap1){
+  
+setTimeout(() => {
+  
+  doubletap.current=false
+}, 100);
+}
+
+},[doubletap1])
     if(ani&&bni){
       return(
       <div className="">
@@ -943,17 +1102,46 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
 </button> */}
 
   
+<div className="bg-red-700">{n1}</div>
 
 
-
-<div className="flex justify-center h-full items-center bg-white dark:bg-black " onClick={()=>setisopenedm(!isopenedm)}>
-             <TransformWrapper >
-              <TransformComponent > 
-                <img className="h-screen w-screen object-contain" src={sendedimage.current} alt=""/>
-                </TransformComponent>
+<div id="rr" className="flex justify-center h-full items-center bg-white dark:bg-black " onClick={()=>setisopenedm(!isopenedm)}>
+             <TransformWrapper doubleClick={{step:1}}    onZoom={()=>{
+                
+ 
+              
+                            
+                            }
+              
+             } onZoomStop={()=> {
+              let im = document.getElementById("img")
+              if(im!==null){
+              let x = im.getBoundingClientRect()
+              console.log(x.height)
+              //img.current=x.x
+              //setn1(x.left)
+              console.log(x.x-img.current)
+              if(x.height-img.current<=0.7){
+                doubletap.current=false
+                console.log("q")
+                zoom.current=false
+              }else{
+                console.log("w")
+                zoom.current=true
+              }
+            }} } >{({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                <>
+                {doubletap.current &&n2.current===1 ? resetTransform(30,"easeOut"):null}
+                 <TransformComponent onDoubleClick={()=>{console.log("ok")}} > 
+                 
+                <img id="img"   className="h-screen w-screen object-contain" src={sendedimage.current} alt=""/>
+                </TransformComponent></>
+    
+        )}
+              
                </TransformWrapper>
              </div>
-             {isopenedm ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div><Back className={`absolute left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
+             {isopenedm && !doubletap.current ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div><Back className={`absolute left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
               setisopened(false);
               setimage(false);
               setisopenedm(false);
@@ -992,9 +1180,9 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
             
              
             </div>
-            {!isopened && <form className="pb-1 pl-1 relative justify-center items-center w-full">
+            {!isopened && <form className="pb-1 pl-1 relative justify-center  items-center w-full">
           
-               <input id="tex" className={`focus:outline-none w-full h-10  pb-0.5 pl-1.5 focus:border-orange-500 border-solid ${bordercolor} ${textcolorblue} ${bginput} ${darkborderinput} border-[0.15rem] rounded-2xl`}
+               <input id="tex" className={`focus:outline-none w-full h-10 pr-[8rem]  pb-0.5 pl-1.5 focus:border-orange-500 border-solid ${bordercolor} ${textcolorblue} ${bginput} ${darkborderinput} border-[0.15rem] rounded-2xl`}
                //onInput={e => {setwrite(e.target.value)}} 
                
                name="password" type="text" autoComplete="text"/>
