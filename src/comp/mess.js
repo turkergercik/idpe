@@ -67,7 +67,7 @@ const alert =useAlert()
  </div></div></>):(
       
     <> 
-      <div className={`flex  items-center justify-end  pt-2 ml-2 w-full`}>
+      <div className={`flex  items-center justify-end  pt-1.5 ml-2 w-full`}>
       <div className={media ? `${bgfordarkmode} ${bg} flex p-2 flex-col justify-center bg-white rounded-t-xl rounded-bl-xl`:
       `${bgfordarkmode} ${bg} [word-wrap:break-word] flex p-1 max-w-[20rem]  pb-0 flex-row justify-end bg-white rounded-t-xl rounded-bl-xl`}>
         {media ? <div className=" flex flex-row-reverse items-center">

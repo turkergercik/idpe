@@ -10,7 +10,7 @@ import pp from "../pages/images/splash1.png"
 
 
 export default function Convfv({soc,call,roomid,changeconv,convs,cur}){
-  let prt="http://192.168.2.131:3001"
+  let prt="https://smartifier.herokuapp.com"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
   const headers = { Authorization:a};

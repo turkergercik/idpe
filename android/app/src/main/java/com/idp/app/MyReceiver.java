@@ -92,6 +92,7 @@ public class MyReceiver extends BroadcastReceiver {
         String receiver = intent.getExtras().getString("receiver");
         String title = intent.getExtras().getString("title");
         String channel = intent.getExtras().getString("channel");
+        String name = intent.getExtras().getString("name");
         //String conversationidint = intent.getExtras().getString("conversationidint");
         Bundle b = RemoteInput.getResultsFromIntent(intent);
         System.out.println(title);
@@ -133,7 +134,7 @@ public class MyReceiver extends BroadcastReceiver {
                 // PushNotificationService.Messages.add(nm);
                 //Notification.Builder newbuilder = PushNotificationService.nb;
                 //newbuilder.setStyle(PushNotificationService.style(PushNotificationService.Messages));
-                PushNotificationService.nb.setStyle(PushNotificationService.style(PushNotificationService.capitalCities.get(conversationid),sender,title));
+                PushNotificationService.nb.setStyle(PushNotificationService.style(PushNotificationService.capitalCities.get(conversationid),name,title));
 
                 Intent intent1 = new Intent(context.getApplicationContext(), MainActivity.class);
                 Intent intent2 = new Intent(context.getApplicationContext(), MyReceiver.class);
@@ -144,6 +145,7 @@ public class MyReceiver extends BroadcastReceiver {
 
                 intent1.putExtra("conversationid", conversationid);
                 intent2.putExtra("conversationid", conversationid);
+                intent2.putExtra("name", name);
                 intent2.putExtra("conversationidint", conversationidint);
                 intent2.putExtra("notificationid", notificationid);
                 intent2.putExtra("sender", sender);

@@ -41,14 +41,20 @@ import { ReactComponent as Camera1 } from "../pages/images/camera.svg"
 import { ReactComponent as Gallery1 } from "../pages/images/gallery.svg"
 import { ReactComponent as Send1 } from "../pages/images/send.svg"
 import { ReactComponent as Back } from "../pages/images/back.svg"
+import smoothscroll from 'smoothscroll-polyfill';
+
 // Register the plugins
 registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,FilePondPluginFileEncode, FilePondPluginImagePreview,FilePondPluginFileValidateType,FilePondPluginImageResize)
 
 
+// kick off the polyfill!
 
 
 
-function Chatid({db,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
+
+
+function Chatid({db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
+  //smoothscroll.polyfill();
   let svgback="text-[#FFFFFF]"
   let bgblue ="bg-[#F0EFE9]"
   let specialwhitebg="bg-white"
@@ -201,10 +207,10 @@ const messagesfromdb = useRef(null)
     useEffect(()=>{
    
       async function send(){
-        
+        const time=new Date(Date.now()).toISOString()
         if(sendimage.length!==0)
-     {   setmessages(prev =>[{sender:na.id,receiver:cur.cri,media:sendimage[0]},...prev])
-        sock.current.emit("send",{sender:na.id,receiver:cur.cri,media:sendimage[0],conversationid:cur.cid})
+     {   setmessages(prev =>[{sender:na.id,receiver:cur.cri,media:sendimage[0],createdAt:time},...prev])
+        sock.current.emit("send",{sender:na.id,receiver:cur.cri,media:sendimage[0],conversationid:cur.cid,createdAt:time})
          await axios.post(`${prt}/messages`,{
           conversationid:cur.cid,
           sender:na.id,
@@ -236,8 +242,8 @@ const messagesfromdb = useRef(null)
 
     },[sendimage])
 
+  
     useEffect(()=>{ 
-    
       setmessages([])
      
       
@@ -291,10 +297,14 @@ const messagesfromdb = useRef(null)
   
         }
          if(na.id===cur[0].members[0]){
-           up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[1],csi:cur[0].members[0],cam:[cur[0].members[1],cur[0].members[0]]}}
-        else{
+           up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[1],csi:cur[0].members[0],cam:[cur[0].members[1],cur[0].members[0]]}
+          //curref.current=up.cid
+          }
+        
+           else{
   
            up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[0],csi:cur[0].members[1],cam:[cur[0].members[1],cur[0].members[0]]}
+           //curref.current=up.cid
         }
        
       }
@@ -303,7 +313,7 @@ const messagesfromdb = useRef(null)
       }
       let abo
       setcur(up)
-      curref.current=cur.cid
+      curref.current=up.cid
       //console.log(up.cnm)
       //console.log("1",up.cid)
      
@@ -377,15 +387,15 @@ const messagesfromdb = useRef(null)
 
 
     },[update,db])
-      let clas=`scrollbar  mt-2 ml-1.5 mr-0.5 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex mb-1 overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark pr-4`   
-      let clas1=" scrollbar ml-1.5 mr-0.5 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex mb-1  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent  pr-4"
+      let clas=`scrollbar  mt-2 ml-1.5 mr-0.5 mb-1 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark pr-4`   
+      let clas1=" scrollbar  mt-2 ml-1.5 mr-0.5 mb-1 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex   overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent  pr-4"
       
       let scro= src.current
       let time
       useEffect(()=>{
         //setmessages([])  
      
-          load.current=false  
+          //load.current=false  
      
         
         page.current=1
@@ -407,8 +417,8 @@ const messagesfromdb = useRef(null)
        
        let a = document.getElementById("last")
        if(a){
-         a.scrollIntoView({behavior:"smooth",block:"center"})
-         load.current=false
+         //a.scrollIntoView({behavior:"smooth"})
+         //load.current=false
        }
       //console.log(cur.cid)
         await Filesystem.writeFile({
@@ -433,22 +443,24 @@ const messagesfromdb = useRef(null)
        return () => asa1()
         //load.current=true
       },[db,cur])
+      
       async function asa(){
+        
         /* console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
         console.log()
         console.log(scro.scrollHeight) */
         if(scro.offsetHeight+2+(-Math.floor(scro.scrollTop))>=scro.scrollHeight&&load.current===false){          
-          load.current=true
+          
           console.log("o")
           if(window.screen.height>scro.offsetHeight+(-Math.floor(scro.scrollTop))){
 
           
           }else{
-        
+          load.current=true
           page.current=page.current+1
-          const pagep =  await db.get("page") || 1
+          /* const pagep =  await db.get("page") || 1
         
-          await db.set("page",pagep+1)
+          await db.set("page",pagep+1) */
         
          console.log(page.current)
          if(messagesfromdb.current!==null){
@@ -473,20 +485,22 @@ const messagesfromdb = useRef(null)
        
         }
    
-       
-        load.current=false
-       
+      
            
        
         
         
-       }
+       }else{ 
+        load.current=false
+ 
+ 
+      }
              scro.className=clas        
              clearTimeout(time)
              time=setTimeout(() => {
                scro.className=clas1
          
-             },350) 
+             },1000) 
           
         }
      
@@ -573,35 +587,35 @@ scro.addEventListener("scroll",asa)
             console.log(messages[0].text)
             let lastindex=a[b].getAttribute("k") */
    
-      useEffect(()=>{
+     /*  useEffect(()=>{
        // load.current=false
 
        
-      },[messages[0]])
+      },[messages[0]]) */
 
-      /* useEffect(()=>{
-        load.current=false
+      useEffect(()=>{
+        //load.current=false
 
         setTimeout(() => {
           
-            let a =document.querySelectorAll("#last")
-            console.log(a)
-          if(scro){
-            let b = a.length-1
-            let beforelast=a[b-1]
-            let last = a[b]
+            let a =document.getElementById("last")
             
-           
+          if(scro&&a){
+            /* let b = a.length-1
+            let beforelast=a[b-1]
+            let last = a[b] */
+            a.scrollIntoView()
+           /* 
             if(last)
            {
             
-            last.scrollIntoView({behavior:"smooth",block:"end"})
+            
          
-          }
+          } */
            
           }
         }, 0);
-      },[messages[0]]) */
+      },[messages[0]])
 
 
       
@@ -623,30 +637,23 @@ scro.addEventListener("scroll",asa)
       },[Some]) */
   
 
-    useEffect(()=>{
+    /* useEffect(()=>{
+      console.log(88)
       //setmessages([])
  if(sock.current){
-      //sock.current=io(prt)
+      sock.current=io(prt)
       sock.current.emit("no",na.id)
-      /* sock.current.on("ho",(e)=> console.log(e)) */
       sock.current.on("get",(e)=> {
+
        setall(e)
       //console.log(e)
-    })}
-      /* sock.current.on("getm",async(e)=> {
-         n ={
-          sender:e.sender,
-          text:e.text,
-          createdAt: Date.now(),
-          receiver:e.receiver,
-          media:e.media
-        }
-        setne(n)
-      console.log("heerqw")
-        //setmessages((p)=>[...p,n])
-        }) */
-        //return () => sock.current.disconnect()
-    },[])
+    })
+  }
+  return ()=>{
+    sock.current.disconnect()
+  }
+    
+    },[cur]) */
 /*     async function a(event){
       setBni(false)
       event.preventDefault()
@@ -1056,7 +1063,7 @@ let goback = window.onpopstate = e => {
   
 }
 
-const coreMarkets = [
+/* const coreMarkets = [
   { iso2: 'at', name: 'Austria' },
   { iso2: 'ch', name: 'Switzerland' },
   { iso2: 'de', name: 'Germany' },
@@ -1071,7 +1078,7 @@ const sortMarkets = (array, sortArray) => {
   return [...array].sort(
     (a, b) => sortArray.indexOf(a.iso2) - sortArray.indexOf(b.iso2)
   )
-}
+} */
 //console.log(sortMarkets(coreMarkets,marketFocus))
 
 useEffect(()=>{
@@ -1086,8 +1093,8 @@ setTimeout(() => {
 },[doubletap1])
     if(ani&&bni){
       return(
-      <div className="">
-      <div id="modal" className={`${bg} dark:bg-black min-h-screen justify-center `}>
+      <div className={isDarkMode ? "absolute bg-black top-0 bottom-0 right-0 left-0 ":null}>
+      <div id="modal" className={`${bg} animate-wiggle dark:bg-black min-h-screen justify-center`}>
 
              {/* {image ?  <div className="w-screen absolute right-0 left-0 mx-auto"><FilePond allowImageTransform onupdatefiles={setFiles}  allowImageResize={true} files={Files} allowFileEncode  imageResizeTargetHeight={1280} imageResizeTargetWidth={720} labelIdle="Sürükle Bırak veya Dokun" imagePreviewHeight={avv? avv:1024}  acceptedFileTypes={["image/*"]} 
            imagePreviewUpscale={true} credits={false} ></FilePond></div>:null} */}
@@ -1102,7 +1109,7 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
 </button> */}
 
   
-<div className="bg-red-700">{n1}</div>
+
 
 
 <div id="rr" className="flex justify-center h-full items-center bg-white dark:bg-black " onClick={()=>setisopenedm(!isopenedm)}>
@@ -1141,7 +1148,8 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
               
                </TransformWrapper>
              </div>
-             {isopenedm && !doubletap.current ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div><Back className={`absolute left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
+             {isopenedm && !doubletap.current ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div>
+             <Back className={`absolute left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
               setisopened(false);
               setimage(false);
               setisopenedm(false);
@@ -1158,6 +1166,8 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
           
          <div className={`flex justify-center dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1 ml-2  h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
           <span className={`bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
+          <span className={`bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] ml-1 `} onClick={()=>nav("/webcam",{ state: { userid: cur.cri , conid: id },replace:true})} >ara</span>
+
           {!isopened ?<Back className={`absolute left-4 ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
          </div>
 

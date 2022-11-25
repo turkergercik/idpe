@@ -19,7 +19,7 @@ import { DarkModeSwitch } from 'react-toggle-dark-mode';
 //70A1D7
 let mp
 let sd
-function Chat({sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
+function Chat({all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
   
   let bgblue ="bg-[#A6D1FF]"
   let focusborder="focus:border-[#097EFE]"
@@ -43,7 +43,7 @@ function Chat({sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref
     const [bni, setBni] = useState(true);
     const [height, setheight] = useState();
     const[peop,setpeop]=useState([])
-    const[all,setall]=useState([])
+    //const[all,setall]=useState([])
     const[mpeop,setmpeop]=useState([])
     const[mpeopbackup,setmpeopbackup]=useState([])
     const mpeopbackupref =useRef([])
@@ -64,29 +64,7 @@ function Chat({sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref
     let n=[]
     const [click,setclick]=useState(true)
     //const socket = useRef()
-    useEffect(()=>{
-      
-      if(sock.current){
-      //sock.current=io(prt)
-      sock.current.emit("no",na.id)
-      /* sock.current.on("ho",(e)=> console.log(e)) */
-      sock.current.on("get",(e)=> {
-        setall(e)
-    //  console.log(e)
-    })
-      /* sock.current.on("getm",(e)=> {
-         n ={
-          sender:e.sender,
-          text:e.text,
-          createdAt: Date.now(),
-          receiver:e.receiver
-        }
-        setne(n)
-        //setmessages((p)=>[...p,n])
-        }) */
-      }
-        //return () => sock.current.disconnect()
-    },[cur])
+   
    
 /*     async function a(event){
       setBni(false)
@@ -386,7 +364,8 @@ if(aa){
 //console.log(mpeop)
 if(ani&&bni){
       return(
-        <div className="overscroll-y-contain overflow-y-scroll" >
+        <div className={isDarkMode ? "absolute bg-black top-0 bottom-0 right-0 left-0 ":null}>
+        <div className="animate-wiggle1" >
           <div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
       
          
@@ -506,7 +485,7 @@ if(ani&&bni){
               </div>
               </>:null}
        
-    </div></div>)
+    </div></div></div>)
     }  else if(ani===false&&bni===false){
       return (<div className="grid place-items-center h-screen bg-[#fcfbf4]">
       <SyncLoader color={"#F5A620"}  size={15} />

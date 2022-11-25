@@ -249,6 +249,7 @@ jo.put("media","data:image/jpeg;base64,"+media);
                 //PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 intent1.putExtra("conversationid", conversationid);
                 intent2.putExtra("conversationid", conversationid);
+                intent2.putExtra("name", name);
                 intent2.putExtra("conversationidint", conversationidint);
                 intent2.putExtra("notificationid", notificationid);
                 intent2.putExtra("sender", sender);

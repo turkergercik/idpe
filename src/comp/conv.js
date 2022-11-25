@@ -396,8 +396,8 @@ settime(mest)
        
           return(
             <div className="overflow-hidden">
-            <div className="relative max-w-screen ">
-            <div className="absolute top-[2.5px] " style={{ right:`${8}px` }}><img id="sr2" src={delet} alt="s" className="xs:w-[2rem] rounded-full md:w-[2rem] mt-[1.1rem] " onClick={b}></img></div>
+            <div className="relative max-w-screen z-0">
+            <div className="absolute   top-[2.5px] " style={{ right:`${8}px` }}><img id="sr2" src={delet} alt="s" className="xs:w-[2rem] rounded-full md:w-[2rem] mt-[1.1rem] " onClick={b}></img></div>
               <div id="sr1" className=" "  ref={l} style={{ position: "relative", left: `${leftx}px`}}>
               <div id="sr" className={`flex  flex-row max-w-full  items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
               <img src={pp} alt="s" className="xs:w-10 rounded-full md:w-10 mr-2 " onClick={get}></img>

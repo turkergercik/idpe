@@ -4,6 +4,7 @@ import { BrowserRouter as Router,Routes, Route, Link,Navigate, useNavigate, useL
 import Reg from "./pages/register"
 import Log from "./pages/login"
 import User from "./pages/user"
+import Peer from "simple-peer"
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import Protect from "./pages/protected"
 import Home from './pages/home';
@@ -24,17 +25,58 @@ import { create } from 'filepond';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
 import { async } from '@firebase/util';
 import { StatusBar, Style } from '@capacitor/status-bar';
-
+import { CameraSource } from '@capacitor/camera';
+import { ReactComponent as Accept } from ".pages/images/accept.svg"
+import { ReactComponent as Decline } from ".pages/images/decline.svg"
 //import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/';
 //import { CameraPreview } from '@capacitor-community/camera-preview';
 export const Pro = createContext()
 
 function App() {
+  let darktext="dark:text-[#F0EFE9]"
+  let bgfordarkmode="dark:bg-[#1a1a1a]"
+  let whitefordark="dark:text-[#F0EFE9]"
+  let svgcolor="text-[#097EFE]"
+  let bg="bg-[#097EFE]"
+  let specialwhitebg="bg-[#F0EFE9]"
+  let specialwhitetext="text-[#F0EFE9]"
+  let bordercolor="border-[#097EFE]"
+  let textcolorblue="text-[#097EFE]"
+  let svgsearch="text-[#60ACFF]"
+  let bginput="bg-[#F0EFE9]"
+  let divisionlinedark="dark:divide-[#F0EFE9]"
+  let darkborderinput="dark:border-[#F0EFE9]"
+  let focusvgsearch="focus:border-[#097EFE]"
+  let divisioncolor="divide-[#90C5FF]"
+  let divisioncolorforfirstline="border-[#90C5FF]"
+  let maincolor="bg-white"
+  const [ me, setMe ] = useState("")
+  const [ name, setname ] = useState("")
+	const [ stream, setStream ] = useState(null)
+  const [ camt, setcamt ] = useState(true)
+	const [ receivingCall, setReceivingCall ] = useState(false)
+	const [ caller, setCaller ] = useState("")
+	const [ callerSignal, setCallerSignal ] = useState()
+	const [ callAccepted, setCallAccepted ] = useState(false)
+  const [ isclick, setisclick] = useState(false)
+	const [ idToCall, setIdToCall ] = useState("")
+	const [ callEnded, setCallEnded] = useState(false)
+  const[all,setall]=useState([])
+	const userVideo = useRef(null)
+  const peer1 =useRef()
+  const conid =useRef()
+  const userid =useRef()
+  const peer2 =useRef()
+  const cam =useRef(true)
+  const peer =useRef(null)
+  
   let nav =useNavigate()
   const [isDarkMode, setDarkMode]=useState(false)
   const curref =useRef(["null"])
   const[messages,setmessages]=useState([])
   const[mpeop,setmpeop]=useState([])
+  const id = useRef()
+ 
   const[e,sete]=useState()
   const[f,setf]=useState()
   const[cur,setcur]=useState([])
@@ -44,6 +86,19 @@ function App() {
   const[ne,setne]=useState([])
   let na 
   const aa = localStorage.getItem("token")
+  let front={
+    audio: false,
+    video: {
+      facingMode:"user",
+      frameRate: { min:22,ideal: 25, max:30 }
+    }
+  }
+  let back={
+ audio: false,
+    video: {
+      facingMode:"environment",
+      frameRate: { ideal: 25, max: 30 }
+    }}
   if(aa&&localStorage.getItem("is_reloaded")!==null&&localStorage.getItem("is_reloaded")){
     
      na=jose.decodeJwt(aa)
@@ -58,7 +113,7 @@ function App() {
          
 
      }
-  let prt="https://smartifier.herokuapp.com"
+     let prt="https://smartifier.herokuapp.com"
 const socket = useRef()
 async function as() {
   if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});
@@ -268,15 +323,92 @@ let newc= [...newchat,]
 asas()
 async function bb(){
  
-  
   let n
   socket.current=io(prt)
   socket.current.emit("no",na?.id)
   /* socket.current.on("ho",(e)=> console.log(e)) */
   socket.current.on("get",(e)=> {
-  //  setall(e)
-//  console.log(e)
+    setall(e)
+  //console.log(e)
 })
+
+
+let c= front
+   front.audio={echoCancellation:true}
+
+let tream
+   //socket.current = io(prt)
+    const getUserMedia = async () => {
+      try {
+     tream = await navigator.mediaDevices.getUserMedia(c)
+      //tream.getVideoTracks().forEach((t) => t.enabled=false)
+        setStream(tream)
+        //setStreamf(tream3)
+        //alert(tream3,tream)
+       
+        if(vid.current!==null)
+       { 
+
+    //Our first draw
+    vid.current.srcObject = tream   
+    vid.current.play()    
+      }
+     
+    
+    }catch (err) {
+   
+        console.log(err);
+        alert(err)
+      }
+    };
+    //getUserMedia();
+    
+    
+	/* 	navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+			setStream(stream)
+      setTimeout(() => {
+        v.current.srcObject = stream
+      }, 0);
+		}) */
+    if(socket.current){
+    socket.current.on("ended",()=>{
+      console.log("bitti")
+      setCallEnded(false)
+      //peer.destroy()
+      nav(`/chat/${conid.current}`)
+      setReceivingCall(false)
+      //window.location.reload()
+      //setAni(false)
+      //getUserMedia()
+    
+
+    })
+  socket.current.emit("no",na.id)
+  socket.current.on("get",e=>console.log(e))
+  socket.current.on("m",(r)=>{
+    if(r.conid===undefined){
+    console.log(r)
+    console.log("7")
+    setIdToCall(r.socketId)
+    id.current = r.socketId
+  }else{
+    console.log("8")
+    conid.current=r.conid
+    userid.current=r.userId
+  }
+  })
+	socket.current.on("me",(r) => {
+    //console.log(r)
+			setMe(r)
+		})
+	  socket.current.on("calling", (data) => {
+			setReceivingCall(true)
+			setCaller(data.from)
+			setCallerSignal(data.signal)
+      setname(data.name)
+		})}
+   
+
   socket.current.on("getm",async(e)=> {
      n ={
       sender:e.sender,
@@ -287,7 +419,7 @@ async function bb(){
       conversationid:e.conversationid,
       isNotification:e.isNotification
     }
-    
+    console.log("lllllll")
     setne(n)
     //no.current=false
     //alert(e.isNotification)
@@ -398,7 +530,7 @@ socket.current.emit("send",{
         }).catch((e)=> console.log(e))
    
       }else {
-        
+        console.log("ok7999888")
         await store.current.set("chatsbackup",chats)
         sete([])
 
@@ -417,12 +549,67 @@ socket.current.emit("send",{
     })
 }
 bb()
-      return () => socket.current.disconnect()
-  },[])
+      return () => {
+        socket.current.disconnect()
+     
+        if(peer1.current!==undefined){
+          //peer1.current.destroy()
+        }
+    //socket.current.disconnect()
+        //connectionRef.current.destroy()
+        //if(stream){ stream.getTracks().forEach((t) => t.stop())}
+       // socket.current.disconnect()
+ }
+  
+  
+  
+  
+  
+  
+    },[])
+/* useEffect(()=>{
+  console.log(loc.pathname)
+  if(loc.pathname==="/webcam"){
+    setStream(null)
+  
+    
+    }else{
+      setStream("null")
+     }
+      
+
+},[loc]) */
+
+
+
+
  useEffect(()=>{
+  console.log("456456")
+  setTimeout(() => {
+    //setStream(null)
+    
+  }, 5000);
   setmessages([])
  },[cur])
+ const answerCall =() =>  {
+  setCallAccepted(true)
+   peer2.current = new Peer({
+    initiator: false,
+    trickle: false,
+    
+  })
+  peer.current=peer2.current
+  peer2.current.on("signal", (data) => {
+    socket.current.emit("answerCall", { signal: data, to: caller })
+  })
+  peer2.current.on("stream", (stream) => {
+    userVideo.current.srcObject = stream
+    console.log(stream)
+  })
 
+  peer2.current.signal(callerSignal)
+  //connectionRef.current = peer
+}
 
 /*     if(loc.pathname!=="/webcam"){
       if(vid.current!==null&&vid.current.srcObject!==null)
@@ -487,7 +674,8 @@ LocalNotifications.createChannel(NotificationChannelf)
    let b = JSON.parse(a)
    //let a = localStorage.getItem("aut")
    const [aut,setAut]=useState(b)
-   const [cam,setcam]=useState(false)
+
+   //const [cam,setcam]=useState(false)
  /*  if(a){
     as()
   
@@ -497,11 +685,38 @@ LocalNotifications.createChannel(NotificationChannelf)
  element={<Navigate to="/reg" replace />}
   } */
   //gconsole.log(cur)
+ /*  let goback = window.onpopstate = e => {
+    //your code...
+    document.getElementById("11").classList.remove("animate-wiggle").add("animate-wiggle1")
+
+  } */
+// "0%":{transform: "translateY(0%) "}, "100%": { transform: "translateY(-100%)"},
   return (
-    <div  className={isDarkMode ? "dark unselectable":"unselectable"}>
-      <div>{cur1}</div>
+    <div id='11'  className={isDarkMode ? "dark unselectable":"unselectable"}>
     <Pro.Provider  value={{aut,setAut}}>    
-   
+    <div className={`absolute mx-2 z-0 top-2 right-0 left-0 rounded-lg ${bginput}  h-20 `}> 
+	<div className="flex flex-col items-center w-full ">
+						<h1 className="text-center">{name} seni arıyor neredesin sen...</h1>
+           
+            <div className="flex flex-row bottom-0 m-auto  justify-center">
+              <span className={`flex items-center ${bg} h-10 bg-indigo-600 rounded-md `}>
+              <button className={`flex `} onClick={()=>{
+        console.log(id.current)
+        //answerCall()
+        nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
+        
+        }} >kabul</button>
+            </span>
+            <span className={`${bg} h-10 bg-indigo-600 ml-1 rounded-md`}>
+            <button className='' onClick={()=> setReceivingCall(false)} >reddet</button>
+            </span>
+            </div>
+            </div>
+
+
+     
+     
+      </div>
     {aut===null ? ( <div> 
      {/* <div className='absolute left-2/4 text-center ' >helo</div> */}
 <button onClick={()=>nav("/reg")} className="w-15 flex absolute right-0 mr-20 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Kaydol</button>
@@ -526,7 +741,37 @@ LocalNotifications.createChannel(NotificationChannelf)
    </div>)
 
 
-    }
+    }{ receivingCall && !callAccepted && loc.pathname!=="/webcam" ?
+      <div className='absolute z-40 top-5 left-1/2 transform -translate-x-1/2 rounded-lg bg-[#DCDCDC] w-screen '> 
+	<div className="flex flex-col items-center ">
+						<h1 className="text-center">{name} seni arıyor neredesin sen...</h1>
+           
+            <div className="flex flex-row bottom-0 m-auto  justify-center">
+              <span className={`flex items-center ${bg} h-10 bg-indigo-600 rounded-md `}>
+              <button className={`flex `} onClick={()=>{
+        console.log(id.current)
+        //answerCall()
+        nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
+        
+        }} >kabul
+        <Accept/>
+        </button>
+            </span>
+            <span className={`${bg} h-10 bg-indigo-600 ml-1 rounded-md`}>
+            <button className='' onClick={()=> setReceivingCall(false)} >reddet</button>
+            </span>
+            </div>
+            </div>
+
+
+     
+     
+      </div>:null
+    }{callAccepted && !callEnded ?
+      <div className=" absolute rounded-lg w-2/6 bg-black   left-auto  top-0 right-0 m-2 ">
+
+        <video playsInline ref={userVideo} autoPlay className="rounded-lg object-contain h-full w-full" onClick={()=>{}}/> </div>:
+        null}
       <Routes>
       
         <Route exact path="/" element={aut===null ?<Navigate to="/login"/>:<Navigate to="/chat"  />}/>
@@ -545,9 +790,9 @@ LocalNotifications.createChannel(NotificationChannelf)
             
             </Route>
             <Route element={<Protect1 />}><Route  path="/r" element={<Redirect1 sock={socket.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat e={e} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid ne={ne}  setflag1={setflag1} flag1={flag1}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam sock={socket} ss={sets} v={vid}/>}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid ne={ne}  setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam cur={cur}  conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid}/>}/></Route>
             <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid}/>}/></Route>
          
          

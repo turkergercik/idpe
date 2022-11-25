@@ -42,6 +42,21 @@ module.exports = {
       '7xl': '5rem',
     },
     extend: {
+      keyframes: {
+        wiggle: {
+        "0%":{opacity: "0"}, "100%": { opacity:"1"},
+        
+               },
+               wiggle1: {
+                "0%":{opacity: "0"}, "100%": { opacity:"1"},
+                
+                       }
+
+              },animation: {
+                wiggle: "wiggle 0.2s ease-in",
+                wiggle1: "wiggle1 0.2s ease-out ",
+
+                          },
    colors:{
     spec:"#c4b5fd",
     scroll:"#60ACFF",
