@@ -26,8 +26,8 @@ import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
 import { async } from '@firebase/util';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { CameraSource } from '@capacitor/camera';
-import { ReactComponent as Accept } from ".pages/images/accept.svg"
-import { ReactComponent as Decline } from ".pages/images/decline.svg"
+import { ReactComponent as Accept } from "./pages/images/accept.svg"
+import { ReactComponent as Decline } from "./pages/images/decline.svg"
 //import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/';
 //import { CameraPreview } from '@capacitor-community/camera-preview';
 export const Pro = createContext()
@@ -61,6 +61,7 @@ function App() {
   const [ isclick, setisclick] = useState(false)
 	const [ idToCall, setIdToCall ] = useState("")
 	const [ callEnded, setCallEnded] = useState(false)
+  const [ cr, setcr] = useState(false)
   const[all,setall]=useState([])
 	const userVideo = useRef(null)
   const peer1 =useRef()
@@ -71,6 +72,7 @@ function App() {
   const peer =useRef(null)
   
   let nav =useNavigate()
+  const messagesfromdb = useRef("getget")
   const [isDarkMode, setDarkMode]=useState(false)
   const curref =useRef(["null"])
   const[messages,setmessages]=useState([])
@@ -113,7 +115,7 @@ function App() {
          
 
      }
-     let prt="https://smartifier.herokuapp.com"
+     let prt="https://smartifier.onrender.com"
 const socket = useRef()
 async function as() {
   if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});
@@ -179,7 +181,7 @@ async function as() {
     });
     
     store.current = new Storage({
-      name: 'mystore.current.db',
+      name: 'localedb.db',
       //driverOrder:[CordovaSQLiteDriver._driver, Drivers.IndexedDB, Drivers.LocalStorage]
     });
     async function create(){
@@ -375,8 +377,9 @@ let tream
       console.log("bitti")
       setCallEnded(false)
       //peer.destroy()
-      nav(`/chat/${conid.current}`)
       setReceivingCall(false)
+      if(loc.pathname==="/webcam"){
+      nav(`/chat/${conid.current}`,{replace:true})}
       //window.location.reload()
       //setAni(false)
       //getUserMedia()
@@ -392,6 +395,7 @@ let tream
     setIdToCall(r.socketId)
     id.current = r.socketId
   }else{
+    setReceivingCall(false)
     console.log("8")
     conid.current=r.conid
     userid.current=r.userId
@@ -402,6 +406,7 @@ let tream
 			setMe(r)
 		})
 	  socket.current.on("calling", (data) => {
+      console.log(data)
 			setReceivingCall(true)
 			setCaller(data.from)
 			setCallerSignal(data.signal)
@@ -669,7 +674,15 @@ LocalNotifications.createChannel(NotificationChannelm)
 //PushNotifications.createChannel(NotificationChannelf)
 LocalNotifications.createChannel(NotificationChannelf)
 }
- 
+const leaveCall = () => {
+  // console.log({me:me,caller:caller,receiver:idToCall})
+
+   socket.current.emit("ending",idToCall,me,caller)
+   //setCallEnded(true)
+   //setReceivingCall(false)
+   //connectionRef.current.destroy()
+   //window.location.reload()
+ }
    let a = localStorage.getItem("aut")
    let b = JSON.parse(a)
    //let a = localStorage.getItem("aut")
@@ -691,32 +704,40 @@ LocalNotifications.createChannel(NotificationChannelf)
 
   } */
 // "0%":{transform: "translateY(0%) "}, "100%": { transform: "translateY(-100%)"},
-  return (
+
+
+return (
     <div id='11'  className={isDarkMode ? "dark unselectable":"unselectable"}>
-    <Pro.Provider  value={{aut,setAut}}>    
-    <div className={`absolute mx-2 z-0 top-2 right-0 left-0 rounded-lg ${bginput}  h-20 `}> 
+    <Pro.Provider  value={{aut,setAut}}>   
+  
+
+
+
+
+    {/* <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-20 `}> 
 	<div className="flex flex-col items-center w-full ">
-						<h1 className="text-center">{name} seni arıyor neredesin sen...</h1>
+						<h1 className={`text-center my-1 font-bold ${darktext} ${textcolorblue}`}>{name} Seni arıyor neredesin sen...</h1>
            
-            <div className="flex flex-row bottom-0 m-auto  justify-center">
-              <span className={`flex items-center ${bg} h-10 bg-indigo-600 rounded-md `}>
-              <button className={`flex `} onClick={()=>{
+            <div className="flex flex-row  bottom-0 m-auto  ">
+              <div className={`flex items-center h-10 rounded-md `}>
+              <Accept className={`text-red-600  z-10  w-10 h-10 `} onClick={()=>{
         console.log(id.current)
         //answerCall()
         nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
         
-        }} >kabul</button>
-            </span>
-            <span className={`${bg} h-10 bg-indigo-600 ml-1 rounded-md`}>
-            <button className='' onClick={()=> setReceivingCall(false)} >reddet</button>
-            </span>
+        }} />
+     
+            </div>
+            <div className={`right-0 h-10 w-10  ml-1 rounded-md`}>
+            <Decline className='text-green-700' onClick={()=> setReceivingCall(false)} />
+            </div>
             </div>
             </div>
 
 
      
      
-      </div>
+      </div> */}
     {aut===null ? ( <div> 
      {/* <div className='absolute left-2/4 text-center ' >helo</div> */}
 <button onClick={()=>nav("/reg")} className="w-15 flex absolute right-0 mr-20 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Kaydol</button>
@@ -742,31 +763,35 @@ LocalNotifications.createChannel(NotificationChannelf)
 
 
     }{ receivingCall && !callAccepted && loc.pathname!=="/webcam" ?
-      <div className='absolute z-40 top-5 left-1/2 transform -translate-x-1/2 rounded-lg bg-[#DCDCDC] w-screen '> 
-	<div className="flex flex-col items-center ">
-						<h1 className="text-center">{name} seni arıyor neredesin sen...</h1>
-           
-            <div className="flex flex-row bottom-0 m-auto  justify-center">
-              <span className={`flex items-center ${bg} h-10 bg-indigo-600 rounded-md `}>
-              <button className={`flex `} onClick={()=>{
-        console.log(id.current)
-        //answerCall()
-        nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
-        
-        }} >kabul
-        <Accept/>
-        </button>
-            </span>
-            <span className={`${bg} h-10 bg-indigo-600 ml-1 rounded-md`}>
-            <button className='' onClick={()=> setReceivingCall(false)} >reddet</button>
-            </span>
-            </div>
-            </div>
-
-
+    <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-20 `}> 
+    <div className="flex flex-col items-center w-full ">
+              <h1 className={`text-center my-1 font-bold ${darktext} ${textcolorblue}`}>{name} Seni arıyor neredesin sen...</h1>
+             
+              <div className="flex flex-row  bottom-0 m-auto  ">
+                <div className={`flex items-center h-10 rounded-md `}>
+                  <span className='absolute h-8 m-1 w-8 bottom-2  z-10 bg-white rounded-full '></span>
+                <Accept className={`text-green-700 z-10  w-10 h-10 `}  onClick={()=>{
+                  //setCallAccepted(true)
+          console.log(id.current)
+          setcr(true)
+          //answerCall()
+          nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
+          
+          }} />
      
-     
-      </div>:null
+              </div>
+              <div className={`flex items-center h-10 w-10  ml-1 rounded-md`}>
+              <span className='absolute h-8 m-1 w-8 bottom-2 z-10 bg-white rounded-full '>  </span>
+
+              <Decline className='text-red-600 z-10' onClick={()=> leaveCall()} />
+              </div>
+              </div>
+              </div>
+  
+  
+       
+       
+        </div>:null
     }{callAccepted && !callEnded ?
       <div className=" absolute rounded-lg w-2/6 bg-black   left-auto  top-0 right-0 m-2 ">
 
@@ -775,12 +800,12 @@ LocalNotifications.createChannel(NotificationChannelf)
       <Routes>
       
         <Route exact path="/" element={aut===null ?<Navigate to="/login"/>:<Navigate to="/chat"  />}/>
-        <Route element={<Protect />}><Route path="/reg" element={<Reg />}/>
+        <Route element={<Protect />}><Route path="/reg" element={<Reg prt={prt}/>}/>
             </Route>
             <Route element={
             <Protect />
           }>
-            <Route exact path="/login" element={<Log/>}/>
+            <Route exact path="/login" element={<Log prt={prt} />}/>
             </Route>
             
             <Route element={
@@ -790,9 +815,9 @@ LocalNotifications.createChannel(NotificationChannelf)
             
             </Route>
             <Route element={<Protect1 />}><Route  path="/r" element={<Redirect1 sock={socket.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid ne={ne}  setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam cur={cur}  conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid}/>}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam prt={prt} cur={cur} cr={cr} setcr={setcr}  conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid}/>}/></Route>
             <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid}/>}/></Route>
          
          

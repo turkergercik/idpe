@@ -7,7 +7,7 @@ import { PushNotifications } from "@capacitor/push-notifications";
 import { Capacitor } from "@capacitor/core";
 import splash from "./images/ss.svg"
 
-function Log() {
+function Log({prt}) {
   let andtok=""
   let nav = useNavigate()
   if(Capacitor.getPlatform()!=="web")
@@ -48,7 +48,7 @@ function Log() {
     async function a(){
       setBni(false)
       //event.preventDefault() 
-        await axios.post("https://smartifier.herokuapp.com/login",{
+        await axios.post(`${prt}/login`,{
             email:Email,
             password:Password,
             notid:andtok

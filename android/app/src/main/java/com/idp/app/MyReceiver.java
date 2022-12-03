@@ -32,7 +32,7 @@ public class MyReceiver extends BroadcastReceiver {
     public static Socket socket;
     {
         try {
-            socket = IO.socket("https://smartifier.herokuapp.com");
+            socket = IO.socket("https://smartifier.onrender.com");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -124,7 +124,7 @@ public class MyReceiver extends BroadcastReceiver {
                 socket.emit("send",json1);
                 //socket.disconnect();
                 //System.out.println(json);
-                sendPost(json, context.getApplicationContext(), "https://smartifier.herokuapp.com/messages",Integer.parseInt(notificationid),conversationid);
+                sendPost(json, context.getApplicationContext(), "https://smartifier.onrender.com/messages",Integer.parseInt(notificationid),conversationid);
                 //PushNotificationService.other=title;
                 //PushNotificationService.Conversation=conversationid;
                 Message nm = new Message(b1,null,conversationid);

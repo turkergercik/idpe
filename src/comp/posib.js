@@ -9,7 +9,7 @@ import pp from "../pages/images/splash1.png"
 
 
 
-export default function Possib({current,mesa1,db,message,person,flag1,setflag1,setno,no,click,nos,setisOpenedPeople,convs,setcur}){
+export default function Possib({prt,current,messagesfromdb,mesa1,db,message,person,flag1,setflag1,setno,no,click,nos,setisOpenedPeople,convs,setcur}){
   //const[mpeo,setmpeo]=useState([])
   let focusborder="focus:border-[#097EFE]"
   let darktext="dark:text-[#F0EFE9]"
@@ -21,7 +21,7 @@ export default function Possib({current,mesa1,db,message,person,flag1,setflag1,s
   let maincolor="bg-white"
   let bg="bg-[#E8E8E8]"
   let bordercolor="border-[#60ACFF]"
-  let prt="https://smartifier.herokuapp.com"
+  //let prt="https://smartifier.onrender.com"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
   const headers = { Authorization:a}; 
@@ -101,7 +101,7 @@ export default function Possib({current,mesa1,db,message,person,flag1,setflag1,s
         /* m.members[4]=true
         m.members[5]=true */
         console.log(backup.current)
-        message(pre=>[...pre,...backup.current])
+        //message(pre=>[...pre,...backup.current])
         
           await axios.put(`${prt}/conversations/${id}`,{
 
@@ -119,7 +119,7 @@ export default function Possib({current,mesa1,db,message,person,flag1,setflag1,s
           backup.current[result].members[5]=true
           console.log(backup.current)
           await db.set("chatsbackup",backup.current)
-          message(pre=>[...pre,...backup.current])
+          //message(pre=>[...pre,...backup.current])
           //await db.set("chatbackup",[...backup.current])
           await axios.put(`${prt}/conversations/${id}`,{
 
@@ -149,7 +149,7 @@ export default function Possib({current,mesa1,db,message,person,flag1,setflag1,s
         console.log(backup.current)
         //ne =[{_id:res.data._id,members:[na.id,person._id,na.name,person.name,true,true]}]
         //ne[0]._id=res.data._id
-        message(pre=>[...pre,res.data])
+        //message(pre=>[...pre,res.data])
        //chec(person.name)
        }).catch((err)=>{console.log(err)})
       }
@@ -199,12 +199,13 @@ export default function Possib({current,mesa1,db,message,person,flag1,setflag1,s
     console.log(mpeop.members[4])
    } */}}
   async function bb(){
+    console.log(messagesfromdb)
+    //messagesfromdb.current="12"
     backup.current = await db.get("chatsbackup")
-
     /* console.log(mesa1[2].members[1]===person._id)
     console.log(mesa1[2].members[0]) */
-    b().then(()=>get())
-   
+    //b().then(()=>get())
+   get().then(()=>{b()})
     
     
  

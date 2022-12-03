@@ -20,6 +20,8 @@ import sketch from "./sketch"
 import sketch1 from "./sketch1"
 import { render } from "timeago.js";
 import { ReactComponent as Back } from "../pages/images/back.svg"
+import { ReactComponent as Decline } from "../pages/images/decline.svg"
+import { ReactComponent as Accept } from "../pages/images/accept.svg"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -77,7 +79,7 @@ function requestPermission() {
 
     }})} */
   
-    let prt="https://smartifier.herokuapp.com"
+    //let prt="https://smartifier.onrender.com"
 
 async function ac({vi}) {
 /*   const as= await LocalNotifications.schedule({
@@ -98,7 +100,26 @@ async function ac({vi}) {
   console.log("ok") */
 }
 
-export default function Webcam({cur,conid,userVideo,peer2,me,setMe,name,setname,stream,setStream,receivingCall,setReceivingCall,caller,setCaller,callerSignal,setCallerSignal,idToCall,setIdToCall,callEnded,setCallEnded,peer1,ss,sock,id}){
+export default function Webcam({prt,cur,cr,setcr,conid,userVideo,peer2,me,setMe,name,setname,stream,setStream,receivingCall,setReceivingCall,caller,setCaller,callerSignal,setCallerSignal,idToCall,setIdToCall,callEnded,setCallEnded,peer1,ss,sock,id}){
+  let darktext="dark:text-[#F0EFE9]"
+  let bgfordarkmode="dark:bg-[#1a1a1a]"
+  let whitefordark="dark:text-[#F0EFE9]"
+  let svgcolor="text-[#097EFE]"
+  let bg="bg-[#097EFE]"
+  let specialwhitebg="bg-[#F0EFE9]"
+  let specialwhitetext="text-[#F0EFE9]"
+  let bordercolor="border-[#097EFE]"
+  let textcolorblue="text-[#097EFE]"
+  let svgsearch="text-[#60ACFF]"
+  let bginput="bg-[#F0EFE9]"
+  let divisionlinedark="dark:divide-[#F0EFE9]"
+  let darkborderinput="dark:border-[#F0EFE9]"
+  let focusvgsearch="focus:border-[#097EFE]"
+  let divisioncolor="divide-[#90C5FF]"
+  let divisioncolorforfirstline="border-[#90C5FF]"
+  let maincolor="bg-white"
+  
+  
   const [ani, setAni] = useState(false);
   const [bni, setBni] = useState(false);
   const a = localStorage.getItem("token")
@@ -179,14 +200,27 @@ let tream
         //setStreamf(tream3)
         //alert(tream3,tream)
         //ss(tream)
+       
         if(v.current!==null&&v.current!==undefined)
        { 
+       
 console.log("ok999")
+console.log(cr)
     //Our first draw
     v.current.srcObject = tream   
     v.current.play()    
       }
-     
+     if(!cr&&tream!==null){
+    let button =document.getElementById("ll")
+    setTimeout(() => {
+      button?.click()
+    }, 0);
+        /* console.log("kıkıkı")
+        sock.current.emit("who",location.state.userid,na.id,location.state.conid)
+        call() */
+        
+
+     }
     
     }catch (err) {
    
@@ -209,10 +243,11 @@ console.log("ok999")
     if(sock.current){
     sock.current.on("ended",()=>{
       console.log("bitti")
+      setcr(false)
       setCallEnded(false)
-      //peer.destroy()
+      //peer.current.destroy()
      
-      nav(`/chat/${location.state.conid}`)
+      nav(`/chat/${location.state.conid}`,{replace:true})
       setReceivingCall(false)
       
       //window.location.reload()
@@ -222,7 +257,7 @@ console.log("ok999")
 
     })
   //sock.current.emit("no",na.id)
-  sock.current.on("get",e=>console.log(e))
+ /*  sock.current.on("get",e=>console.log(e))
   sock.current.on("m",(r)=>{
    //conid.current=cur.cid
     console.log("78")
@@ -239,7 +274,8 @@ console.log("ok999")
 			setCaller(data.from)
 			setCallerSignal(data.signal)
       setname(data.name)
-		})}
+		}) */
+  }
     return () => {
 
       if(peer1.current!==undefined){
@@ -258,7 +294,6 @@ console.log("ok999")
 	},[])
   
 	function call(){
- 
      const  callUser = async() => {
      peer1.current = new Peer({
 			initiator: true,
@@ -390,7 +425,7 @@ console.log(caller)
     b.stop()
     if(cam.current){
      
-   
+   console.log("t")
       //a.getTracks().forEach((t) => t.stop())
      navigator.mediaDevices.getUserMedia(back).then((tream1)=>{
       //
@@ -407,13 +442,13 @@ console.log(caller)
         cam.current=false
         setcamt(false)
       }else if(tream1){
-        
+        console.log("rrr")
         stream.addTrack(tream1.getVideoTracks()[0])
        
         //console.log(window.stream.getTracks())
         //console.log(window.stream.getTracks())
         v.current.srcObject=stream
-        v.current.play()
+        //v.current.play()
         cam.current=false
         setcamt(false)
       }
@@ -532,12 +567,12 @@ v.current.srcObject=user
 
 return(
 <div className="flex flex-col w-screen h-screen bg-[#fcfbf4]  ">
-<button id="ll" onClick={()=>{
+<button id="ll" className="hidden" onClick={()=>{
 console.log(location.state.userid)
 sock.current.emit("who",location.state.userid,na.id,location.state.conid)
 call()
 
-}} > kkkk</button>
+}} >kkk</button>
 {/* {mpeop.map((c,i)=> (<Convfv key={i} roomid={room}  call={callUser}soc={sock.current} changeconv={setmpeop} cur={setcurrent} convs={mpeop[i]}/>)
     
 
@@ -548,8 +583,10 @@ call()
 					{ <video playsInline autoPlay muted ref={v} className="w-full h-full object-contain"  onClick={()=>{
     console.log("ok")
     setisclick(!isclick)}} />}
-				</div>:<div >
-					
+				</div>:<div className="video h-full w-full">
+					{ <video playsInline autoPlay muted ref={v} className="w-full h-full object-contain"  onClick={()=>{
+    console.log("ok")
+    setisclick(!isclick)}} />}
 				</div>}
 				
 				
@@ -570,25 +607,25 @@ call()
               </button>
             </span> */}
         <div>
-					{callAccepted && !callEnded && !isclick ? (
-            <span className="absolute  left-1/2 transform -translate-x-1/2  bottom-1 bg-indigo-600 rounded-md px-2">
-            <button className="text-xl text-white" onClick={leaveCall}>
-              Bitir
-            </button>
-
-            <button className="text-xl text-white" onClick={toggle}>
-              değiştir
-            </button>
+					{callAccepted && !callEnded && !isclick ? 
+            <><span className="absolute  left-1/2 transform -translate-x-1/2  bottom-2  rounded-md px-2">
+            <div className="flex" >
+            <span className='absolute h-8 m-1 w-8 bottom-0 z-10 bg-white rounded-full '></span>
+            <Decline className={`text-xl  text-red-600 w-10 h-10 z-10 `} onClick={leaveCall} />
+            </div>
           </span>
-					) : (
-					<div></div>
-					)}
+          
+          <button className={`absolute right-2 bottom-4 text-xl ${bg} ${bgfordarkmode} text-white`} onClick={toggle}>
+              Değiştir
+            </button></>
+					 : null}
 				</div>
         {isclick && !callAccepted ? <><div className="h-20 absolute top-0 w-full opacity-60 bg-black">
           </div>
           <Back className={`absolute opacity-100 text-white h-20 left-[1.7rem] `} width="1.5rem" height="1.7rem" onClick={()=>{
             if(stream!==null&&stream.active===true){
             stream.getTracks().forEach((t) => t.stop())
+            leaveCall()
             nav(`/chat/${location.state.conid}`,{replace:true})
 
             }
@@ -599,21 +636,26 @@ call()
 
         }
 				{receivingCall && !callAccepted ? (
-          <div className="absolute   left-1/2 transform -translate-x-1/2  bottom-1 " >
+          <div className="absolute   left-1/2 transform -translate-x-1/2  bottom-2 " >
 						<div className="flex flex-col items-center ">
-						<h1 className="text-center">{name} seni arıyor neredesin sen...</h1>
+						<h1 className={`${specialwhitetext} text-center`}>{name} seni arıyor neredesin sen...</h1>
            
-            <div className="flex flex-row bottom-0 m-auto justify-center">
-              <span className="bg-indigo-600 rounded-md">
-						<button className="text-xl flex text-white px-1" onClick={answerCall}>
-							Cevapla
-						</button>
-            </span>
-            <span className="bg-indigo-600 ml-1 rounded-md">
-            <button className="text-xl flex text-white px-1" onClick={declinecall}>
-							Reddet
-						</button>
-            </span>
+            <div className="flex flex-row bottom-0 justify-center">
+						<div className="flex ">
+            <span className='absolute h-8 m-1 w-8 bottom-0 z-10 bg-white rounded-full '></span>
+            <Accept className={`text-xl flex z-10  text-green-700 w-10 h-10 mr-2 `} onClick={answerCall}/>
+            </div>
+            <div className="flex">
+            <span className='absolute h-8 m-1 w-8 bottom-0 z-10  bg-white rounded-full '></span>
+
+            <Decline className={`text-xl z-10 flex w-10 h-10 text-red-600 `} onClick={()=>{
+           
+              
+             leaveCall()
+            }}/>
+				</div>
+					
+      
             </div>
             </div>
             </div>

@@ -17,7 +17,7 @@ export default function Conv({k,mesa,person,flag1,height,setflag1,convs,db,chang
   let bg="bg-[#fcfbf4]"
   let maincolor="bg-white"
   let bordercolor="border-[#90C5FF]"
-  let prt="https://smartifier.herokuapp.com"
+  let prt="https://smartifier.onrender.com"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
   const headers = { Authorization:a};
@@ -193,7 +193,7 @@ export default function Conv({k,mesa,person,flag1,height,setflag1,convs,db,chang
       let eee = new Array(flag1.length).fill(true)
        eee[k]=false
      setflag1(eee)
-     //setleft(-divw2*1.5)
+     setleft(-divw2*1.5)
      setflag(true)
       } else{
         swiperightBol1.current=true
@@ -215,14 +215,47 @@ export default function Conv({k,mesa,person,flag1,height,setflag1,convs,db,chang
   
   
      },[flag1[k]])
+
+
+    
+
+
     useEffect(()=>{
       async function lastm(){
-
+    
         let last =  await db.get(convs._id)
         if(last!==null&&last.length!==0){
           setlast(last[0].text)
-          const mest=new Date(last[0].createdAt).toLocaleTimeString("tr",{hour: '2-digit', minute:'2-digit'})
-settime(mest)
+          if(new Date(last[0].createdAt).toLocaleDateString("tr-TR")===new Date().toLocaleDateString("tr-TR")){
+            const mest=new Date(last[0].createdAt).toLocaleTimeString("tr",{hour: '2-digit', minute:'2-digit'})
+            settime(mest)
+          }else{
+            const mest1=new Date(last[0].createdAt).toLocaleDateString("tr-TR",{day:"numeric",month:"numeric",year:"numeric"})
+
+            //const mest=new Date(last[0].createdAt).toLocaleTimeString("tr",{hour: '2-digit', minute:'2-digit'})
+  settime(mest1)
+
+          }
+        }else {
+/* console.log(last)
+
+  let r =document.querySelectorAll("[id='1']")
+  console.log(r)
+if(r!=undefined){
+ r.forEach((c,i)=>{
+   //c.classList.add("text-transparent")
+   c.innerHTML=""
+
+ })
+
+ 
+ } */
+
+        
+
+         
+
+
         }
         
       }
@@ -404,17 +437,19 @@ settime(mest)
               
               <div className={`flex w-full  justify-end  overflow-hidden  flex-col   ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={get}>
               
-              <span className="relative"  >{de}</span>
-              <span className={`relative ${darktext} font-normal ${textcolorblue} truncate  text-base`}  >{last}</span>
+              <span className="relative  "  >{de}</span>
+              <span id="1" className={`relative ${darktext}  font-normal ${textcolorblue} truncate  text-base`} >{last}</span>
               </div>
               <span className={`relative ${textcolorblue} ${darktext} ml-auto text-sm text- self-center mr-2 font-normal`}  >{time}</span>
-   
+
               
               
          
               <div className="flex self-end justify-end w-[3rem] h-[3rem]"> 
              
-              {swiperightBol1.current ?  <Arrow className={` mr-1 w-[2rem] h-[2rem] ${svgslide} ${svgslidedark}`}  onClick={slide}/>:<div className="mr-1 w-[2rem] h-[2rem]" ></div>}
+              {swiperightBol1.current ?  <Arrow className={`mr-1 w-[2rem] h-[2rem] ${svgslide} ${svgslidedark}`}  onClick={()=>{
+                //setleft(-30)
+                slide(true)}}/>:<div className="mr-1 w-[2rem] h-[2rem]" ></div>}
               </div>
               </div>
              

@@ -16,10 +16,11 @@ import { ReactComponent as Add } from "../pages/images/add.svg"
 import { ReactComponent as Setting } from "../pages/images/setting.svg"
 import { ReactComponent as Logout } from "../pages/images/log-out.svg"
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
+import { ReactComponent as Accept } from "../pages/images/accept.svg"
 //70A1D7
 let mp
 let sd
-function Chat({all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
+function Chat({prt,all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
   
   let bgblue ="bg-[#A6D1FF]"
   let focusborder="focus:border-[#097EFE]"
@@ -35,7 +36,7 @@ function Chat({all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,cu
   let maincolor="bg-white"
   let bg="bg-[#E8E8E8]"
   let bordercolor="border-[#60ACFF]"
-  let prt="https://smartifier.herokuapp.com"
+  //let prt="https://smartifier.herokuapp.com"
     //const [current, setcurrent] = useState({cid:"",cnm:""});
     const [write, setwrite] = useState('');
     const [Some, setSome] = useState('');
@@ -367,8 +368,6 @@ if(ani&&bni){
         <div className={isDarkMode ? "absolute bg-black top-0 bottom-0 right-0 left-0 ":null}>
         <div className="animate-wiggle1" >
           <div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
-      
-         
            <div id="msj" className={`flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white rounded-lg p-1`}>
            <span className={` font-bold bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] py-8 mt-1 rounded-lg md:px-1 text-[2.3rem] ${textcolorblue}`} onClick={async()=>{ 
             close()}}>Sohbetler</span>
@@ -434,7 +433,7 @@ if(ani&&bni){
 
 
 
-     { peop.map((c,i)=> (<Possib db={db} key={i} setisOpenedPeople={setisOpenedPeople} flag1={flag1} setflag1={setflag1} click={click}  setcur={setcur} mesa1={mp}  message={setmpeop}  person={peop[i]}  convs={mpeopbackup[i]}/>)
+     { peop.map((c,i)=> (<Possib prt={prt}  db={db} key={i} setisOpenedPeople={setisOpenedPeople} flag1={flag1} setflag1={setflag1} click={click}  setcur={setcur} mesa1={mp}  message={setmpeop}  person={peop[i]}  convs={mpeopbackup[i]}/>)
      
 
      )}

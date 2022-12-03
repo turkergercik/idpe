@@ -53,8 +53,14 @@ registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,F
 
 
 
-function Chatid({db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
+function Chatid({prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
   //smoothscroll.polyfill();
+  let first=false
+  let darktext="dark:text-[#F0EFE9]"
+  let bgfordarkmode="dark:bg-[#1a1a1a]"
+  let whitefordark="dark:text-[#F0EFE9]"
+  let svgcolor="text-[#097EFE]"
+  let bg7="bg-[#097EFE]"
   let svgback="text-[#FFFFFF]"
   let bgblue ="bg-[#F0EFE9]"
   let specialwhitebg="bg-white"
@@ -68,7 +74,7 @@ function Chatid({db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,fl
   let send="text-[#FFFFFF]"
   let bordercolor="border-[#60ACFF]"
   let bg="bg-white"
-  let prt="https://smartifier.herokuapp.com"
+  //let prt="https://smartifier.onrender.com"
   //const [current, setcurrent] = useState({});
   const [write, setwrite] = useState('');
   //const no = useRef(false)
@@ -79,6 +85,7 @@ function Chatid({db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,fl
   const [image, setimage] = useState(false);
   const ready = useRef(null)
   const [bni, setBni] = useState(true);
+  const [first1, setfirst1] = useState(false);
   const [Files, setFiles] = useState([]);
   const[peop,setpeop]=useState([])
   const[all,setall]=useState([])
@@ -203,7 +210,7 @@ const messagesfromdb = useRef(null)
      }
      setsendimage([resized])
     };
- 
+ console.log(first1)
     useEffect(()=>{
    
       async function send(){
@@ -316,7 +323,7 @@ const messagesfromdb = useRef(null)
       curref.current=up.cid
       //console.log(up.cnm)
       //console.log("1",up.cid)
-     
+   
         messagesfromdb.current = await db.get(id)
     
       
@@ -332,14 +339,20 @@ const messagesfromdb = useRef(null)
           window.location.reload()
           //localStorage.setItem("aut",JSON.stringify({"isA":false,"tok":"tokExp"}))
         }
-        setmessages(res.data)
-
-        //const obj = {[up.cid]: res.data}
+        //setmessages(res.data.slice(0,20))
+        setfirst1(true)
         await db.set(up.cid,res.data)
+        messagesfromdb.current=res.data
+       
+        //const obj = {[up.cid]: res.data}
+       
      }).catch((err)=>{
        
         console.log("olmadı")
-      })}}else{
+      })}}
+      
+      if(messagesfromdb.current!==null){
+        console.log("77")
         const newmessages10 = messagesfromdb.current.slice(0,10)
         const newmessages20 = messagesfromdb.current.slice(0,20)
         
@@ -387,8 +400,8 @@ const messagesfromdb = useRef(null)
 
 
     },[update,db])
-      let clas=`scrollbar  mt-2 ml-1.5 mr-0.5 mb-1 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark pr-4`   
-      let clas1=" scrollbar  mt-2 ml-1.5 mr-0.5 mb-1 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex   overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent  pr-4"
+      let clas=`scrollbar  mt-2 ml-1.5 mr- mb-1 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark pr-4`   
+      let clas1=" scrollbar  mt-2 ml-1.5 mr- mb-1 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex   overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent  pr-4"
       
       let scro= src.current
       let time
@@ -445,17 +458,19 @@ const messagesfromdb = useRef(null)
       },[db,cur])
       
       async function asa(){
-        
+        /* if(window.screen.height>scro.offsetHeight+(-Math.floor(scro.scrollTop))){
+
+          
+        }else{ */
         /* console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
         console.log()
         console.log(scro.scrollHeight) */
+        console.log(window.screen.height)
+        console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
         if(scro.offsetHeight+2+(-Math.floor(scro.scrollTop))>=scro.scrollHeight&&load.current===false){          
           
           console.log("o")
-          if(window.screen.height>scro.offsetHeight+(-Math.floor(scro.scrollTop))){
-
           
-          }else{
           load.current=true
           page.current=page.current+1
           /* const pagep =  await db.get("page") || 1
@@ -481,15 +496,7 @@ const messagesfromdb = useRef(null)
           console.log(messagesfromdb)
           //setmessages(p=>[...p,...messagesfromdb])
         }
-         
-       
-        }
-   
       
-           
-       
-        
-        
        }else{ 
         load.current=false
  
@@ -808,7 +815,14 @@ if(messagesfromdb.current!==null){
     setmessages(prev =>[{sender:na.id,receiver:cur.cri,text:value,createdAt:time},...prev])
     t.value=""
     sock.current.emit("send",{sender:na.id,receiver:cur.cri,text:value,conversationid:cur.cid,createdAt:time})
-
+    let addnewmessage
+    if(messagesfromdb.current!==null){
+       addnewmessage = [{sender:na.id,receiver:cur.cri,text:value,conversationid:cur.cid,createdAt:time},...messagesfromdb.current]
+    }else{
+       addnewmessage = [{sender:na.id,receiver:cur.cri,text:value,conversationid:cur.cid,createdAt:time}]
+    }
+    
+    messagesfromdb.current=addnewmessage
     /* const addnewmessage = [{sender:current.csi,text:value,conversationid:current.cid},...messagesfromdb.current]
     messagesfromdb.current=addnewmessage
      await db.set(current.cid,messagesfromdb.current) */
@@ -822,15 +836,7 @@ if(messagesfromdb.current!==null){
       name:na.name
      }).then(async(res)=>{ 
       console.log(res.data)
-      let addnewmessage
-      if(messagesfromdb.current!==null){
-         addnewmessage = [res.data,...messagesfromdb.current]
-      }else{
-         addnewmessage = [res.data]
-      }
-      
-      messagesfromdb.current=addnewmessage
-       await db.set(cur.cid,messagesfromdb.current)
+     await db.set(cur.cid,messagesfromdb.current)
       //console.log(addnewmessage)
       
       //setwrite("")
@@ -1091,6 +1097,13 @@ setTimeout(() => {
 }
 
 },[doubletap1])
+
+
+
+let dat= new Date().toLocaleDateString("tr-TR");
+let year = dat.toString().slice(-4)
+//let day=dat.toString().slice(0,2) + dat.toString().slice(3,5);
+console.log(dat)
     if(ani&&bni){
       return(
       <div className={isDarkMode ? "absolute bg-black top-0 bottom-0 right-0 left-0 ":null}>
@@ -1149,7 +1162,7 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
                </TransformWrapper>
              </div>
              {isopenedm && !doubletap.current ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div>
-             <Back className={`absolute left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
+             <Back className={`absolute z-0 left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
               setisopened(false);
               setimage(false);
               setisopenedm(false);
@@ -1164,42 +1177,88 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
 
          <div id="src2" className={`min-h-full w-full justify-end flex flex-col ${bg} dark:bg-black rounded-lg pr-1  pt-1 `}>
           
-         <div className={`flex justify-center dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1 ml-2  h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
+         <div className={`flex justify-center dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1.5 ml-2.5 mt-0.5 h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
           <span className={`bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
           <span className={`bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] ml-1 `} onClick={()=>nav("/webcam",{ state: { userid: cur.cri , conid: id },replace:true})} >ara</span>
 
-          {!isopened ?<Back className={`absolute left-4 ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
+          {!isopened ?<Back className={`absolute left-5 ${textcolorblue} ${specialwhitetextdark}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
          </div>
 
          
          <div id="src" ref={src}className={clas}>
 {/*             <div className="flex justify-start  z-1 text-indigo-800 w-full  xs:text-xs md:text-xl ml-1 px-1 xs:rounded-sm md:rounded-md  bg-[#c4b5fd]">{!image? current.cnm:null}</div>
- */}            {messages?.map((c,i)=>{
-       
-              if(i === 0 ) {
+ */}            {messages?.map((c,i,f)=>{
+  let opt
+  if(year===new Date(f[i].createdAt).toLocaleDateString("tr-TR").slice(-4)){
+    if(dat===new Date(f[i].createdAt).toLocaleDateString("tr-TR")){
+     opt="today"
+     console.log("nını")
+    }else{
+      opt ={day:"numeric",month:"long"}
+        console.log("aynı")
 
-                 //sc = document.getElementById("src")
-                 return <div k={i} key={i} id="last" ref={scroll}><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage}/></div>
+    }
+    }else{
+    opt=  {day:"numeric",month:"long",year:"numeric"}
+    }
+  if(f[i+1]!==undefined){
+       if((new Date(f[i].createdAt).toLocaleDateString("tr-TR")!==new Date((f[i+1]).createdAt).toLocaleDateString("tr-TR"))){
+        console.log("yes")
+        if(i===0){
+
+          return <div k={i} key={i} id="last" ref={scroll} className="flex flex-col" ><div  className={`flex ml-3.5 mb-5 mt-6 self-center items-center justify-center  px-2 rounded-lg text-sm ${darktext} ${bg7} ${specialwhitetext}  ${bgfordarkmode}`}>{opt==="today" ? "Bugün":new Date((f[i]).createdAt).toLocaleDateString("tr-TR",opt)}</div><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
+
+        }else{
+          return <div className="flex flex-col" key={i} ><div  className={`flex ml-3.5 mb-5 mt-6 self-center items-center justify-center  px-2 rounded-lg text-sm ${darktext} ${bg7} ${specialwhitetext}  ${bgfordarkmode}`}>{opt==="today" ? "Bugün":new Date((f[i]).createdAt).toLocaleDateString("tr-TR",opt)}</div><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
+
+        }
+
+       }else{
+        if(i===0){
+
+          return <div k={i} key={i} id="last" ref={scroll}><Mess  open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
+
+        }else{
+          return <Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} />
+
+        }
+    
+ 
+       }}else{
+       // messages[messages.length-1].createdAt=new Date('05 October 2011 14:48 UTC').toISOString()
         
-         }
-                return <Mess key={i} media={media.current} open={setisopened} on={setimage} own={messages[i].sender} message={messages[i]} setmessage={setmessages} images={sendedimage} />
+        if(messagesfromdb.current?.length===messages.length || first1){
+            console.log("gg")
+                  return <div className="flex flex-col"  key={i}><div className={`flex ml-3.5 self-center items-center justify-center px-2 rounded-lg text-sm ${darktext} ${bg7} ${specialwhitetext}  ${bgfordarkmode}`}>{opt==="today" ? "Bugün":new Date((f[i]).createdAt).toLocaleDateString("tr-TR",opt)}</div><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
+          
+          }
 
+
+       }
+       /* if(i === 0 ) {
+        //sc = document.getElementById("src")
+        return <div k={i} key={i} id="last" ref={scroll}><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage}/></div>  
+       }else{
+        return <Mess key={i} media={media.current} open={setisopened} on={setimage} own={messages[i].sender} message={messages[i]} setmessage={setmessages} images={sendedimage} />
+       } */
+
+      
             }
             
             )}
             
              
             </div>
-            {!isopened && <form className="pb-1 pl-1 relative justify-center  items-center w-full">
+            {!isopened && <form className="pb-2 pr-1 pl-2 relative justify-center items-center w-full">
           
                <input id="tex" className={`focus:outline-none w-full h-10 pr-[8rem]  pb-0.5 pl-1.5 focus:border-orange-500 border-solid ${bordercolor} ${textcolorblue} ${bginput} ${darkborderinput} border-[0.15rem] rounded-2xl`}
                //onInput={e => {setwrite(e.target.value)}} 
                
                name="password" type="text" autoComplete="text"/>
-             <button id="kk" onClick={gon} className={`w-14 bg-gradient-to-r from-[#0295FF] via-[#664BFF] to-[#B50BBA] h-10 absolute right-0 bottom-1  border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white ${buttonbg} dark:bg-black border-solid border-2 ${bordercolor} dark:border-white hover:bg-indigo-700 focus:outline-none  focus:ring-indigo-500 active:bg-indigo-600`}>
+             <button id="kk" onClick={gon} className={`w-14 bg-gradient-to-r from-[#0295FF] via-[#664BFF] to-[#B50BBA] h-10 absolute right-1 bottom-2  border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white ${buttonbg} dark:bg-black border-solid border-2 ${bordercolor} dark:border-white hover:bg-indigo-700 focus:outline-none  focus:ring-indigo-500 active:bg-indigo-600`}>
              <Send1 className={`h-9  absolute left-1/2 -translate-x-1/2  -translate-y-1/2 right-1/2  `} width="1.7rem" height="1.7em"/>
              </button>
-              <div className="absolute  right-[3.8rem] bottom-3 h-10  ">
+              <div className="absolute  right-[3.8rem] bottom-4 h-10  ">
               <button onClick={ (e)=> {
               e.preventDefault()
               opengallery()

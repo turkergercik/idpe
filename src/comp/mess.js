@@ -33,9 +33,9 @@ const alert =useAlert()
     own=true}
   return(
 <div className="">
-{own ? (<><div className="flex items-center pt-2 pl-2">
-<div className={media? `${bgfordarkmode} ${bg} flex p-2 flex-col justify-center items-start bg-white rounded-t-xl rounded-br-xl`:
-`${bgfordarkmode} ${bg} max-w-[20rem] flex p-1 flex-row-reverse justify-start items-end bg-white rounded-t-xl rounded-br-xl`}>
+{own ? (<><div className="flex items-center pt-2 pl-1">
+<div className={media? `${bgfordarkmode} ${bg} flex p-2 flex-col justify-center items-start rounded-t-xl rounded-br-xl`:
+`${bgfordarkmode} ${bg} max-w-[20rem] flex p-1 flex-row-reverse justify-start items-end rounded-t-xl rounded-br-xl`}>
 {media ?<div className="flex flex-row items-center">
   <Download className={`${svgcolor}  ${specialwhitetext}  ${whitefordark} xs:w-10 h-10 rounded-full md:w-10 `} width="3rem" height="3rem" onClick={async()=>{
    const fileName = new Date().getTime() + '.jpeg';
@@ -68,8 +68,8 @@ const alert =useAlert()
       
     <> 
       <div className={`flex  items-center justify-end  pt-1.5 ml-2 w-full`}>
-      <div className={media ? `${bgfordarkmode} ${bg} flex p-2 flex-col justify-center bg-white rounded-t-xl rounded-bl-xl`:
-      `${bgfordarkmode} ${bg} [word-wrap:break-word] flex p-1 max-w-[20rem]  pb-0 flex-row justify-end bg-white rounded-t-xl rounded-bl-xl`}>
+      <div className={media ? `${bgfordarkmode} ${bg} flex px-2 pt-4 flex-col justify-center rounded-t-xl rounded-bl-xl`:
+      `${bgfordarkmode} ${bg} [word-wrap:break-word] flex p-1 max-w-[20rem]  pb-0 flex-row justify-end rounded-t-xl rounded-bl-xl`}>
         {media ? <div className=" flex flex-row-reverse items-center">
                 <Download  className={`${svgcolor}  ${specialwhitetext}   ${whitefordark} xs:w-10 h-10 rounded-full md:w-10`} width="3rem" height="3rem" onClick={async()=>{
                 const fileName = new Date().getTime() + '.jpeg';

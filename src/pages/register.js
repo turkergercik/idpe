@@ -6,7 +6,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 import splash from "./images/ss.svg"
 
 
-function Reg() {
+function Reg({prt}) {
     let  nav =useNavigate()
     const [Name, setName] = useState('');
     const [Email, setEmail] = useState('');
@@ -21,7 +21,7 @@ function Reg() {
         
       event.preventDefault()
       if(Name.trim()!==""&& emailc===true&&passwordc===true){
-        await axios.post("https://smartifier.herokuapp.com/register",{
+        await axios.post(`${prt}/register`,{
           name: Name,
           email:Email,
           password:Password,
