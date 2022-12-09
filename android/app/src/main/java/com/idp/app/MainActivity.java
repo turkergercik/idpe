@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ActionMode;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationManagerCompat;
@@ -19,7 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends BridgeActivity {
-
+    ActionMode mActionMode;
     private static  NotificationManagerCompat nm;
 
     static boolean isVisible = false;
@@ -99,6 +100,13 @@ public class MainActivity extends BridgeActivity {
     public void onPause() {
         super.onPause();
         set(false);
+    }
+
+
+    @Override
+    public void onActionModeFinished(ActionMode mode) {
+        mActionMode = null;
+        super.onActionModeFinished(mode);
     }
     @Override
     public void onStart() {

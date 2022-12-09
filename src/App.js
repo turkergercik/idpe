@@ -57,6 +57,7 @@ function App() {
 	const [ receivingCall, setReceivingCall ] = useState(false)
 	const [ caller, setCaller ] = useState("")
 	const [ callerSignal, setCallerSignal ] = useState()
+  const [profilepicture,setprofilepicture]=useState(null)
 	const [ callAccepted, setCallAccepted ] = useState(false)
   const [ isclick, setisclick] = useState(false)
 	const [ idToCall, setIdToCall ] = useState("")
@@ -115,7 +116,7 @@ function App() {
          
 
      }
-     let prt="https://smartifier.onrender.com"
+     let prt="http://192.168.1.103:3001"
 const socket = useRef()
 async function as() {
   if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});
@@ -589,7 +590,7 @@ bb()
 
 
  useEffect(()=>{
-  console.log("456456")
+  
   setTimeout(() => {
     //setStream(null)
     
@@ -710,8 +711,36 @@ return (
     <div id='11'  className={isDarkMode ? "dark unselectable":"unselectable"}>
     <Pro.Provider  value={{aut,setAut}}>   
   
+    
+   {/*  <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-24 `}> 
+    <div className="flex flex-col items-center w-full ">
+              <h1 className={`text-center mt-3 mb-2 font-bold ${darktext} ${textcolorblue}`}>{name} seni arıyor neredesin sen...</h1>
+             
+              <div className="flex flex-row">
+                <div className={`flex items-center h-12 pb-1 rounded-md `}>
+                  <span className='absolute h-9 m-1 w-9 bottom-2  z-10 bg-white rounded-full '></span>
+                <Accept className={`text-green-700 z-10 w-12 h-12 mr-2 `}  onClick={()=>{
+                  //setCallAccepted(true)
+          console.log(id.current)
+          setcr(true)
+          //answerCall()
+          nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
+          
+          }} />
+     
+              </div>
+              <div className={`flex items-center pb-1  ml-1 h-12 rounded-md`}>
+              <span className='absolute h-9 m-1 w-9 bottom-2 z-10 bg-white rounded-full '>  </span>
 
-
+              <Decline className='text-red-600 z-10 w-12 h-12' onClick={()=> leaveCall()} />
+              </div>
+              </div>
+              </div>
+  
+  
+       
+       
+        </div> */}
 
 
     {/* <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-20 `}> 
@@ -763,14 +792,14 @@ return (
 
 
     }{ receivingCall && !callAccepted && loc.pathname!=="/webcam" ?
-    <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-20 `}> 
+    <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-24 `}> 
     <div className="flex flex-col items-center w-full ">
-              <h1 className={`text-center my-1 font-bold ${darktext} ${textcolorblue}`}>{name} Seni arıyor neredesin sen...</h1>
+              <h1 className={`text-center mt-3 mb-2 font-bold ${darktext} ${textcolorblue}`}>{name} seni arıyor neredesin sen...</h1>
              
-              <div className="flex flex-row  bottom-0 m-auto  ">
-                <div className={`flex items-center h-10 rounded-md `}>
-                  <span className='absolute h-8 m-1 w-8 bottom-2  z-10 bg-white rounded-full '></span>
-                <Accept className={`text-green-700 z-10  w-10 h-10 `}  onClick={()=>{
+              <div className="flex flex-row">
+                <div className={`flex items-center h-12 pb-1 rounded-md `}>
+                  <span className='absolute h-9 m-1 w-9 bottom-2  z-10 bg-white rounded-full '></span>
+                <Accept className={`text-green-700 z-10 w-12 h-12 mr-2 `}  onClick={()=>{
                   //setCallAccepted(true)
           console.log(id.current)
           setcr(true)
@@ -780,10 +809,10 @@ return (
           }} />
      
               </div>
-              <div className={`flex items-center h-10 w-10  ml-1 rounded-md`}>
-              <span className='absolute h-8 m-1 w-8 bottom-2 z-10 bg-white rounded-full '>  </span>
+              <div className={`flex items-center pb-1  ml-1 h-12 rounded-md`}>
+              <span className='absolute h-9 m-1 w-9 bottom-2 z-10 bg-white rounded-full '>  </span>
 
-              <Decline className='text-red-600 z-10' onClick={()=> leaveCall()} />
+              <Decline className='text-red-600 z-10 w-12 h-12' onClick={()=> leaveCall()} />
               </div>
               </div>
               </div>
@@ -815,7 +844,7 @@ return (
             
             </Route>
             <Route element={<Protect1 />}><Route  path="/r" element={<Redirect1 sock={socket.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
+            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
             <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
             <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam prt={prt} cur={cur} cr={cr} setcr={setcr}  conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid}/>}/></Route>
             <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid}/>}/></Route>

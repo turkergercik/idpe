@@ -41,6 +41,7 @@ import { ReactComponent as Camera1 } from "../pages/images/camera.svg"
 import { ReactComponent as Gallery1 } from "../pages/images/gallery.svg"
 import { ReactComponent as Send1 } from "../pages/images/send.svg"
 import { ReactComponent as Back } from "../pages/images/back.svg"
+import { ReactComponent as Camicon } from "../pages/images/zoom.svg"
 import smoothscroll from 'smoothscroll-polyfill';
 
 // Register the plugins
@@ -465,8 +466,8 @@ const messagesfromdb = useRef(null)
         /* console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
         console.log()
         console.log(scro.scrollHeight) */
-        console.log(window.screen.height)
-        console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
+        //console.log(window.screen.height)
+        //console.log(scro.offsetHeight+(-Math.floor(scro.scrollTop)))
         if(scro.offsetHeight+2+(-Math.floor(scro.scrollTop))>=scro.scrollHeight&&load.current===false){          
           
           console.log("o")
@@ -1061,8 +1062,9 @@ gestureZone?.addEventListener('touchend', function(event) {
 },[flag2]) */
 let goback = window.onpopstate = e => {
   //your code...
-  setmessages([])
+  //setmessages([])
   setTimeout(() => {
+    
     nav(-1)
   }, 0);
   
@@ -1103,7 +1105,7 @@ setTimeout(() => {
 let dat= new Date().toLocaleDateString("tr-TR");
 let year = dat.toString().slice(-4)
 //let day=dat.toString().slice(0,2) + dat.toString().slice(3,5);
-console.log(dat)
+
     if(ani&&bni){
       return(
       <div className={isDarkMode ? "absolute bg-black top-0 bottom-0 right-0 left-0 ":null}>
@@ -1173,15 +1175,17 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
            
             }
      
-        {cur.cid!==""?(<div id="src3" className={`flex flex-col h-screen ${bg} dark:bg-black rounded-lg sm:px-30 pt-1`}>
+        {cur.cid!==""?(<div id="src3" className={`flex flex-col w-screen h-screen ${bg} dark:bg-black rounded-lg sm:px-30 pt-1`}>
 
-         <div id="src2" className={`min-h-full w-full justify-end flex flex-col ${bg} dark:bg-black rounded-lg pr-1  pt-1 `}>
+         <div id="src2" className={`min-h-full w-full flex flex-col ${bg} dark:bg-black rounded-lg pr-1  pt-1 `}>
           
-         <div className={`flex justify-center dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1.5 ml-2.5 mt-0.5 h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
-          <span className={`bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
-          <span className={`bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] ml-1 `} onClick={()=>nav("/webcam",{ state: { userid: cur.cri , conid: id },replace:true})} >ara</span>
+         <div className={`flex flex-row   justify-center dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1.5 ml-2.5 mt-0.5 h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
+         {!isopened ?<Back className={`justify-self-start absolute left-5 ${textcolorblue} ${specialwhitetextdark}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
 
-          {!isopened ?<Back className={`absolute left-5 ${textcolorblue} ${specialwhitetextdark}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
+          <span className={`bg-gradient-to-r  bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
+
+          <Camicon className={`flex  justify-end  w-8 ${textcolorblue} ml-1 `} onClick={()=>nav("/webcam",{ state: { userid: cur.cri , conid: id },replace:true})} />
+   
          </div>
 
          
@@ -1228,7 +1232,7 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
        // messages[messages.length-1].createdAt=new Date('05 October 2011 14:48 UTC').toISOString()
         
         if(messagesfromdb.current?.length===messages.length || first1){
-            console.log("gg")
+            
                   return <div className="flex flex-col"  key={i}><div className={`flex ml-3.5 self-center items-center justify-center px-2 rounded-lg text-sm ${darktext} ${bg7} ${specialwhitetext}  ${bgfordarkmode}`}>{opt==="today" ? "Bugün":new Date((f[i]).createdAt).toLocaleDateString("tr-TR",opt)}</div><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
           
           }

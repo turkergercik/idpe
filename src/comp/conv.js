@@ -9,7 +9,10 @@ import del from "../pages/images/del.png"
 import delet from "../pages/images/delete.png"
 import { ReactComponent as Arrow } from "../pages/images/arrow.svg"
 import { async } from "@firebase/util";
-export default function Conv({k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
+import { setPlatform } from "@capacitor/core";
+import { ReactComponent as Profilepic } from "../pages/images/user.svg"
+
+export default function Conv({check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
   let svgslide="text-[#90C5FF]"
   let svgslidedark="dark:text-[#F0EFE9]"
   let textcolorblue="text-[#459DFF]"
@@ -24,6 +27,7 @@ export default function Conv({k,mesa,person,flag1,height,setflag1,convs,db,chang
   const aftersilme={cid:""}
   let nav=useNavigate()
   let de
+  let kar
   const nos = useRef(false)
   const l = useRef(null)
   const f = useRef(null)
@@ -31,13 +35,16 @@ export default function Conv({k,mesa,person,flag1,height,setflag1,convs,db,chang
   const[flag,setflag]=useState(true)
   const [leftx,setleft]=useState(0)
   const [last,setlast]=useState()
+  const [pp,setpp]=useState([])
   const [time,settime]=useState()
   const [divw,setdiv]=useState()
   let resp=[]
+  let result
   if(convs.members[1]===na.id){
      de =convs.members[2]
+   kar=convs.members[0]
   }else{
-
+    kar=convs.members[1]
     de =convs.members[3]
   }
  /*  if(convs.members[0]===na.id){
@@ -218,9 +225,54 @@ export default function Conv({k,mesa,person,flag1,height,setflag1,convs,db,chang
 
 
     
+useEffect(()=>{
+  async function pp(){
+    let pp1 = await db.get("pp")
+    let x= await db.get("chatsbackup")
+    let resulte
 
+    let pp2=[]
+    if(pp1===null&&person.length!==0){
+     console.log("ko")
+     person.forEach(e => {
+
+       x.forEach(a=>{
+        
+       if(a.members[0]!==na.id &&a.members[0]===e._id||a.members[1]!==na.id &&a.members[1]==e._id){
+         
+       pp2=[...pp2,e]
+       }
+       })
+     });
+     await db.set("pp",pp2)
+     let filtered= pp2.forEach((v,i) => {
+   
+       if(v._id===kar){
+         resulte=i
+       }})
+      console.log(pp2)
+     
+      setpp(pp2[resulte])
+    }else{
+      if(pp1!==null){
+     
+    let filtered= pp1.forEach((v,i) => {
+
+     if(v._id===kar){
+
+       resulte=i
+     }})
+
+   
+    setpp(pp1[resulte])}
+   }
+     }
+     pp()
+
+},[person,db])
 
     useEffect(()=>{
+  
       async function lastm(){
     
         let last =  await db.get(convs._id)
@@ -257,7 +309,10 @@ if(r!=undefined){
 
 
         }
-        
+        setTimeout(() => {
+          setcheck(true)
+          
+        }, 5);
       }
       lastm()
       let divw2= document.getElementById("sr2")?.offsetWidth
@@ -315,7 +370,7 @@ if(r!=undefined){
       nos.current=!nos.current
       await db.remove(convs._id)
       let x = await db.get("chatsbackup") 
-      let result
+      
       console.log(x)
       let filtered= x.forEach((v,i) => {
     
@@ -423,7 +478,7 @@ if(r!=undefined){
       }
       
       //silme()
-
+      //if(convs!==undefined)console.log(convs._id)
 
     if((convs.members[0]===na.id&&convs.members[4]===true)||(convs.members[1]===na.id&&convs.members[5]===true)){
        
@@ -432,13 +487,13 @@ if(r!=undefined){
             <div className="relative max-w-screen z-0">
             <div className="absolute   top-[2.5px] " style={{ right:`${8}px` }}><img id="sr2" src={delet} alt="s" className="xs:w-[2rem] rounded-full md:w-[2rem] mt-[1.1rem] " onClick={b}></img></div>
               <div id="sr1" className=" "  ref={l} style={{ position: "relative", left: `${leftx}px`}}>
-              <div id="sr" className={`flex  flex-row max-w-full  items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
-              <img src={pp} alt="s" className="xs:w-10 rounded-full md:w-10 mr-2 " onClick={get}></img>
-              
+              <div id="sr" className={`flex   flex-row max-w-full  items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
+            
+              {pp?.profilepicture!==undefined ? <img src={pp.profilepicture} alt="s" className="mb-1 object-contain bg-slate-50 rounded-full h-[4rem] aspect-square mr-2 " onClick={get}/>:<div className="w-20 mb-1"><Profilepic className={`${textcolorblue} ${darktext} opacity-50 dark:opacity-20 rounded-full w-[4rem] h-[4rem]  mr-2`}  onClick={get}/></div>}
+          
               <div className={`flex w-full  justify-end  overflow-hidden  flex-col   ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={get}>
-              
-              <span className="relative  "  >{de}</span>
-              <span id="1" className={`relative ${darktext}  font-normal ${textcolorblue} truncate  text-base`} >{last}</span>
+              <span className="relative">{de}</span>
+              <span id="1" className={`relative ${darktext}   font-normal ${textcolorblue} truncate  text-base`} >{last}</span>
               </div>
               <span className={`relative ${textcolorblue} ${darktext} ml-auto text-sm text- self-center mr-2 font-normal`}  >{time}</span>
 
@@ -452,6 +507,7 @@ if(r!=undefined){
                 slide(true)}}/>:<div className="mr-1 w-[2rem] h-[2rem]" ></div>}
               </div>
               </div>
+             
              
             </div></div></div>
               )

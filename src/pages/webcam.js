@@ -22,6 +22,7 @@ import { render } from "timeago.js";
 import { ReactComponent as Back } from "../pages/images/back.svg"
 import { ReactComponent as Decline } from "../pages/images/decline.svg"
 import { ReactComponent as Accept } from "../pages/images/accept.svg"
+import { ReactComponent as Rotate } from "../pages/images/rotate.svg"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -610,14 +611,12 @@ call()
 					{callAccepted && !callEnded && !isclick ? 
             <><span className="absolute  left-1/2 transform -translate-x-1/2  bottom-2  rounded-md px-2">
             <div className="flex" >
-            <span className='absolute h-8 m-1 w-8 bottom-0 z-10 bg-white rounded-full '></span>
-            <Decline className={`text-xl  text-red-600 w-10 h-10 z-10 `} onClick={leaveCall} />
+            <span className='absolute h-9 m-1 w-9 bottom-0 z-10 bg-white rounded-full '></span>
+            <Decline className={`text-xl  text-red-600 w-12 h-12 z-10 `} onClick={leaveCall} />
             </div>
           </span>
           
-          <button className={`absolute right-2 bottom-4 text-xl ${bg} ${bgfordarkmode} text-white`} onClick={toggle}>
-              Değiştir
-            </button></>
+          <Rotate className={`absolute right-2 bottom-2 text-xl h-12 w-12  text-white`} onClick={toggle}/></>
 					 : null}
 				</div>
         {isclick && !callAccepted ? <><div className="h-20 absolute top-0 w-full opacity-60 bg-black">
@@ -637,27 +636,27 @@ call()
         }
 				{receivingCall && !callAccepted ? (
           <div className="absolute   left-1/2 transform -translate-x-1/2  bottom-2 " >
-						<div className="flex flex-col items-center ">
-						<h1 className={`${specialwhitetext} text-center`}>{name} seni arıyor neredesin sen...</h1>
-           
-            <div className="flex flex-row bottom-0 justify-center">
-						<div className="flex ">
-            <span className='absolute h-8 m-1 w-8 bottom-0 z-10 bg-white rounded-full '></span>
-            <Accept className={`text-xl flex z-10  text-green-700 w-10 h-10 mr-2 `} onClick={answerCall}/>
-            </div>
-            <div className="flex">
-            <span className='absolute h-8 m-1 w-8 bottom-0 z-10  bg-white rounded-full '></span>
+					<div className="flex flex-col items-center w-full ">
+              <h1 className={`text-center mt-3 mb-2 font-bold ${darktext} ${specialwhitetext}`}>{name} seni arıyor neredesin sen...</h1>
+             
+              <div className="flex flex-row">
+                <div className={`flex items-center h-12 pb-1 rounded-md `}>
+                  <span className='absolute h-9 m-1 w-9 bottom-2  z-10 bg-white rounded-full '></span>
+                <Accept className={`text-green-700 z-10 w-12 h-12 mr-2 `}  onClick={()=>{
+                  //setCallAccepted(true)
+                  answerCall()
 
-            <Decline className={`text-xl z-10 flex w-10 h-10 text-red-600 `} onClick={()=>{
-           
-              
-             leaveCall()
-            }}/>
-				</div>
-					
-      
-            </div>
-            </div>
+          
+          }} />
+     
+              </div>
+              <div className={`flex items-center pb-1  ml-1 h-12 rounded-md`}>
+              <span className='absolute h-9 m-1 w-9 bottom-2 z-10 bg-white rounded-full '>  </span>
+
+              <Decline className='text-red-600 z-10 w-12 h-12' onClick={()=> leaveCall()} />
+              </div>
+              </div>
+              </div>
             </div>
 				) : <div></div>}
        </div>

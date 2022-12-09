@@ -218,11 +218,13 @@ export default function Possib({prt,current,messagesfromdb,mesa1,db,message,pers
   }
   if(person._id!==na.id){
     return(
-      <div className="flex flex-row items-center">
-         <div id="sr" className={`flex items-center dark:bg-black  ${maincolor}  ${bordercolor} rounded-lg p-1 mt-1 h-[4.5rem]`}>
-         <img src={pp} alt="s" className="xs:w-10 rounded-full md:w-10 mr-2 " onClick={b}></img>
-         <span className={`flex justify-start text w-full ${darktext} ${textcolorblue} font-semibold   xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={bb}>{person.name}</span>
-       </div>
+      <div className="flex ">
+         <div id="sr" className={`flex items-center w-full   dark:bg-black  ${maincolor}  ${bordercolor} rounded-lg p-1 mt-1 h-[4.5rem]`}>
+        <div className=" w-12 h-10">
+         {person.profilepicture!==undefined ? <img src={person.profilepicture} alt="s" className="rounded-full h-10 w-10  bg-red-700 object-contain mr-2" onClick={b}/>:<img src={pp} alt="s" className="rounded-full w-10  h-10 mr-2 " onClick={b}/>}
+         </div>
+         <span className={`pb-0 flex justify-start text w-full ${darktext} ${textcolorblue} font-semibold   xs:text-lg md:text-base pr-1 pl-[0.54rem] xs:break-words`} onClick={bb}>{person.name}</span>
+         </div>
       </div>
         )
       
