@@ -11,8 +11,8 @@ import { ReactComponent as Arrow } from "../pages/images/arrow.svg"
 import { async } from "@firebase/util";
 import { setPlatform } from "@capacitor/core";
 import { ReactComponent as Profilepic } from "../pages/images/user.svg"
-
-export default function Conv({check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+export default function Conv({viewpp,setviewpp,check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
   let svgslide="text-[#90C5FF]"
   let svgslidedark="dark:text-[#F0EFE9]"
   let textcolorblue="text-[#459DFF]"
@@ -332,7 +332,7 @@ if(r!=undefined){
     }, 10); */
     
     console.log("huh")
-    console.log(nos.current)
+    
     //nos.current=!bool
     //nos.current=!nos.current
     //console.log(flag1[k])
@@ -484,18 +484,19 @@ if(r!=undefined){
        
           return(
             <div className="overflow-hidden">
-            <div className="relative max-w-screen z-0">
+            <div className="relative max-w-screen">
+            
             <div className="absolute   top-[2.5px] " style={{ right:`${8}px` }}><img id="sr2" src={delet} alt="s" className="xs:w-[2rem] rounded-full md:w-[2rem] mt-[1.1rem] " onClick={b}></img></div>
               <div id="sr1" className=" "  ref={l} style={{ position: "relative", left: `${leftx}px`}}>
-              <div id="sr" className={`flex   flex-row max-w-full  items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
+              <div id="sr" className={`flex   flex-row max-w-full items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
             
-              {pp?.profilepicture!==undefined ? <img src={pp.profilepicture} alt="s" className="mb-1 object-contain bg-slate-50 rounded-full h-[4rem] aspect-square mr-2 " onClick={get}/>:<div className="w-20 mb-1"><Profilepic className={`${textcolorblue} ${darktext} opacity-50 dark:opacity-20 rounded-full w-[4rem] h-[4rem]  mr-2`}  onClick={get}/></div>}
+              {pp?.profilepicture!==undefined ? <img src={pp.profilepicture} alt="s" className="mb-1 object-cover bg-slate-50 rounded-full h-[4rem] max-w-[4rem] min-w-[4rem] mr-2 " onClick={()=>{setviewpp(pp.profilepicture)}}/>:<div className="w-20 mb-1"><Profilepic className={`${textcolorblue} ${darktext} opacity-50 dark:opacity-20 rounded-full w-[4rem] h-[4rem]  mr-2`}  onClick={get}/></div>}
           
               <div className={`flex w-full  justify-end  overflow-hidden  flex-col   ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={get}>
               <span className="relative">{de}</span>
               <span id="1" className={`relative ${darktext}   font-normal ${textcolorblue} truncate  text-base`} >{last}</span>
               </div>
-              <span className={`relative ${textcolorblue} ${darktext} ml-auto text-sm text- self-center mr-2 font-normal`}  >{time}</span>
+              <span className={`flex items-center h-full ${textcolorblue} ${darktext} ml-auto text-sm text- self-center mr-2 font-normal`} onClick={get}  >{time}</span>
 
               
               

@@ -16,9 +16,11 @@ import { ReactComponent as Search } from "../pages/images/search.svg"
 import { ReactComponent as Add } from "../pages/images/add.svg"
 import { ReactComponent as Setting } from "../pages/images/setting.svg"
 import { ReactComponent as Logout } from "../pages/images/log-out.svg"
+import { ReactComponent as Profilepic } from "../pages/images/user.svg"
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import { ReactComponent as Accept } from "../pages/images/accept.svg"
 import { Camera, CameraResultType,CameraSource } from '@capacitor/camera';
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { async } from "@firebase/util";
 //70A1D7
 let mp
@@ -57,6 +59,7 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
     const[isOpenedPeople,setisOpenedPeople]=useState(false)
     const[isOpenedSettings,setisOpenedSettings]=useState(false)
     const [Some1,setSome1]= useState()
+    const [viewpp,setviewpp]= useState(null)
     const [peopbackup,setpeopbackup]=useState([])
     const [pp,setpp]=useState([])
     const[ne,setne]=useState([])
@@ -529,7 +532,7 @@ if(aa){
 }
 
 //document.getElementById("name")?.addEventListener('paste', e => e.preventDefault());
-
+console.log(viewpp)
 if(ani&&bni){
       return(
         <div className={isDarkMode ? "absolute  bg-black top-0 bottom-0 right-0 left-0 ":null}>
@@ -565,7 +568,7 @@ size={30}
               if (a.updatedAt > b.updatedAt)
                 return -1;
               return 0;
-            }).map((c, i) => (<Conv pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
+            }).map((c, i) => (<Conv viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
 
 
             )}
@@ -588,7 +591,43 @@ size={30}
           <span className={`fixed bottom-10 left-1/2 -translate-x-1/2 rounded-full bg-[#097EFE] dark:bg-black opacity-90 dark:opacity-100  ${textcolorblue}`}>
             <Add width="2.5rem" height="2.5rem" className={`${svgsearch} ${darktext}`} onClick={() => open()} />
           </span>
+{viewpp!==null ? <div className="absolute bg-red-600 inset-0  ">
+<div className="absolute inset-0 h-screen w-screen ">
 
+             <TransformWrapper > 
+             <TransformComponent>
+                <img id="img"   className="h-screen w-screen object-contain" src={viewpp} alt=""/>
+                </TransformComponent>
+  
+              
+               </TransformWrapper>
+             </div>
+             {/* {isopenedm && !doubletap.current ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div>
+             <Back className={`absolute z-0 left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
+              setisopened(false);
+              setimage(false);
+              setisopenedm(false);
+
+            } } /><div className="absolute bottom-0 opacity-60   bg-black w-full  h-20"></div></>:null} */}
+           
+             
+           
+            
+
+
+
+
+<button onClick={()=>{
+  
+  console.log("ııı")
+  setviewpp(null)}} className="bg-red-100 absolute right-0 top-0 ">kapaa</button>
+
+
+</div>:null
+
+
+
+}
           {isOpenedPeople ? <div className={`absolute  inset-0 h-screen dark:bg-black bg-white ${divisioncolor}`}><div className="flex pt-2 flex-col h-full w-full p-2 ">
             <div className="flex flex-row">
               <span className={`font-bold bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] text-[2.3rem] px-1 py-8 mb-1 transparent `}>
@@ -617,12 +656,12 @@ size={30}
                 <span className={` mt-1 w-[2rem] h-[2rem] rotate-45 flex self-end rounded-full  bg-white dark:bg-black ${textcolorblue} `} onClick={() => { close(); } }>
                   <Add width="1.8rem" height="1.8rem" className={`${svgsearch} ${darktext} dark:opacity-100`} />
                 </span>
-                {profilepicture !== null ? <img src={profilepicture} onClick={() => { opengallery(); } } className="h-[4rem] w-[4rem] object-contain self-center rounded-full " /> : <img onClick={() => {
+                {profilepicture !== null ? <img src={profilepicture} onClick={() => { opengallery(); } } className="h-[5rem] w-[5rem] object-contain self-center rounded-full " /> : <Profilepic onClick={() => {
                   opengallery();
 
 
-                } } src="https://www.linkpicture.com/q/splash_2.png" className="h-[4rem] w-[4rem] self-center rounded-full " />}
-                <div className="flex flex-row items-start mt-4">
+                } } className="h-[5rem] w-[5rem] text-white opacity-30 self-center rounded-full " />}
+                <div className="flex flex-row items-start ">
                   <span className={`pb-7 font-bold w-32 bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] text-[2rem] px-1 `}>Ayarlar</span>
                   <span className="flex ml-auto mt-2 mr-0.5">
                     <DarkModeSwitch className=" focus:outline-black focus:invisible"

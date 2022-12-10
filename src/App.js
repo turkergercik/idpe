@@ -116,7 +116,7 @@ function App() {
          
 
      }
-     let prt="http://192.168.1.103:3001"
+     let prt="https://smartifier.onrender.com"
 const socket = useRef()
 async function as() {
   if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});

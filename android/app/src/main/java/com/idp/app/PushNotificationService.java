@@ -298,7 +298,7 @@ jo.put("media","data:image/jpeg;base64,"+media);
             .setAutoCancel(true)
             .setLargeIcon(image)
             .setStyle(new Notification.BigPictureStyle().bigPicture(image))
-            //.setContentIntent(p)
+            .setContentIntent(p)
             .setColor(Color.argb(1, 138, 0, 0));
 
 

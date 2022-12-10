@@ -6,7 +6,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 import * as jose from 'jose'
 import { setOptions } from "filepond";
 import pp from "../pages/images/splash1.png"
-
+import { ReactComponent as Profilepic } from "../pages/images/user.svg"
 
 
 export default function Possib({prt,current,messagesfromdb,mesa1,db,message,person,flag1,setflag1,setno,no,click,nos,setisOpenedPeople,convs,setcur}){
@@ -220,9 +220,9 @@ export default function Possib({prt,current,messagesfromdb,mesa1,db,message,pers
     return(
       <div className="flex ">
          <div id="sr" className={`flex items-center w-full   dark:bg-black  ${maincolor}  ${bordercolor} rounded-lg p-1 mt-1 h-[4.5rem]`}>
-        <div className=" w-12 h-10">
-         {person.profilepicture!==undefined ? <img src={person.profilepicture} alt="s" className="rounded-full h-10 w-10  bg-red-700 object-contain mr-2" onClick={b}/>:<img src={pp} alt="s" className="rounded-full w-10  h-10 mr-2 " onClick={b}/>}
-         </div>
+ 
+         {person.profilepicture!==undefined ? <img src={person.profilepicture} alt="s" className="rounded-full h-[4rem] min-w-[4rem] max-w-[4rem] bg-red-700 object-cover mr-1 mb-1" onClick={b}/>:<Profilepic src={pp} alt="s" className=" text-white opacity-20 rounded-full max-w-[4rem] h-[4rem] mr-1 mb-1  " onClick={b}/>}
+    
          <span className={`pb-0 flex justify-start text w-full ${darktext} ${textcolorblue} font-semibold   xs:text-lg md:text-base pr-1 pl-[0.54rem] xs:break-words`} onClick={bb}>{person.name}</span>
          </div>
       </div>
