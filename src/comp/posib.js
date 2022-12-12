@@ -221,7 +221,7 @@ export default function Possib({prt,current,messagesfromdb,mesa1,db,message,pers
       <div className="flex ">
          <div id="sr" className={`flex items-center w-full   dark:bg-black  ${maincolor}  ${bordercolor} rounded-lg p-1 mt-1 h-[4.5rem]`}>
  
-         {person.profilepicture!==undefined ? <img src={person.profilepicture} alt="s" className="rounded-full h-[4rem] min-w-[4rem] max-w-[4rem] bg-red-700 object-cover mr-1 mb-1" onClick={b}/>:<Profilepic src={pp} alt="s" className=" text-white opacity-20 rounded-full max-w-[4rem] h-[4rem] mr-1 mb-1  " onClick={b}/>}
+         {person.profilepicture!==undefined &&person.profilepicture!==null  ? <img src={person.profilepicture} alt="s" className="rounded-full h-[4rem] min-w-[4rem] max-w-[4rem] bg-red-700 object-cover mr-1 mb-1" onClick={b}/>:<Profilepic src={pp} alt="s" className={`${textcolorblue} ${darktext} dark:opacity-20 opacity-50 rounded-full max-w-[4rem] h-[4rem] mr-1 mb-1 `} onClick={b}/>}
     
          <span className={`pb-0 flex justify-start text w-full ${darktext} ${textcolorblue} font-semibold   xs:text-lg md:text-base pr-1 pl-[0.54rem] xs:break-words`} onClick={bb}>{person.name}</span>
          </div>

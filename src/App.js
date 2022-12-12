@@ -57,7 +57,7 @@ function App() {
 	const [ receivingCall, setReceivingCall ] = useState(false)
 	const [ caller, setCaller ] = useState("")
 	const [ callerSignal, setCallerSignal ] = useState()
-  const [profilepicture,setprofilepicture]=useState(null)
+  const [profilepicture,setprofilepicture]=useState()
 	const [ callAccepted, setCallAccepted ] = useState(false)
   const [ isclick, setisclick] = useState(false)
 	const [ idToCall, setIdToCall ] = useState("")

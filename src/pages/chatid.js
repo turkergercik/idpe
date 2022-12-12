@@ -36,12 +36,14 @@ import FilePondPluginImageTransform from 'filepond-plugin-image-transform';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import { LocalNotifications } from "@capacitor/local-notifications";
+import { useAlert } from 'react-alert'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import { ReactComponent as Camera1 } from "../pages/images/camera.svg"
 import { ReactComponent as Gallery1 } from "../pages/images/gallery.svg"
 import { ReactComponent as Send1 } from "../pages/images/send.svg"
 import { ReactComponent as Back } from "../pages/images/back.svg"
 import { ReactComponent as Camicon } from "../pages/images/zoom.svg"
+import { ReactComponent as Download } from "../pages/images/download.svg"
 import smoothscroll from 'smoothscroll-polyfill';
 
 // Register the plugins
@@ -56,6 +58,7 @@ registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,F
 
 function Chatid({prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
   //smoothscroll.polyfill();
+  const alert =useAlert()
   let first=false
   let darktext="dark:text-[#F0EFE9]"
   let bgfordarkmode="dark:bg-[#1a1a1a]"
@@ -401,8 +404,8 @@ const messagesfromdb = useRef(null)
 
 
     },[update,db])
-      let clas=`scrollbar  mt-2 ml-1.5 mr- mb-1 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark pr-4`   
-      let clas1=" scrollbar  mt-2 ml-1.5 mr- mb-1 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex   overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent  pr-4"
+      let clas=`scrollbar pr-2  mt-2 ml-1.5 mr-0 mb-1 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark `   
+      let clas1=" scrollbar pr-2 mt-2 ml-1.5 mr-0 mb-1 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex   overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent"
       
       let scro= src.current
       let time
@@ -1169,7 +1172,19 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
               setimage(false);
               setisopenedm(false);
 
-            } } /><div className="absolute bottom-0 opacity-60   bg-black w-full  h-20"></div></>:null}
+            } } />
+            <Download className={`absolute h-[2.5rem] w-[2.5rem]  top-[1.25rem] right-[1.7rem] ${specialwhitetext} ${specialwhitetextdark} `} onClick={async()=>{
+   const fileName = new Date().getTime() + '.jpeg';
+   const ok = await Filesystem.writeFile({
+   path: fileName,
+   data: sendedimage.current,
+   directory: Directory.Documents
+   
+   })
+   if(ok){
+    alert.success("RESİM YÜKLENDİ",{position:"middle",timeout:1000,})
+   }}}/>
+            <div className="absolute bottom-0 opacity-60   bg-black w-full  h-20"></div></>:null}
              </div>
              
            

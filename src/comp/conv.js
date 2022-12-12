@@ -479,7 +479,7 @@ if(r!=undefined){
       
       //silme()
       //if(convs!==undefined)console.log(convs._id)
-
+console.log(pp.profilepicture)
     if((convs.members[0]===na.id&&convs.members[4]===true)||(convs.members[1]===na.id&&convs.members[5]===true)){
        
           return(
@@ -490,7 +490,7 @@ if(r!=undefined){
               <div id="sr1" className=" "  ref={l} style={{ position: "relative", left: `${leftx}px`}}>
               <div id="sr" className={`flex   flex-row max-w-full items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
             
-              {pp?.profilepicture!==undefined ? <img src={pp.profilepicture} alt="s" className="mb-1 object-cover bg-slate-50 rounded-full h-[4rem] max-w-[4rem] min-w-[4rem] mr-2 " onClick={()=>{setviewpp(pp.profilepicture)}}/>:<div className="w-20 mb-1"><Profilepic className={`${textcolorblue} ${darktext} opacity-50 dark:opacity-20 rounded-full w-[4rem] h-[4rem]  mr-2`}  onClick={get}/></div>}
+              {pp?.profilepicture!==undefined && pp?.profilepicture!==null ? <img src={pp.profilepicture} alt="s" className="mb-1 object-cover bg-slate-50 rounded-full h-[4rem] max-w-[4rem] min-w-[4rem] mr-2 " onClick={()=>{setviewpp(pp.profilepicture)}}/>:<div className="w-20 mb-1"><Profilepic className={`${textcolorblue} ${darktext} opacity-50 dark:opacity-20 rounded-full w-[4rem] h-[4rem]  mr-2`}  onClick={get}/></div>}
           
               <div className={`flex w-full  justify-end  overflow-hidden  flex-col   ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={get}>
               <span className="relative">{de}</span>

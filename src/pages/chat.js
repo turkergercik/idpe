@@ -14,6 +14,7 @@ import { io } from "socket.io-client";
 import { CameraPreview } from '@capacitor-community/camera-preview';
 import { ReactComponent as Search } from "../pages/images/search.svg"
 import { ReactComponent as Add } from "../pages/images/add.svg"
+import { ReactComponent as Back } from "../pages/images/back.svg"
 import { ReactComponent as Setting } from "../pages/images/setting.svg"
 import { ReactComponent as Logout } from "../pages/images/log-out.svg"
 import { ReactComponent as Profilepic } from "../pages/images/user.svg"
@@ -26,8 +27,11 @@ import { async } from "@firebase/util";
 let mp
 let sd
 function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
-  
+  let bgfordarkmode="dark:bg-[#1a1a1a]"
   let bgblue ="bg-[#A6D1FF]"
+  let specialwhitetextdark="dark:text-[#F0EFE9]"
+  let specialwhitetext="text-[#F0EFE9]"
+  let bluebg = "bg-[#097EFE]"
   let focusborder="focus:border-[#097EFE]"
   let svgsearch="text-[#60ACFF]"
   let bginput="bg-[#F0EFE9]"
@@ -59,9 +63,12 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
     const[isOpenedPeople,setisOpenedPeople]=useState(false)
     const[isOpenedSettings,setisOpenedSettings]=useState(false)
     const [Some1,setSome1]= useState()
+    const [delorchange,setdelorchange]=useState(false)
     const [viewpp,setviewpp]= useState(null)
+    const[showback,setshowback]=useState(false)
     const [peopbackup,setpeopbackup]=useState([])
     const [pp,setpp]=useState([])
+    const [userpp,setuserpp]=useState(null)
     const[ne,setne]=useState([])
     const [scrollh,setscrollh]=useState()
     const href=useRef()
@@ -121,7 +128,8 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
    }else{
      resized =image.dataUrl
    }
-   setsendimage(resized)
+   setprofilepicture(resized)
+   
   }
   const resizeImage = (base64Str, maxWidth = 400, maxHeight = 350,quality) => {
     return new Promise((resolve) => {
@@ -154,20 +162,22 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
     })
   }
   useEffect(()=>{
-   
+    setdelorchange(false)
     async function send(){
+      console.log("resim değişti")
       const time=new Date(Date.now()).toISOString()
-      if(sendimage!==null)
+      if(profilepicture!==undefined){
+      if(profilepicture!==null&&profilepicture!=="null")
    {   
-
-    
-    setmessages(prev =>[{sender:na.id,receiver:cur.cri,media:sendimage,createdAt:time},...prev])
-      sock.current.emit("send",{sender:na.id,receiver:cur.cri,media:sendimage,conversationid:cur.cid,createdAt:time})
+console.log("56")
+    setuserpp(profilepicture)
+   /*  setmessages(prev =>[{sender:na.id,receiver:cur.cri,media:sendimage,createdAt:time},...prev])
+      sock.current.emit("send",{sender:na.id,receiver:cur.cri,media:sendimage,conversationid:cur.cid,createdAt:time}) */
        await axios.put(`${prt}/user`,{
         name:na.name,
-        profilepicture:sendimage,
+        profilepicture:profilepicture,
        },{headers}).then(async(res)=>{ 
-        await db.set("profilepicture",sendimage)
+        await db.set("profilepicture",profilepicture)
        
         //setwrite("")
         
@@ -176,11 +186,31 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
          
        }).catch((err)=>{
         console.log("hata")
-      })}
+      })}else if(profilepicture==="null"){
+        console.log("65")
+        //setuserpp(null)
+        console.log("nullbu")
+        await axios.put(`${prt}/user`,{
+          name:na.name,
+          profilepicture:null,
+         },{headers}).then(async(res)=>{ 
+          await db.set("profilepicture","null")
+         
+          //setwrite("")
+          
+           //console.log(messages)
+           
+           
+         }).catch((err)=>{
+          console.log("hata")
+        })
+
+
+      }}
     }
     send()
 
-  },[sendimage])
+  },[profilepicture,db])
 
 
 
@@ -200,9 +230,8 @@ console.log("88889")
           window.location.reload()
           //localStorage.setItem("aut",JSON.stringify({"isA":false,"tok":"tokExp"}))
         }
+        await db.remove("pp")
         setpeop(res.data)
-      
-       
         setAni(true)
         
         setpeopbackup(res.data)
@@ -253,23 +282,36 @@ useEffect(()=>{
     
     let a = await db?.get("profilepicture")
     
-  if(a===null &&peop.length!==0){
+  if(a===null && peop.length!==0){
     peop.forEach(async(c,i)=>{
       if(c._id===na.id &&c.profilepicture!==undefined){
       console.log("ok")
-      setprofilepicture(a)
+     console.log(c.profilepicture)
+     if(c.profilepicture===null){
+      
+     setuserpp(c.profilepicture)
+      //setprofilepicture(a)
+      await db.set("profilepicture","null")
+    }else{
+      setuserpp(c.profilepicture)
+      //setprofilepicture(a)
       await db.set("profilepicture",c.profilepicture)
+
+    }
       
       
       }
       })
    
-  }else{
-   
-    setprofilepicture(a)
+  }else if(a==="null"){
+    setuserpp(null)
+
+    //setprofilepicture(a)
   
     
     
+  }else{
+    setuserpp(a)
   }
 
     }
@@ -302,7 +344,6 @@ useEffect(()=>{
         mpeopbackupref.current=res.data
         sd = res.data
         mp = res.data
-        await db.set("pp")
         console.log(peop)
         setflag1(new Array(res.data.length).fill(true))
         if(db!==undefined&&db!==null){
@@ -530,9 +571,100 @@ if(aa){
 
 
 }
+function handleGesture(event,elapsedTime) {
+  //setn1(event.touches.length)
+   //alert(n2.current)
+    console.log("ewq")
+  if(elapsedTime<=200){  if (touchendX < touchstartX) {
 
+        //alert('Swiped left');
+    }
+    
+    if (touchendX > touchstartX) {
+        //alert('Swiped right');
+     
+    
+    }
+    
+    
+    
+    if (touchendY-touchstartY>=100) {
+      //down
+      console.log("kks")
+  setviewpp(null)
+     
+      //setisopened(false);
+    }else if(touchstartY-touchendY&&touchstartY-touchendY>=100) {
+      setviewpp(null)
+      //document.getElementById("tex").focus()
+      //up
+   
+ 
+    }
+    
+    if (touchendY === touchstartY) {
+       //tap
+    }}
+}
+let touchstartX
+let touchstartY
+let touchendX
+let touchendY
+let startTime
+let elapsedTime
+useEffect(()=>{
+
+  let gestureZone = document.getElementById("view")
+  let aa
+  let bb
+  let cc
+  if(gestureZone){
+  gestureZone?.addEventListener('touchstart',aa= function(event) {
+    touchstartX = event.changedTouches[0].screenX;
+    touchstartY = event.changedTouches[0].screenY;
+    startTime = new Date().getTime()
+    //alert(event.touches.length)
+    
+    handleGesture(event)
+   
+    //alert("dy")
+        //event.preventDefault();
+        //action on double tap goes below
+       
+     
+    
+    
+}, false);
+gestureZone?.addEventListener('touchmove',bb= function(event) {
+  console.log("a")
+ //handleGesture(event,0)
+ 
+}, false); 
+
+gestureZone?.addEventListener('touchend',cc= function(event) {
+    touchendX = event.changedTouches[0].screenX;
+    touchendY = event.changedTouches[0].screenY;
+    elapsedTime = new Date().getTime() - startTime 
+    //alert(event.touches.length)
+  
+              
+   
+    handleGesture(event,elapsedTime);
+   
+}, false); }
+
+
+
+//console.log(dd)
+return ()=>{
+  if(gestureZone){
+  gestureZone.removeEventListener('touchstart',aa)
+  gestureZone.removeEventListener('touchend',cc)}
+}
+
+},[viewpp])
 //document.getElementById("name")?.addEventListener('paste', e => e.preventDefault());
-console.log(viewpp)
+
 if(ani&&bni){
       return(
         <div className={isDarkMode ? "absolute  bg-black top-0 bottom-0 right-0 left-0 ":null}>
@@ -591,8 +723,8 @@ size={30}
           <span className={`fixed bottom-10 left-1/2 -translate-x-1/2 rounded-full bg-[#097EFE] dark:bg-black opacity-90 dark:opacity-100  ${textcolorblue}`}>
             <Add width="2.5rem" height="2.5rem" className={`${svgsearch} ${darktext}`} onClick={() => open()} />
           </span>
-{viewpp!==null ? <div className="absolute bg-red-600 inset-0  ">
-<div className="absolute inset-0 h-screen w-screen ">
+{viewpp!==null ? <><div id="view" className={`absolute bg-black inset-0 h-screen w-screen`} onClick={()=>setshowback(!showback)}>
+
 
              <TransformWrapper > 
              <TransformComponent>
@@ -602,28 +734,11 @@ size={30}
               
                </TransformWrapper>
              </div>
-             {/* {isopenedm && !doubletap.current ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div>
-             <Back className={`absolute z-0 left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
-              setisopened(false);
-              setimage(false);
-              setisopenedm(false);
-
-            } } /><div className="absolute bottom-0 opacity-60   bg-black w-full  h-20"></div></>:null} */}
-           
-             
-           
-            
-
-
-
-
-<button onClick={()=>{
-  
-  console.log("ııı")
-  setviewpp(null)}} className="bg-red-100 absolute right-0 top-0 ">kapaa</button>
-
-
-</div>:null
+            {showback ? <><div className="absolute h-20 opacity-60 bg-black top-0 right-0 left-0 "></div><div className="absolute h-20 opacity-60 bg-black bottom-0 right-0 left-0 "></div><Back className={`${specialwhitetext} ${specialwhitetextdark} absolute h-[1.7rem]  w-[1.5rem] top-[1.7rem] left-[1.7rem]`} onClick={()=>{
+              setshowback(false)
+              setviewpp(null)}} /></>:null}</>
+             :null
+    
 
 
 
@@ -656,11 +771,34 @@ size={30}
                 <span className={` mt-1 w-[2rem] h-[2rem] rotate-45 flex self-end rounded-full  bg-white dark:bg-black ${textcolorblue} `} onClick={() => { close(); } }>
                   <Add width="1.8rem" height="1.8rem" className={`${svgsearch} ${darktext} dark:opacity-100`} />
                 </span>
-                {profilepicture !== null ? <img src={profilepicture} onClick={() => { opengallery(); } } className="h-[5rem] w-[5rem] object-contain self-center rounded-full " /> : <Profilepic onClick={() => {
+                {userpp !== null ? <img src={userpp} onClick={() => {
+                  setdelorchange(true)
+                  //opengallery()
+                }
+              } className="h-[5rem] min-w-[5rem] max-w-[5rem] object-cover self-center rounded-full " /> : <Profilepic onClick={() => {
+                  
                   opengallery();
 
 
-                } } className="h-[5rem] w-[5rem] text-white opacity-30 self-center rounded-full " />}
+                } } className={`${textcolorblue} ${darktext} h-[5rem] w-[5rem]  opacity-30 self-center rounded-full`} />
+                }
+                {delorchange ? <><div className={`fixed  dark:bg-black inset-0 ${maincolor} z-10`} onClick={() => setdelorchange(false)}>
+
+                    </div><div className={`fixed ${bluebg} ${bgfordarkmode}  px-2 z-10 w-5/6 h-1/6 min-h-[3rem] max-h-[7rem] rounded-xl  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`} onClick={() => { console.log("koko") } }>
+                      <div className="flex flex-col  divide-y-2 w-full h-full">
+<div className={`w-full flex font-semibold ${specialwhitetextdark} ${specialwhitetext}  justify-center items-center h-1/2`} onClick={()=>{
+  opengallery()
+  
+}} >Değiştir </div>
+<div className={`w-full flex font-semibold ${specialwhitetextdark} ${specialwhitetext} justify-center items-center h-1/2`} onClick={()=>{
+setuserpp(null)
+  setprofilepicture("null")
+}} >Kaldır</div>
+
+                      </div>
+                      </div></>:null
+
+                }
                 <div className="flex flex-row items-start ">
                   <span className={`pb-7 font-bold w-32 bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] text-[2rem] px-1 `}>Ayarlar</span>
                   <span className="flex ml-auto mt-2 mr-0.5">

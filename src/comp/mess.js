@@ -33,11 +33,11 @@ const alert =useAlert()
     own=true}
   return(
 <div className="">
-{own ? (<><div className="flex items-center pt-2 pl-1">
-<div className={media? `${bgfordarkmode} ${bg} flex p-2 flex-col justify-center items-start rounded-t-xl rounded-br-xl`:
-`${bgfordarkmode} ${bg} max-w-[20rem] flex p-1 flex-row-reverse justify-start items-end rounded-t-xl rounded-br-xl`}>
-{media ?<div className="flex flex-row items-center">
-  <Download className={`${svgcolor}  ${specialwhitetext}  ${whitefordark} xs:w-10 h-10 rounded-full md:w-10 `} width="3rem" height="3rem" onClick={async()=>{
+{own ? (<><div className="w-full flex items-center pt-1.5 pl-1.5">
+<div className={media? `${bgfordarkmode} ${bg}  h-[20rem] w-5/6 flex p-2 pb-2.5 flex-col justify-center items-start rounded-t-xl rounded-br-xl`:
+`${bgfordarkmode} ${bg} max-w-[20rem] flex p-1 pb-0 pl-0.5 flex-row-reverse justify-start items-end rounded-t-xl rounded-br-xl`}>
+{media ?<div className="flex flex-row h-full w-full pt-2.5  items-center">
+  <Download className={`${svgcolor} hidden  ${specialwhitetext}  ${whitefordark} xs:w-10 h-10 rounded-full md:w-10 `} width="3rem" height="3rem" onClick={async()=>{
    const fileName = new Date().getTime() + '.jpeg';
    const ok = await Filesystem.writeFile({
    path: fileName,
@@ -53,25 +53,25 @@ const alert =useAlert()
           on(true);
           console.log(media)
           images.current = media;
-        } } src={media} alt="s" className="h-1/6 w-5/6 rounded-xl pl-1"></img>
+        } } src={media} alt="s" className=" w-full h-full object-cover rounded-xl pl-0"></img>
 
       </div>
         
         :<>
-        <div className={`flex ml-1  [word-break:break-word]   xs:text-lg md:text-xl ${bg} ${bgfordarkmode} ${darktext} dark:border-[#1a1a1a] border-solid border-2 pl-1.5 ${specialwhitetext} ${bordercolor} rounded-lg  mr-1`}>{mes}
+        <div className={`flex mx-1 mb-1 pl-1.5  [word-break:break-word]   xs:text-lg md:text-xl ${bg} ${bgfordarkmode} ${darktext} dark:border-[#1a1a1a] border-solid border-2  ${specialwhitetext} ${bordercolor} rounded-lg `}>{mes}
 
                </div>
        </>
  }
-<span className={`md:text-[0.82rem]   xs:text-[0.82rem] ${specialwhitetext}  ${textcolorblue} dark:text-[#838383] ml-1 flex items-end`}>{mest}</span>
+<span className={`md:text-[0.82rem]    xs:text-[0.82rem] ${specialwhitetext}  ${textcolorblue} dark:text-[#838383] ml-1 flex items-end`}>{mest}</span>
  </div></div></>):(
       
     <> 
-      <div className={`flex  items-center justify-end  pt-1.5 ml-2 w-full`}>
-      <div className={media ? `${bgfordarkmode} ${bg} flex px-2 pt-4 flex-col justify-center rounded-t-xl rounded-bl-xl`:
-      `${bgfordarkmode} ${bg} [word-wrap:break-word] flex p-1 max-w-[20rem]  pb-0 flex-row justify-end rounded-t-xl rounded-bl-xl`}>
-        {media ? <div className=" flex flex-row-reverse items-center">
-                <Download  className={`${svgcolor}  ${specialwhitetext}   ${whitefordark} xs:w-10 h-10 rounded-full md:w-10`} width="3rem" height="3rem" onClick={async()=>{
+      <div className={`flex  items-center justify-end  pt-1.5 pl-2 w-full`}>
+      <div className={media ? `${bgfordarkmode} ${bg} h-[20rem] w-5/6 flex p-2 pb-2.5 flex-col justify-center rounded-t-xl rounded-bl-xl`:
+      `${bgfordarkmode} ${bg} [word-wrap:break-word] flex p-1 max-w-[20rem]  pb-0 pr-0.5 flex-row justify-end rounded-t-xl rounded-bl-xl`}>
+        {media ? <div className="flex flex-row-reverse h-full w-full pt-2.5 items-center">
+                <Download  className={`${svgcolor} hidden  ${specialwhitetext}   ${whitefordark} xs:w-10 h-10 rounded-full md:w-10`} width="3rem" height="3rem" onClick={async()=>{
                 const fileName = new Date().getTime() + '.jpeg';
                  const ok = await Filesystem.writeFile({
                   path: fileName,
@@ -88,13 +88,13 @@ const alert =useAlert()
                    on(true);
                    images.current = media;
 
-                   }} src={media} alt="s" className="h-1/6   w-5/6 rounded-xl mr-1"></img>
+                   }} src={media} alt="s" className=" h-full w-full object-cover rounded-xl"></img>
                </div>:<>
-               <div className={`flex align-start [word-break:break-word] mb-1 items-center xs:text-lg md:text-xl ${bg} ${bgfordarkmode} ${darktext} dark:border-[#1a1a1a]  border-solid border-2 ${bordercolor} rounded-lg  mx-1 pr-1.5 ${specialwhitetext}`}>{mes}
+               <div className={`flex mx-1 mb-1 pr-1.5 align-start [word-break:break-word]  items-center xs:text-lg md:text-xl ${bg} ${bgfordarkmode} ${darktext} dark:border-[#1a1a1a]  border-solid border-2 ${bordercolor} rounded-lg  ${specialwhitetext}`}>{mes}
 
                </div></>
 }
-<span className={`md:text-[0.82rem]  xs:text-[0.82rem]   flex items-end ${specialwhitetext} ${textcolorblue} dark:text-[#838383] flex justify-end mr-1`}>{mest}</span>
+<span className={`md:text-[0.82rem] xs:text-[0.82rem]  flex items-end ${specialwhitetext} ${textcolorblue} dark:text-[#838383] flex justify-end mr-1`}>{mest}</span>
 
 </div></div></>)}
 
