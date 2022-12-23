@@ -5,6 +5,7 @@ import Reg from "./pages/register"
 import Log from "./pages/login"
 import User from "./pages/user"
 import Peer from "simple-peer"
+import { App as app } from '@capacitor/app';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import Protect from "./pages/protected"
 import Home from './pages/home';
@@ -33,6 +34,8 @@ import { ReactComponent as Decline } from "./pages/images/decline.svg"
 export const Pro = createContext()
 
 function App() {
+ 
+
   let darktext="dark:text-[#F0EFE9]"
   let bgfordarkmode="dark:bg-[#1a1a1a]"
   let whitefordark="dark:text-[#F0EFE9]"
@@ -58,13 +61,16 @@ function App() {
 	const [ caller, setCaller ] = useState("")
 	const [ callerSignal, setCallerSignal ] = useState()
   const [profilepicture,setprofilepicture]=useState()
+  const [seen,setseen]=useState(null)
 	const [ callAccepted, setCallAccepted ] = useState(false)
   const [ isclick, setisclick] = useState(false)
 	const [ idToCall, setIdToCall ] = useState("")
 	const [ callEnded, setCallEnded] = useState(false)
   const [ cr, setcr] = useState(false)
+  const [ inchat, setinchat] = useState(false)
   const[all,setall]=useState([])
 	const userVideo = useRef(null)
+  const chatsbackup = useRef(null)
   const peer1 =useRef()
   const conid =useRef()
   const userid =useRef()
@@ -83,6 +89,7 @@ function App() {
   const[e,sete]=useState()
   const[f,setf]=useState()
   const[cur,setcur]=useState([])
+  const[flag,setflag]=useState(false)
   const[cur1,setcur1]=useState([])
   const no = useRef(false)
   const [flag1,setflag1] = useState([])
@@ -116,7 +123,7 @@ function App() {
          
 
      }
-     let prt="https://smartifier.onrender.com"
+     let prt="http://192.168.1.104:3001"
 const socket = useRef()
 async function as() {
   if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});
@@ -134,9 +141,11 @@ async function as() {
   let ab =JSON.parse(contents.data).conversationid
 
   if(ab!==undefined&&ab!==""){
-
+setflag(true)
   nav(`/chat/${ab}`)
 
+  }else{
+    setflag([])
   }
   await Filesystem.writeFile({
     path: 'out.json',
@@ -144,11 +153,6 @@ async function as() {
     directory: Directory.Data,
     encoding: Encoding.UTF8,
   });}
-
-
-
-
-
 
 
 }
@@ -208,6 +212,24 @@ console.log("ok")
 
 
   },[])
+  useEffect(()=>{
+    async function delseen(){
+await store.current.remove("chatsbackup")
+
+    }
+    setTimeout(() => {
+    
+      if(flag===true){
+      delseen()
+    }else if(flag===false){
+      if(Capacitor.getPlatform()==="web"){
+         delseen()
+      }
+    }else if(flag.length===0){
+      delseen()
+    }
+    }, 0);
+  },[flag])
   useEffect(()=>{
 
 
@@ -331,9 +353,42 @@ async function bb(){
   socket.current.emit("no",na?.id)
   /* socket.current.on("ho",(e)=> console.log(e)) */
   socket.current.on("get",(e)=> {
+    //setinchat(false)
     setall(e)
   //console.log(e)
 })
+socket.current.on("inchat",async(e)=> {
+  console.log("9999")
+ //let back=await store.current.get("chatsbackup")
+let result
+ chatsbackup.current?.forEach(async(c,i)=>{
+if(c._id===e.b){
+  result=i
+  if(c.seen[0]===false){
+    console.log("ok***")
+c.seen[0]=true
+await store.current.set("chatsbackup",chatsbackup.current)
+
+}
+
+
+}
+
+ })
+ console.log(chatsbackup.current)
+  if(curref.current?.cid===e.b){
+
+socket.current.emit("inchat",e.s)
+  }
+setinchat(true)
+ console.log(e)
+//console.log(e)
+})
+socket.current.on("outchat",(e)=> {
+  setinchat(false)
+  console.log("çıktı")
+ //console.log(e)
+ })
 
 
 let c= front
@@ -390,6 +445,7 @@ let tream
   socket.current.emit("no",na.id)
   socket.current.on("get",e=>console.log(e))
   socket.current.on("m",(r)=>{
+    console.log(all)
     if(r.conid===undefined){
     console.log(r)
     console.log("7")
@@ -443,7 +499,7 @@ socket.current.emit("send",{
     console.log(n)
     console.log(cur)
     await store.current.set("socket",true)
-    if(e.conversationid===curref.current){
+    if(e.conversationid===curref.current?.cid){
  
       setmessages((p)=>[n,...p])
       console.log("evet")
@@ -501,7 +557,9 @@ socket.current.emit("send",{
     
       if(x[0].members[0]===na.id&&x[0].members[4]===false){
         chats[filtered].members[4]=true
-       
+       /*  if(inchat===true){
+        chats[filtered].seen=[true,na.id]} */
+        
         await store.current.set("chatsbackup",chats)
         await store.current.remove(e.conversationid )
         sete([])
@@ -518,7 +576,8 @@ socket.current.emit("send",{
   
       }else if((x[0].members[1]===na.id&&x[0].members[5]===false)){
         chats[filtered].members[5]=true
-        alert(2)
+        /* if(inchat===true){
+          chats[filtered].seen=[true,na.id]} */
         const time=new Date(Date.now()).toISOString()
         chats[filtered].updatedAt=time
         await store.current.set("chatsbackup",chats)
@@ -707,172 +766,169 @@ const leaveCall = () => {
 // "0%":{transform: "translateY(0%) "}, "100%": { transform: "translateY(-100%)"},
 
 
+
 return (
-    <div id='11'  className={isDarkMode ? "dark unselectable":"unselectable"}>
-    <Pro.Provider  value={{aut,setAut}}>   
-  
+    <><div id='11' className={isDarkMode ? "dark unselectable z-10":"unselectable"}>
+
+
+
+
+    <Pro.Provider value={{ aut, setAut }}>
+
+
+      {/*  <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-24 `}>
+   <div className="flex flex-col items-center w-full ">
+             <h1 className={`text-center mt-3 mb-2 font-bold ${darktext} ${textcolorblue}`}>{name} seni arıyor neredesin sen...</h1>
+            
+             <div className="flex flex-row">
+               <div className={`flex items-center h-12 pb-1 rounded-md `}>
+                 <span className='absolute h-9 m-1 w-9 bottom-2  z-10 bg-white rounded-full '></span>
+               <Accept className={`text-green-700 z-10 w-12 h-12 mr-2 `}  onClick={()=>{
+                 //setCallAccepted(true)
+         console.log(id.current)
+         setcr(true)
+         //answerCall()
+         nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
+         
+         }} />
     
-   {/*  <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-24 `}> 
-    <div className="flex flex-col items-center w-full ">
-              <h1 className={`text-center mt-3 mb-2 font-bold ${darktext} ${textcolorblue}`}>{name} seni arıyor neredesin sen...</h1>
-             
-              <div className="flex flex-row">
-                <div className={`flex items-center h-12 pb-1 rounded-md `}>
-                  <span className='absolute h-9 m-1 w-9 bottom-2  z-10 bg-white rounded-full '></span>
-                <Accept className={`text-green-700 z-10 w-12 h-12 mr-2 `}  onClick={()=>{
-                  //setCallAccepted(true)
-          console.log(id.current)
-          setcr(true)
-          //answerCall()
-          nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
-          
-          }} />
-     
-              </div>
-              <div className={`flex items-center pb-1  ml-1 h-12 rounded-md`}>
-              <span className='absolute h-9 m-1 w-9 bottom-2 z-10 bg-white rounded-full '>  </span>
+             </div>
+             <div className={`flex items-center pb-1  ml-1 h-12 rounded-md`}>
+             <span className='absolute h-9 m-1 w-9 bottom-2 z-10 bg-white rounded-full '>  </span>
 
-              <Decline className='text-red-600 z-10 w-12 h-12' onClick={()=> leaveCall()} />
-              </div>
-              </div>
-              </div>
-  
-  
-       
-       
-        </div> */}
-
-
-    {/* <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-20 `}> 
-	<div className="flex flex-col items-center w-full ">
-						<h1 className={`text-center my-1 font-bold ${darktext} ${textcolorblue}`}>{name} Seni arıyor neredesin sen...</h1>
-           
-            <div className="flex flex-row  bottom-0 m-auto  ">
-              <div className={`flex items-center h-10 rounded-md `}>
-              <Accept className={`text-red-600  z-10  w-10 h-10 `} onClick={()=>{
-        console.log(id.current)
-        //answerCall()
-        nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
-        
-        }} />
-     
-            </div>
-            <div className={`right-0 h-10 w-10  ml-1 rounded-md`}>
-            <Decline className='text-green-700' onClick={()=> setReceivingCall(false)} />
-            </div>
-            </div>
-            </div>
-
-
-     
-     
-      </div> */}
-    {aut===null ? ( <div> 
-     {/* <div className='absolute left-2/4 text-center ' >helo</div> */}
-<button onClick={()=>nav("/reg")} className="w-15 flex absolute right-0 mr-20 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Kaydol</button>
- <button onClick={()=>nav("/login")} className="w-15 flex absolute right-2 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Giriş</button>
- </div>
-):(<div className=""> 
- {/*   <button onClick={async()=>{ localStorage.clear()
-  await store.current.clear()
-  setTimeout(() => {
-    nav("/login")
-  }, 100);
-  
-   window.location.reload()}
- } 
-   className="w-15 flex absolute right-2 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Çıkış</button> */}
-{/*     <div className='py-4 ml-72 px-96  absolute justify-center items-center bg-[#c4b5fd] text-xl text-indigo-700'>{aut.name} hoşgeldiniz</div>
-
-
-*/} 
-
+             <Decline className='text-red-600 z-10 w-12 h-12' onClick={()=> leaveCall()} />
+             </div>
+             </div>
+             </div>
  
-   </div>)
+ 
+      
+      
+       </div> */}
 
 
-    }{ receivingCall && !callAccepted && loc.pathname!=="/webcam" ?
-    <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-24 `}> 
-    <div className="flex flex-col items-center w-full ">
-              <h1 className={`text-center mt-3 mb-2 font-bold ${darktext} ${textcolorblue}`}>{name} seni arıyor neredesin sen...</h1>
-             
-              <div className="flex flex-row">
-                <div className={`flex items-center h-12 pb-1 rounded-md `}>
-                  <span className='absolute h-9 m-1 w-9 bottom-2  z-10 bg-white rounded-full '></span>
-                <Accept className={`text-green-700 z-10 w-12 h-12 mr-2 `}  onClick={()=>{
+      {/* <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-20 `}>
+  <div className="flex flex-col items-center w-full ">
+                      <h1 className={`text-center my-1 font-bold ${darktext} ${textcolorblue}`}>{name} Seni arıyor neredesin sen...</h1>
+         
+          <div className="flex flex-row  bottom-0 m-auto  ">
+            <div className={`flex items-center h-10 rounded-md `}>
+            <Accept className={`text-red-600  z-10  w-10 h-10 `} onClick={()=>{
+      console.log(id.current)
+      //answerCall()
+      nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
+      
+      }} />
+   
+          </div>
+          <div className={`right-0 h-10 w-10  ml-1 rounded-md`}>
+          <Decline className='text-green-700' onClick={()=> setReceivingCall(false)} />
+          </div>
+          </div>
+          </div>
+
+
+   
+   
+    </div> */}
+      {aut === null ? (<div>
+        {/* <div className='absolute left-2/4 text-center ' >helo</div> */}
+        <button onClick={() => nav("/reg")} className="w-15 flex absolute right-0 mr-20 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Kaydol</button>
+        <button onClick={() => nav("/login")} className="w-15 flex absolute right-2 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Giriş</button>
+      </div>
+      ) : (<div className="">
+        {/*   <button onClick={async()=>{ localStorage.clear()
+         await store.current.clear()
+         setTimeout(() => {
+           nav("/login")
+         }, 100);
+         
+          window.location.reload()}
+        }
+          className="w-15 flex absolute right-2 mt-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 active:bg-indigo-600">Çıkış</button> */}
+        {/*     <div className='py-4 ml-72 px-96  absolute justify-center items-center bg-[#c4b5fd] text-xl text-indigo-700'>{aut.name} hoşgeldiniz</div>
+        
+        
+        */}
+
+
+      </div>)}{receivingCall && !callAccepted && loc.pathname !== "/webcam" ?
+        <div className={`absolute mx-2 z-10 top-2 right-0 left-0 rounded-lg ${bginput} ${bgfordarkmode}  h-24 `}>
+          <div className="flex flex-col items-center w-full ">
+            <h1 className={`text-center mt-3 mb-2 font-bold ${darktext} ${textcolorblue}`}>{name} seni arıyor neredesin sen...</h1>
+
+            <div className="flex flex-row">
+              <div className={`flex items-center h-12 pb-1 rounded-md `}>
+                <span className='absolute h-9 m-1 w-9 bottom-2  z-10 bg-white rounded-full '></span>
+                <Accept className={`text-green-700 z-10 w-12 h-12 mr-2 `} onClick={() => {
                   //setCallAccepted(true)
-          console.log(id.current)
-          setcr(true)
-          //answerCall()
-          nav("/webcam",{state:{userid:userid.current,conid:conid.current}})
-          
-          }} />
-     
+                  console.log(id.current);
+                  setcr(true);
+                  //answerCall()
+                  nav("/webcam", { state: { userid: userid.current, conid: conid.current } });
+
+                } } />
+
               </div>
               <div className={`flex items-center pb-1  ml-1 h-12 rounded-md`}>
-              <span className='absolute h-9 m-1 w-9 bottom-2 z-10 bg-white rounded-full '>  </span>
+                <span className='absolute h-9 m-1 w-9 bottom-2 z-10 bg-white rounded-full '>  </span>
 
-              <Decline className='text-red-600 z-10 w-12 h-12' onClick={()=> leaveCall()} />
+                <Decline className='text-red-600 z-10 w-12 h-12' onClick={() => leaveCall()} />
               </div>
-              </div>
-              </div>
-  
-  
-       
-       
-        </div>:null
-    }{callAccepted && !callEnded ?
-      <div className=" absolute rounded-lg w-2/6 bg-black   left-auto  top-0 right-0 m-2 ">
+            </div>
+          </div>
 
-        <video playsInline ref={userVideo} autoPlay className="rounded-lg object-contain h-full w-full" onClick={()=>{}}/> </div>:
-        null}
+
+
+
+        </div> : null}{callAccepted && !callEnded ?
+          <div className=" absolute rounded-lg w-2/6 bg-black   left-auto  top-0 right-0 m-2 ">
+
+            <video playsInline ref={userVideo} autoPlay className="rounded-lg object-contain h-full w-full" onClick={() => { } } /> </div> :
+          null}
       <Routes>
-      
-        <Route exact path="/" element={aut===null ?<Navigate to="/login"/>:<Navigate to="/chat"  />}/>
-        <Route element={<Protect />}><Route path="/reg" element={<Reg prt={prt}/>}/>
-            </Route>
-            <Route element={
-            <Protect />
-          }>
-            <Route exact path="/login" element={<Log prt={prt} />}/>
-            </Route>
-            
-            <Route element={
-            <Protect1 />
-          }>
-           {/*  <Route path="/user" element={<User />}/> */}
-            
-            </Route>
-            <Route element={<Protect1 />}><Route  path="/r" element={<Redirect1 sock={socket.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur}  curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current}/>}/></Route>
-            <Route element={<Protect1 />}><Route  path="/chat/:id" element={<Chatid prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode}  db={store.current}  setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam prt={prt} cur={cur} cr={cr} setcr={setcr}  conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid}/>}/></Route>
-            <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid}/>}/></Route>
-         
-         
-         {/*    <Route exact path="/login" element={
-            <Protect user={aut}>
-              <Log/>
-            </Protect>
-          }/>
-  
-           <Route
-          path="/user"
-          element={
-            <Protect user={aut}>
-              <User/>
-            </Protect>
-          }/>  */}
-         
-        
-       
+
+        <Route exact path="/" element={aut === null ? <Navigate to="/login" /> : <Navigate to="/chat" />} />
+        <Route element={<Protect />}><Route path="/reg" element={<Reg prt={prt} />} />
+        </Route>
+        <Route element={<Protect />}>
+          <Route exact path="/login" element={<Log prt={prt} />} />
+        </Route>
+
+        <Route element={<Protect1 />}>
+          {/*  <Route path="/user" element={<User />}/> */}
+
+        </Route>
+        <Route element={<Protect1 />}><Route path="/r" element={<Redirect1 sock={socket.current} />} /></Route>
+        <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat  profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur} curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current} />} /></Route>
+        <Route element={<Protect1 />}><Route path="/chat/:id" e={e} element={<Chatid  chatsbackup={chatsbackup} seen={seen} setseen={setseen} inchat={inchat} setinchat={setinchat} all={all} prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode} db={store.current} setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />} /></Route>
+        <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam prt={prt} cur={cur} cr={cr} setcr={setcr} conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid} />} /></Route>
+        <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid} />} /></Route>
+
+
+        {/*    <Route exact path="/login" element={
+   <Protect user={aut}>
+     <Log/>
+   </Protect>
+ }/>
+
+  <Route
+ path="/user"
+ element={
+   <Protect user={aut}>
+     <User/>
+   </Protect>
+ }/>  */}
+
+
+
         {/* <Route path="/reg" element={<Reg />} />
-        <Route path="/login" element={<Log/>}/>
-        <Route path="/user" element={<User />} /> */}
-     </Routes> 
-   
+<Route path="/login" element={<Log/>}/>
+<Route path="/user" element={<User />} /> */}
+      </Routes>
+
     </Pro.Provider>
-    </div>
+  </div></>
   );
 }
 

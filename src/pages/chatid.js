@@ -43,9 +43,11 @@ import { ReactComponent as Gallery1 } from "../pages/images/gallery.svg"
 import { ReactComponent as Send1 } from "../pages/images/send.svg"
 import { ReactComponent as Back } from "../pages/images/back.svg"
 import { ReactComponent as Camicon } from "../pages/images/zoom.svg"
+import { ReactComponent as Profilepic } from "../pages/images/user.svg";
 import { ReactComponent as Download } from "../pages/images/download.svg"
 import smoothscroll from 'smoothscroll-polyfill';
-
+import { App as app } from '@capacitor/app';
+import { IonInput, IonItem, IonLabel, IonList, IonTextarea,IonItemSliding } from '@ionic/react';
 // Register the plugins
 registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,FilePondPluginFileEncode, FilePondPluginImagePreview,FilePondPluginFileValidateType,FilePondPluginImageResize)
 
@@ -53,12 +55,16 @@ registerPlugin(FilePondPluginImageTransform,FilePondPluginImageExifOrientation,F
 // kick off the polyfill!
 
 
+let c =false
+
+let d=false
+let result1
+function Chatid({chatsbackup,seen,setseen,inchat,setinchat,all,prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
+ 
 
 
-
-function Chatid({prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
   //smoothscroll.polyfill();
-  const alert =useAlert()
+  const alert1 =useAlert()
   let first=false
   let darktext="dark:text-[#F0EFE9]"
   let bgfordarkmode="dark:bg-[#1a1a1a]"
@@ -91,8 +97,11 @@ function Chatid({prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,n
   const [bni, setBni] = useState(true);
   const [first1, setfirst1] = useState(false);
   const [Files, setFiles] = useState([]);
-  const[peop,setpeop]=useState([])
-  const[all,setall]=useState([])
+  const [peop,setpeop]=useState([])
+  //const [all,setall]=useState([])
+  const [online,setonline]=useState(false)
+  //const [seen,setseen]=useState(null)
+  const [pp,setpp]=useState([])
   const load = useRef(false)
   const page =useRef(1)
   const media =useRef(null)
@@ -124,6 +133,7 @@ function Chatid({prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,n
  
   //const[ne,setne]=useState([])
   let nav = useNavigate()
+  
   const imgRef = useRef();
   let n=[]
     let{id}=useParams()
@@ -136,6 +146,7 @@ let touchstartY = 0;
 let touchendX = 0;
 let touchendY = 0;
 const messagesfromdb = useRef(null)
+
 
 
 
@@ -215,8 +226,41 @@ const messagesfromdb = useRef(null)
      setsendimage([resized])
     };
  console.log(first1)
-    useEffect(()=>{
+ 
+ useEffect(()=>{
+
+ 
+//alert("ık")
+  app.addListener("backButton",e=>{
+    
+    if(isopened){
+      setisopened(false)
+      setimage(false)
+      setisopenedm(false)
+      //alert("ok")
+      
+      d=true
+      //alert(d)
+      // alert(c)
+    }else{
+      
+      nav("/chat")
+      d=false
+  
    
+    
+ 
+ 
+  
+}
+  })
+
+  return ()=>{
+    app.removeAllListeners()
+  }
+ },[isopened])
+    useEffect(()=>{
+     
       async function send(){
         const time=new Date(Date.now()).toISOString()
         if(sendimage.length!==0)
@@ -255,6 +299,7 @@ const messagesfromdb = useRef(null)
 
   
     useEffect(()=>{ 
+      
       setmessages([])
      
       
@@ -293,7 +338,20 @@ const messagesfromdb = useRef(null)
       if(chats){
         //let chat =await db.get("chatsbackup")
        
-        let cur=(chats.filter(v=>v._id===id))
+        //let cur=(chats.filter(v=>v._id===id))
+      let cur
+    chats.forEach((v,i)=>{
+
+if(v._id===id){
+console.log(v)
+cur=[v]
+result1=i
+
+}
+
+
+        })
+      
         if(cur[0]!==undefined&&cur[0]!==null){
         if(!cur[0].members.includes(na.id)){
           console.log("yok")  
@@ -317,17 +375,29 @@ const messagesfromdb = useRef(null)
            up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[0],csi:cur[0].members[1],cam:[cur[0].members[1],cur[0].members[0]]}
            //curref.current=up.cid
         }
+        sock.current.emit("inchat",up.cri,up.cid,up.csi)
+        let pp1 = await db.get("pp")
+        if(pp1){
+          console.log(pp1)
        
+            pp1.forEach(a=>{
+            
+            if(a._id!==na.id&&a._id===up.cri){
+              setpp(a.profilepicture)
+              
+            }
+            })
+        }
       }
       }else{
         
       }
       let abo
       setcur(up)
-      curref.current=up.cid
+      curref.current=up
       //console.log(up.cnm)
       //console.log("1",up.cid)
-   
+   chatsbackup.current=await db.get("chatsbackup")
         messagesfromdb.current = await db.get(id)
     
       
@@ -377,35 +447,126 @@ const messagesfromdb = useRef(null)
         }) */}
       }
      conv()
-     
+     return ()=>{
+      curref.current=null
+     }
   
     },[db,e])
+    console.log(online)
+    useEffect(()=>{
+      
+      
+      console.log(all)
+      console.log("er")
+      
+      //sock.current.emit("inchat",cur.cri)
+      let x= false
+    if(all!==null){
+    all.forEach(e => {
+      if(!x){
+     if( e.userId===curref.current?.cri){
+      
+     
+    setonline(true)
+
+    x=true
+     }else{
+      setonline(false)
+      x=false
+     }}
+    
+    })
+    
+    
+    }
+    
+    
+    },[all,curref.current])
+
+    /* useEffect(()=>{
+      async function pp(){
+        let pp1 = await db.get("pp")
+        let x= await db.get("chatsbackup")
+        let resulte
+    console.log(up.cid)
+        let pp2=[]
+        if(pp1===null&&person.length!==0){
+         console.log("ko")
+         person.forEach(e => {
+    
+           x.forEach(a=>{
+            
+           if(a.members[0]!==na.id &&a.members[0]===e._id||a.members[1]!==na.id &&a.members[1]==e._id){
+             
+           pp2=[...pp2,e]
+           }
+           })
+         });
+         await db.set("pp",pp2)
+         let filtered= pp2.forEach((v,i) => {
+       
+           if(v._id===kar){
+             resulte=i
+           }})
+          console.log(pp2)
+         
+          setpp(pp2[resulte])
+        }else{
+          if(pp1!==null){
+         
+        let filtered= pp1.forEach((v,i) => {
+    
+         if(v._id===kar){
+    
+           resulte=i
+         }})
+    
+       
+        setpp(pp1[resulte])}
+       }
+         }
+         pp()
+    
+    },[db]) */
 
     useEffect(()=>{
     async function ff(){
-    let chat =await db.get("chatsbackup")
+    //let chat =await db.get("chatsbackup")
     let result 
     const time=new Date(Date.now()).toISOString()
-     chat.forEach((v,i) => {
+     /* chatsbackup.current.forEach((v,i) => {
       if(v._id===id){
         console.log(chat[i])
         result = i
       }
-    })
-    console.log(chat)
-    chat[result].updatedAt= time
-    console.log(chat)
-  await db.set("chatsbackup",chat)
-    console.log(time)
+    }) */
+    console.log("llll")
+    chatsbackup.current[result1].updatedAt= time
+    chatsbackup.current[result1].seen=[false,messages[0].createdAt] 
+    console.log(chatsbackup.current)
+   await db.set("chatsbackup",chatsbackup.current)
+   console.log(chatsbackup.current)
+   await axios.put(`${prt}/conversations/${curref.current.cid}`,{
+    seen:[false,messages[0]._id],
+  }).then((res)=>{
+    console.log(res)
+    //resp=[res.data.members[4],res.data.members[5]]
+    //setcur()
+
+   
+    //console.log("bu da")
+  }).catch((e)=> console.log(e))
+   setseen(false)
+   
 
 
     }
-     if(db!==null&&update)ff()
+     if(db!==null&&!inchat)ff()
 
 
-    },[update,db])
-      let clas=`scrollbar pr-2  mt-2 ml-1.5 mr-0 mb-1 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark `   
-      let clas1=" scrollbar pr-2 mt-2 ml-1.5 mr-0 mb-1 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex   overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent"
+    },[messages[0],db])
+      let clas=`scrollbar relative pr-2  mt-2 ml-1.5 mr-0 mb-1 overscroll-contain h-screen md:scrollbar-width-2 xs:scrollbar-width-1 flex-col-reverse flex  overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-scroll dark:scrollbar-thumb-dark `   
+      let clas1=" scrollbar relative pr-2 mt-2 ml-1.5 mr-0 mb-1 h-screen overscroll-contain md:scrollbar-width-2   xs:scrollbar-width-1 flex-col-reverse flex   overflow-y-scroll  scrollbar-track-transparent scrollbar-thumb-transparent"
       
       let scro= src.current
       let time
@@ -791,7 +952,61 @@ if(messagesfromdb.current!==null){
   ];
 //2022-10-06T14:47:36.269Z
 //2022-10-06T14:47:06.269Z
+
+
+useEffect(()=>{
+
+ let result
+ let see
+
+  async function seen(){
+console.log(inchat)
+      console.log("inchat")
+    //chatsbackup.current=await db?.get("chatsbackup")
+    chatsbackup.current?.forEach(async(c,i)=>{
+if(c._id===curref.current?.cid){
+console.log("12")
+console.log(c.seen)
+console.log(messages)
+  if(messages[0]?.sender!==na.id&&c.seen[1]!==messages[0].createdAt){
+    console.log("neee")
+    chatsbackup.current[result1].seen=[true,messages[0].createdAt] 
+   await db.set("chatsbackup",chatsbackup.current)
+   await axios.put(`${prt}/conversations/${curref.current.cid}`,{
+     seen:[true,na.id],
+   }).then((res)=>{
+     console.log(res)
+     //resp=[res.data.members[4],res.data.members[5]]
+     //setcur()
+     //console.log("bu da")
+   }).catch((e)=> console.log(e))
+   setseen(true)
+ 
+ }else{
+  if(c.seen[0]===true&&!inchat){
+    console.log("88")
+
+    see=true
+    setseen(true)
+  }else{
+    console.log(c.seen[0])
+    see=false
+    setseen(false)
+  }
+ }
+}
+    })  
+  }
+  setTimeout(() => {
+    seen()
+    
+  }, 0);
+},[messages[0],db,inchat])
    async function gon(event){
+    
+   
+
+
     const time=new Date(Date.now()).toISOString()
     //event.preventDefault()
     /* let chat =await db.get("chatsbackup")
@@ -808,6 +1023,7 @@ if(messagesfromdb.current!==null){
   await db.set("chatsbackup",chat)
     console.log(time) */
     event.preventDefault()
+    
     setupdate(true)
     //event.stopPropagation()
     let t
@@ -831,7 +1047,8 @@ if(messagesfromdb.current!==null){
     messagesfromdb.current=addnewmessage
      await db.set(current.cid,messagesfromdb.current) */
 
-     console.log(messagesfromdb.current)
+     
+     
      await axios.post(`${prt}/messages`,{
       conversationid:cur.cid,
       sender:na.id,
@@ -949,7 +1166,7 @@ function handleGesture(event,elapsedTime) {
       console.log("kks")
       setimage(false)
      setisopened(false)
-     
+     setisopenedm(false)
       //setisopened(false);
     }else if(touchstartY-touchendY&&touchstartY-touchendY>=100) {
     
@@ -957,6 +1174,7 @@ function handleGesture(event,elapsedTime) {
       //up
       setimage(false)
      setisopened(false)
+     setisopenedm(false)
  
     }
     
@@ -966,6 +1184,7 @@ function handleGesture(event,elapsedTime) {
 }
 var tapedTwice = false;
 let x=0
+let t
 useEffect(()=>{
   
   let im = document.getElementById("img")
@@ -991,14 +1210,23 @@ useEffect(()=>{
     setn1(event.touches.length)
     n2.current=event.touches.length
     handleGesture(event,0)
+
    
     //alert("dy")
         if(!tapedTwice) {
           console.log("ok")
+          /* 
+          t=setTimeout(() => {
+            setisopenedm(false)
+          }, 1000); */
             tapedTwice = true;
-            setTimeout( function() { tapedTwice = false; }, 300 );
+            setTimeout( function() { tapedTwice = false
+              
+            }, 300 );
             return false;
         }else{
+          clearTimeout(t)
+          //setisopenedm(true)
           x=x+1
          
           if(x%2==0){
@@ -1067,7 +1295,7 @@ let goback = window.onpopstate = e => {
   //your code...
   //setmessages([])
   setTimeout(() => {
-    
+    sock.current.emit("outchat",cur.cri)
     nav(-1)
   }, 0);
   
@@ -1118,8 +1346,9 @@ let year = dat.toString().slice(-4)
            imagePreviewUpscale={true} credits={false} ></FilePond></div>:null} */}
       
 {/*       <input className="focus:outline-none focus:border-orange-500 border-solid border-indigo-600 border-2 rounded-md w-full" id="name"  name="name" type="text" autoComplete="name" />
- */}   
-{isopened && <div className="absolute inset-0 h-screen w-screen">
+ */}  
+
+{isopened && <div className="absolute z-10 inset-0 h-screen w-screen">
 
 {/* <button onClick={()=> {setisopened(false) 
 setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
@@ -1130,7 +1359,14 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
 
 
 
-<div id="rr" className="flex justify-center h-full items-center bg-white dark:bg-black " onClick={()=>setisopenedm(!isopenedm)}>
+<div id="rr" className="flex justify-center h-full items-center bg-white dark:bg-black " onClick={()=>{
+t= setTimeout(() => {
+  
+  setisopenedm(!isopenedm)
+}, 200);
+
+  //
+  }}>
              <TransformWrapper doubleClick={{step:1}}    onZoom={()=>{
                 
  
@@ -1166,14 +1402,14 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
               
                </TransformWrapper>
              </div>
-             {isopenedm && !doubletap.current ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div>
-             <Back className={`absolute z-0 left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${textcolorblue}`} width="1.5rem" height="1.7rem" onClick={() => {
+             {isopenedm&&!doubletap.current&&!zoom.current ?<><div className="h-20 opacity-60  absolute  top-0 inset-0 bg-black"></div>
+             <Back className={`absolute z-10 left-[1.7rem] opacity-100 inset-0 top-[1.7rem] ${specialwhitetextdark} ${specialwhitetext}`} width="1.5rem" height="1.7rem" onClick={() => {
               setisopened(false);
               setimage(false);
               setisopenedm(false);
 
             } } />
-            <Download className={`absolute h-[2.5rem] w-[2.5rem]  top-[1.25rem] right-[1.7rem] ${specialwhitetext} ${specialwhitetextdark} `} onClick={async()=>{
+            <Download className={`absolute h-[2.5rem] w-[2.5rem] z-0 top-[1.25rem] right-[1.7rem] ${specialwhitetext} ${specialwhitetextdark} `} onClick={async()=>{
    const fileName = new Date().getTime() + '.jpeg';
    const ok = await Filesystem.writeFile({
    path: fileName,
@@ -1182,7 +1418,7 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
    
    })
    if(ok){
-    alert.success("RESİM YÜKLENDİ",{position:"middle",timeout:1000,})
+    alert1.success("RESİM YÜKLENDİ",{position:"middle",timeout:1000})
    }}}/>
             <div className="absolute bottom-0 opacity-60   bg-black w-full  h-20"></div></>:null}
              </div>
@@ -1194,27 +1430,39 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
 
          <div id="src2" className={`min-h-full w-full flex flex-col ${bg} dark:bg-black rounded-lg pr-1  pt-1 `}>
           
-         <div className={`flex flex-row   justify-center dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1.5 ml-2.5 mt-0.5 h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
-         {!isopened ?<Back className={`justify-self-start absolute left-5 ${textcolorblue} ${specialwhitetextdark}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
+         <div className={`flex flex-row   justify-between dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1.5 ml-2.5 mt-0.5 h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
+         <div className="flex items-center   h-full">
 
+       {!isopened ?<Back className={`flex ml-2.5 ${textcolorblue} ${specialwhitetextdark}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
+<div className="flex items-center mr-2 ml-1  h-full rounded-full  p-2 aspect-square ">
+{pp!==null ? <div className="mr-2.5 relative max-w-[4.1rem] min-w-[4.1rem]  max-h-[4.1rem] min-h-[4.1rem]  " >
+              <div className={inchat &&online ? 
+              `absolute inset-0 bg-[#0BDA51]  from-[#0295FF] via-[#664BFF] to-[#B50BBA]  w-full h-full rounded-full`: online ?
+              `absolute inset-0 bg-gradient-to-r   from-[#0295FF] via-[#664BFF] to-[#B50BBA]  w-full h-full rounded-full`:`absolute inset-0 bg-transparent  w-full h-full rounded-full`}></div><img src={pp} alt="s" className={ online ?`  p-0.5  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[3.75rem] min-h-[3.75rem]  max-w-[3.75rem] min-w-[3.75rem]  `:`  p-0.5  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[4.35rem] min-h-[4.35rem]  max-w-[4.35rem] min-w-[4.35rem]  `} onClick={() => {  } } /></div>:
+              <div className="relative mr-2  max-w-[4.1rem] min-w-[4.1rem]  max-h-[4.1rem] min-h-[4.1rem] " ><div className={inchat ? 
+              `  absolute top-0 right-0 bg-[#0BDA51]  from-[#0295FF] via-[#664BFF] to-[#B50BBA] w-full h-full rounded-full` : !online? `  absolute top-0 right-0 bg-gradient-to-r bg-[#B50BBA] from-[#0295FF] via-[#664BFF] to-[#B50BBA] w-full h-full rounded-full`:
+              `  absolute top-0 right-0 bg-transparent w-full h-full rounded-full`}></div ><Profilepic className={online ? `absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-100  rounded-full w-[3.575rem] h-[3.575rem] mr-2.5`:`absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-100  rounded-full w-[4.575rem] h-[4.575rem] mr-2.5`} /></div>}
+</div>
           <span className={`bg-gradient-to-r  bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
-
-          <Camicon className={`flex  justify-end  w-8 ${textcolorblue} ml-1 `} onClick={()=>nav("/webcam",{ state: { userid: cur.cri , conid: id },replace:true})} />
-   
+</div>
+<div className="min-w-8 max-w-8 min-h-8 max-h-8 mr-2">
+          <Camicon className={`flex  justify-end w-8 h-8 ${textcolorblue} ml-1 `} onClick={()=>nav("/webcam",{ state: { userid: cur.cri , conid: id },replace:true})} />
+          </div>
          </div>
 
          
          <div id="src" ref={src}className={clas}>
 {/*             <div className="flex justify-start  z-1 text-indigo-800 w-full  xs:text-xs md:text-xl ml-1 px-1 xs:rounded-sm md:rounded-md  bg-[#c4b5fd]">{!image? current.cnm:null}</div>
- */}            {messages?.map((c,i,f)=>{
+ */}            
+ {messages?.map((c,i,f)=>{
   let opt
   if(year===new Date(f[i].createdAt).toLocaleDateString("tr-TR").slice(-4)){
     if(dat===new Date(f[i].createdAt).toLocaleDateString("tr-TR")){
      opt="today"
-     console.log("nını")
+ 
     }else{
       opt ={day:"numeric",month:"long"}
-        console.log("aynı")
+      
 
     }
     }else{
@@ -1222,7 +1470,7 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
     }
   if(f[i+1]!==undefined){
        if((new Date(f[i].createdAt).toLocaleDateString("tr-TR")!==new Date((f[i+1]).createdAt).toLocaleDateString("tr-TR"))){
-        console.log("yes")
+
         if(i===0){
 
           return <div k={i} key={i} id="last" ref={scroll} className="flex flex-col" ><div  className={`flex ml-3.5 mb-5 mt-6 self-center items-center justify-center  px-2 rounded-lg text-sm ${darktext} ${bg7} ${specialwhitetext}  ${bgfordarkmode}`}>{opt==="today" ? "Bugün":new Date((f[i]).createdAt).toLocaleDateString("tr-TR",opt)}</div><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
@@ -1266,8 +1514,8 @@ setimage(false) }}  className=" absolute right-2 top-2 bg-indigo-600">
             
             )}
             
-             
             </div>
+             <div className="w-full flex justify-center text-xs ">{seen&&messages[0]?.sender===na.id&&!inchat? "görüldü":""}</div>
             {!isopened && <form className="pb-2 pr-1 pl-2 relative justify-center items-center w-full">
           
                <input id="tex" className={`focus:outline-none w-full h-10 pr-[8rem]  pb-0.5 pl-1.5 focus:border-orange-500 border-solid ${bordercolor} ${textcolorblue} ${bginput} ${darkborderinput} border-[0.15rem] rounded-2xl`}

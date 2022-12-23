@@ -12,7 +12,8 @@ import { async } from "@firebase/util";
 import { setPlatform } from "@capacitor/core";
 import { ReactComponent as Profilepic } from "../pages/images/user.svg"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-export default function Conv({viewpp,setviewpp,check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
+/* import IonPhotoViewer from '@codesyntax/ionic-react-photo-viewer'; */
+export default function Conv({setppc,all,viewpp,setviewpp,check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
   let svgslide="text-[#90C5FF]"
   let svgslidedark="dark:text-[#F0EFE9]"
   let textcolorblue="text-[#459DFF]"
@@ -20,7 +21,7 @@ export default function Conv({viewpp,setviewpp,check,setcheck,k,mesa,person,flag
   let bg="bg-[#fcfbf4]"
   let maincolor="bg-white"
   let bordercolor="border-[#90C5FF]"
-  let prt="https://smartifier.onrender.com"
+  let prt="http://192.168.1.104:3001"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
   const headers = { Authorization:a};
@@ -36,6 +37,8 @@ export default function Conv({viewpp,setviewpp,check,setcheck,k,mesa,person,flag
   const [leftx,setleft]=useState(0)
   const [last,setlast]=useState()
   const [pp,setpp]=useState([])
+  //const [ppc,setppc]=useState(false)
+  const [online,setonline]=useState(false)
   const [time,settime]=useState()
   const [divw,setdiv]=useState()
   let resp=[]
@@ -51,7 +54,29 @@ export default function Conv({viewpp,setviewpp,check,setcheck,k,mesa,person,flag
     convs.members[4]=false}else{
       convs.members[5]=false
     } */
+useEffect(()=>{
 
+  let x= false
+if(all!==null){
+all.forEach(e => {
+  if(!x){
+ if( e.userId===kar){
+  
+ 
+setonline(true)
+x=true
+ }else{
+  setonline(false)
+  x=false
+ }}
+
+})
+
+
+}
+
+
+},[all])
 
 
     useEffect(()=>{
@@ -250,9 +275,9 @@ useEffect(()=>{
        if(v._id===kar){
          resulte=i
        }})
-      console.log(pp2)
      
-      setpp(pp2[resulte])
+     
+     
     }else{
       if(pp1!==null){
      
@@ -264,8 +289,13 @@ useEffect(()=>{
      }})
 
    
-    setpp(pp1[resulte])}
-   }
+    setpp(pp1[resulte])
+  
+  }
+   }  setTimeout(() => {
+    setppc(true)
+    
+  }, 25);
      }
      pp()
 
@@ -479,7 +509,7 @@ if(r!=undefined){
       
       //silme()
       //if(convs!==undefined)console.log(convs._id)
-console.log(pp.profilepicture)
+
     if((convs.members[0]===na.id&&convs.members[4]===true)||(convs.members[1]===na.id&&convs.members[5]===true)){
        
           return(
@@ -488,13 +518,38 @@ console.log(pp.profilepicture)
             
             <div className="absolute   top-[2.5px] " style={{ right:`${8}px` }}><img id="sr2" src={delet} alt="s" className="xs:w-[2rem] rounded-full md:w-[2rem] mt-[1.1rem] " onClick={b}></img></div>
               <div id="sr1" className=" "  ref={l} style={{ position: "relative", left: `${leftx}px`}}>
-              <div id="sr" className={`flex   flex-row max-w-full items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`}>
-            
-              {pp?.profilepicture!==undefined && pp?.profilepicture!==null ? <img src={pp.profilepicture} alt="s" className="mb-1 object-cover bg-slate-50 rounded-full h-[4rem] max-w-[4rem] min-w-[4rem] mr-2 " onClick={()=>{setviewpp(pp.profilepicture)}}/>:<div className="w-20 mb-1"><Profilepic className={`${textcolorblue} ${darktext} opacity-50 dark:opacity-20 rounded-full w-[4rem] h-[4rem]  mr-2`}  onClick={get}/></div>}
-          
-              <div className={`flex w-full  justify-end  overflow-hidden  flex-col   ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base xs:pr-1 xs:pl-1 xs:break-words`} onClick={get}>
+              <div id="sr" className={pp?.profilepicture!==undefined && pp?.profilepicture!==null ? `flex flex-row max-w-full items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1 h-[4.5rem]`:`flex  flex-row max-w-full items-center mt-1 ${maincolor} dark:bg-black ${bordercolor} rounded-lg p-1  h-[4.5rem]`}>
+             
+              {pp?.profilepicture!==undefined && pp?.profilepicture!==null ? <div className="mr-2.5  relative max-w-[4.1rem] min-w-[4.1rem]  max-h-[4.1rem] min-h-[4.1rem] mb-1 " >
+              <div className={online ? 
+              `absolute inset-0 bg-gradient-to-r   from-[#0295FF] via-[#664BFF] to-[#B50BBA]  w-full h-full rounded-full`:
+              ` absolute  bg-transparent top-0 right-0  w-full h-full  rounded-full`}></div>
+              
+              {/* <IonPhotoViewer  className={"rounded-full"}
+          title="Martin arrantzalea"
+          src={pp.profilepicture}
+          licenseKey='your-license-key'
+        >
+            <img className="absolute z-10 rounded-full "
+            src={pp.profilepicture}
+            alt="Martin arrantzalea"
+          />
+        </IonPhotoViewer> */}
+              
+              
+              <img src={pp.profilepicture} alt="s" className={ online ?`p-0.5  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[3.75rem] m-h-[3.75rem]  max-w-[3.75rem] min-w-[3.75rem]  `:` absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[4rem] min-h-[4rem]  max-w-[4rem] min-w-[4rem]  `} onClick={() => { setviewpp(pp.profilepicture); } } />
+              
+              
+              </div>:
+              
+              
+              <div className="relative mr-2  mb-1 max-w-[4.1rem] min-w-[4.1rem]  max-h-[4.1rem] min-h-[4.1rem] " ><div className={online ? 
+              `  absolute top-0 right-0 bg-gradient-to-r bg-[#B50BBA] from-[#0295FF] via-[#664BFF] to-[#B50BBA] w-full h-full rounded-full` : 
+              `  absolute top-0 right-0 bg-transparent w-full h-full rounded-full`}></div ><Profilepic className={online ? `absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-60 dark:opacity-30  rounded-full w-[3.575rem] h-[3.575rem] mr-2.5`:`absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-60 dark:opacity-30 rounded-full w-[4.55rem] h-[4.55rem] mr-2.5`} onClick={get} /></div>}
+             
+              <div className={`flex flex-col w-full  justify-end  overflow-hidden    ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base px-1 xs:break-words`} onClick={get}>
               <span className="relative">{de}</span>
-              <span id="1" className={`relative ${darktext}   font-normal ${textcolorblue} truncate  text-base`} >{last}</span>
+              <span id="1" className={`relative ${darktext}    font-normal ${textcolorblue} truncate  text-base`} >{last}</span>
               </div>
               <span className={`flex items-center h-full ${textcolorblue} ${darktext} ml-auto text-sm text- self-center mr-2 font-normal`} onClick={get}  >{time}</span>
 

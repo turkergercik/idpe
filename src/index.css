@@ -34,3 +34,95 @@ code {
     -ms-user-select: auto !important;
     user-select: auto !important;
 }
+.bod{
+
+  width: 100vh;
+  height: 100vh;
+   margin: 10px;
+}
+.snow1{
+  /* position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  right: 0px;
+  bottom: 0px; */
+ /*  background: url(http://i60.tinypic.com/2j2fhjm.jpg) repeat-x left center;
+  background-size: 160px 80px;
+  animation: displace 2s linear infinite; */
+
+  filter: drop-shadow(0 0 10px white);
+background-image: url(./pages/images/snowy1.png)  ;
+background-repeat: repeat;
+background-size: 550px 750px ;
+animation: animateOne 6s linear infinite; 
+animation-delay: 150ms;
+}
+.snow2{
+  /* position: absolute;
+  top: 0px;
+  left: 0px;
+  
+  width: 100%;
+  height: 100%; */
+ /*  background: url(http://i60.tinypic.com/2j2fhjm.jpg) repeat-x left center;
+  background-size: 160px 80px;
+  animation: displace 2s linear infinite; */
+opacity: 0.5;
+  filter: drop-shadow(0 0 10px white);
+background-image: url(./pages/images/snowy.png)  ;
+background-repeat: repeat;
+background-size: 550px;
+animation: animateTwo 5s linear infinite ; 
+animation-delay: 300ms;
+
+}
+.snow3{
+/*   position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%; */
+ /*  background: url(http://i60.tinypic.com/2j2fhjm.jpg) repeat-x left center;
+  background-size: 160px 80px;
+  animation: displace 2s linear infinite; */
+
+  filter: drop-shadow(0 0 10px white);
+background-image: url(./pages/images/snowy.png)  ;
+background-repeat: repeat;
+background-size: 550px 550px ;
+animation: animateThree 5s linear infinite; 
+animation-delay: 450ms;
+}
+@keyframes animateOne {
+  0% {
+    background-position: 0px 0px;
+  }
+
+
+  
+  100% {
+    background-position: 550px 750px;
+  }
+}
+
+@keyframes animateTwo {
+  from {
+    background-position: 550px 0px ;
+  }
+  to {
+    background-position: 0px 550px  ;
+  }
+}
+
+@keyframes animateThree {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0px 550px;
+  }
+}
+

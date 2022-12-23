@@ -23,6 +23,8 @@ import { ReactComponent as Accept } from "../pages/images/accept.svg"
 import { Camera, CameraResultType,CameraSource } from '@capacitor/camera';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { async } from "@firebase/util";
+import { App as app } from '@capacitor/app';
+
 //70A1D7
 let mp
 let sd
@@ -54,6 +56,7 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
     const [height, setheight] = useState();
     const[peop,setpeop]=useState([])
     const [check,setcheck]=useState()
+    const [ppc,setppc]=useState()
     //const[all,setall]=useState([])
     const[mpeop,setmpeop]=useState([])
     const [sendimage, setsendimage] = useState(null);
@@ -83,7 +86,7 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
     const [click,setclick]=useState(true)
     //const socket = useRef()
    
-   
+
 /*     async function a(event){
       setBni(false)
       event.preventDefault()
@@ -111,7 +114,50 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
 
   },[current,ne]) */
   //console.log(cur)
+  useEffect(()=>{
 
+ 
+    //alert("ık")
+      app.addListener("backButton",e=>{
+        
+        if(isOpenedPeople){
+          setisOpenedPeople(false)
+         
+          //alert("ok")
+          
+ 
+          //alert(d)
+          // alert(c)
+        }else if(delorchange){
+          setdelorchange(false)
+        
+          //nav("/chat")
+    
+      
+       
+        
+     
+     
+      
+    }else if(isOpenedSettings){
+      setisOpenedSettings(false)
+      //nav("/chat")
+
+  
+   
+    
+ 
+ 
+  
+}else if(viewpp){
+setviewpp(null)
+    }
+      })
+    
+      return ()=>{
+        app.removeAllListeners()
+      }
+     },[isOpenedPeople,isOpenedSettings,viewpp,delorchange])
   const opengallery = async () => {
     let resized
     const image = await Camera.getPhoto({
@@ -230,7 +276,7 @@ console.log("88889")
           window.location.reload()
           //localStorage.setItem("aut",JSON.stringify({"isA":false,"tok":"tokExp"}))
         }
-        await db.remove("pp")
+       //await db.remove("pp")
         setpeop(res.data)
         setAni(true)
         
@@ -354,8 +400,8 @@ useEffect(()=>{
     }).catch((err)=>{
         console.log("hata")
       })}else{
-        console.log(people.current)
-        console.log(mp)
+        /* console.log(people.current)
+        console.log(mp) */
         let mp1=await db.get("chatsbackup")
         /* mp1.forEach((v)=>{
 v.members[4]=true
@@ -669,12 +715,17 @@ if(ani&&bni){
       return(
         <div className={isDarkMode ? "absolute  bg-black top-0 bottom-0 right-0 left-0 ":null}>
           <div className="animate-wiggle1">
-          <div className={ !check &&isDarkMode ? `absolute z-10 bg-black inset-0 `:null || !check&&!isDarkMode ? `absolute z-10 bg-white inset-0 `:null}></div><div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
-          
-          <div id="msj" className={` flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white rounded-lg p-1`}>
+          <div className={ !ppc &&isDarkMode ? `absolute z-10 bg-black inset-0 `:null || !ppc&&!isDarkMode&&!ppc ? `absolute z-10 bg-white inset-0 `:null}></div><div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
+
+          <div id="msj" className={isDarkMode? `snow3 pointer-events-auto flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white  p-1`:`flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white  p-1`}>
+  
+           
+           <div className={isDarkMode? " absolute inset-0 pointer-events-none opacity-30 snow2":null}></div>
+           <div className={isDarkMode? " absolute inset-0 pointer-events-none snow1":null}></div>
             <span className={` font-bold bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] py-8 mt-1 rounded-lg md:px-1 text-[2.3rem] ${textcolorblue}`} onClick={async () => {
               close();
             } }>Sohbetler</span>
+            
             <span className="flex items-center ml-auto pl-1 mt-1">
               <Setting className={`flex  font-medium ${textcolorblue} ${darktext} mr-1 dark:opacity-100`} width="1.7rem" height="1.7rem" onClick={async () => { opensettings(); } } />
             </span>
@@ -700,7 +751,7 @@ size={30}
               if (a.updatedAt > b.updatedAt)
                 return -1;
               return 0;
-            }).map((c, i) => (<Conv viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
+            }).map((c, i) => (<Conv setppc={setppc} all={all} viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
 
 
             )}
@@ -723,7 +774,7 @@ size={30}
           <span className={`fixed bottom-10 left-1/2 -translate-x-1/2 rounded-full bg-[#097EFE] dark:bg-black opacity-90 dark:opacity-100  ${textcolorblue}`}>
             <Add width="2.5rem" height="2.5rem" className={`${svgsearch} ${darktext}`} onClick={() => open()} />
           </span>
-{viewpp!==null ? <><div id="view" className={`absolute bg-black inset-0 h-screen w-screen`} onClick={()=>setshowback(!showback)}>
+{/* {viewpp!==null ? <><div id="view" className={`absolute bg-black inset-0 h-screen w-screen`} onClick={()=>setshowback(!showback)}>
 
 
              <TransformWrapper > 
@@ -742,7 +793,7 @@ size={30}
 
 
 
-}
+} */}
           {isOpenedPeople ? <div className={`absolute  inset-0 h-screen dark:bg-black bg-white ${divisioncolor}`}><div className="flex pt-2 flex-col h-full w-full p-2 ">
             <div className="flex flex-row">
               <span className={`font-bold bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] text-[2.3rem] px-1 py-8 mb-1 transparent `}>

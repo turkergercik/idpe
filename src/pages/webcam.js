@@ -23,6 +23,7 @@ import { ReactComponent as Back } from "../pages/images/back.svg"
 import { ReactComponent as Decline } from "../pages/images/decline.svg"
 import { ReactComponent as Accept } from "../pages/images/accept.svg"
 import { ReactComponent as Rotate } from "../pages/images/rotate.svg"
+import { App as app } from '@capacitor/app';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -563,6 +564,28 @@ v.current.srcObject=user
         
       }
       
+      useEffect(()=>{
+        //alert("ık")
+          app.addListener("backButton",e=>{
+            
+           if(stream!==null&&stream.active===true){
+            stream.getTracks().forEach((t) => t.stop())
+            leaveCall()
+            nav(`/chat/${location.state.conid}`,{replace:true})
+
+            }
+         
+         
+          
+        
+          })
+        
+          return ()=>{
+            app.removeAllListeners()
+          }
+         },[])
+
+
   if(ani===true&&bni===true){
 
 

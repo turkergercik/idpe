@@ -33,10 +33,10 @@ const alert =useAlert()
     own=true}
   return(
 <div className="">
-{own ? (<><div className="w-full flex items-center pt-1.5 pl-1.5">
-<div className={media? `${bgfordarkmode} ${bg}  h-[20rem] w-5/6 flex p-2 pb-2.5 flex-col justify-center items-start rounded-t-xl rounded-br-xl`:
-`${bgfordarkmode} ${bg} max-w-[20rem] flex p-1 pb-0 pl-0.5 flex-row-reverse justify-start items-end rounded-t-xl rounded-br-xl`}>
-{media ?<div className="flex flex-row h-full w-full pt-2.5  items-center">
+{own ? (<><div className="w-full flex items-center   pt-1.5 pl-1.5">
+<div className={media? `${bgfordarkmode} ${bg}   h-[20rem] w-5/6 flex p-2 pb-2.5 flex-col justify-center items-start rounded-t-xl rounded-br-xl`:
+`${bgfordarkmode} ${bg} max-w-[20rem]  flex p-1 pb-0 pl-0.5 flex-row-reverse justify-start items-end rounded-t-xl rounded-br-xl`}>
+{media ?<div className="flex flex-row h-full w-full pt-2.5 items-center">
   <Download className={`${svgcolor} hidden  ${specialwhitetext}  ${whitefordark} xs:w-10 h-10 rounded-full md:w-10 `} width="3rem" height="3rem" onClick={async()=>{
    const fileName = new Date().getTime() + '.jpeg';
    const ok = await Filesystem.writeFile({
