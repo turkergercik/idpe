@@ -307,6 +307,7 @@ jo.put("media","data:image/jpeg;base64,"+media);
 
 }
 
+
                /* Notification.Builder notificationg =
                         new Notification.Builder(getApplicationContext(), channel)
                                 .setSmallIcon(R.drawable.ic_launcher_background)

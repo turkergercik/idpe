@@ -13,7 +13,7 @@ import { setPlatform } from "@capacitor/core";
 import { ReactComponent as Profilepic } from "../pages/images/user.svg"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 /* import IonPhotoViewer from '@codesyntax/ionic-react-photo-viewer'; */
-export default function Conv({setppc,all,viewpp,setviewpp,check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
+export default function Conv({ppcheck,setppcheck,pprenew,e,setppc,all,viewpp,setviewpp,check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
   let svgslide="text-[#90C5FF]"
   let svgslidedark="dark:text-[#F0EFE9]"
   let textcolorblue="text-[#459DFF]"
@@ -21,7 +21,7 @@ export default function Conv({setppc,all,viewpp,setviewpp,check,setcheck,k,mesa,
   let bg="bg-[#fcfbf4]"
   let maincolor="bg-white"
   let bordercolor="border-[#90C5FF]"
-  let prt="http://192.168.1.104:3001"
+  let prt="https://smartifier.onrender.com"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
   const headers = { Authorization:a};
@@ -37,6 +37,7 @@ export default function Conv({setppc,all,viewpp,setviewpp,check,setcheck,k,mesa,
   const [leftx,setleft]=useState(0)
   const [last,setlast]=useState()
   const [pp,setpp]=useState([])
+  
   //const [ppc,setppc]=useState(false)
   const [online,setonline]=useState(false)
   const [time,settime]=useState()
@@ -55,9 +56,9 @@ export default function Conv({setppc,all,viewpp,setviewpp,check,setcheck,k,mesa,
       convs.members[5]=false
     } */
 useEffect(()=>{
-
+console.log(all)
   let x= false
-if(all!==null){
+if(all!==null&&all.length!==0){
 all.forEach(e => {
   if(!x){
  if( e.userId===kar){
@@ -185,7 +186,7 @@ x=true
           console.log("rrrr")
           }else if(!f.current){
             setleft(0)
-            console.log("78")
+           
             //console.log(flag1)
             //console.log(no.current)
           slide(false)
@@ -254,12 +255,13 @@ useEffect(()=>{
   async function pp(){
     let pp1 = await db.get("pp")
     let x= await db.get("chatsbackup")
+ 
+    console.log("g")
     let resulte
-
     let pp2=[]
     if(pp1===null&&person.length!==0){
      console.log("ko")
-     person.forEach(e => {
+   /*   person.forEach(e => {
 
        x.forEach(a=>{
         
@@ -268,29 +270,53 @@ useEffect(()=>{
        pp2=[...pp2,e]
        }
        })
-     });
-     await db.set("pp",pp2)
-     let filtered= pp2.forEach((v,i) => {
+     }); */
+     await db.set("pp",person)
+     let filtered= person.forEach((v,i) => {
    
        if(v._id===kar){
          resulte=i
        }})
      
-     
-     
+       setpp(person[resulte])
+      
+       setppcheck([])
     }else{
-      if(pp1!==null){
-     
+      if(pp1!==null&&person.length!==0&&person!==1){
+     console.log(0)
+   /*  let filtered=  person.forEach((e,i) => {
+
+      pp1.forEach(a=>{
+       
+      if(a._id===e._id&&a.profilepicture!==e.profilepicture&&e._id===kar){
+        console.log(i)
+     resulte=i
+      }
+      })
+    }) */
+    let filtered= person.forEach((v,i) => {
+
+      if(v._id===kar){
+ 
+        resulte=i
+      }})
+   await db.set("pp",person)
+    setpp(person[resulte])
+    setppcheck([])
+    //setppcheck(null)
+  }else{
+    if(pp1!==null){
     let filtered= pp1.forEach((v,i) => {
 
-     if(v._id===kar){
-
-       resulte=i
-     }})
-
-   
-    setpp(pp1[resulte])
-  
+      if(v._id===kar){
+ 
+        resulte=i
+      }})
+ 
+    
+     setpp(pp1[resulte])
+     //setppcheck(2)
+}
   }
    }  setTimeout(() => {
     setppc(true)
@@ -299,7 +325,7 @@ useEffect(()=>{
      }
      pp()
 
-},[person,db])
+},[person,db,pprenew])
 
     useEffect(()=>{
   
@@ -360,8 +386,6 @@ if(r!=undefined){
     /* setTimeout(() => {
       swiperightBol1.current=true
     }, 10); */
-    
-    console.log("huh")
     
     //nos.current=!bool
     //nos.current=!nos.current
@@ -537,7 +561,7 @@ if(r!=undefined){
         </IonPhotoViewer> */}
               
               
-              <img src={pp.profilepicture} alt="s" className={ online ?`p-0.5  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[3.75rem] m-h-[3.75rem]  max-w-[3.75rem] min-w-[3.75rem]  `:` absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[4rem] min-h-[4rem]  max-w-[4rem] min-w-[4rem]  `} onClick={() => { setviewpp(pp.profilepicture); } } />
+              <img src={pp.profilepicture} alt="s" className={ online ?`p-0.5  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[3.75rem] min-h-[3.75rem]  max-w-[3.75rem] min-w-[3.75rem]  `:` absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[4rem] min-h-[4rem]  max-w-[4rem] min-w-[4rem]  `} onClick={() => { setviewpp(pp.profilepicture); } } />
               
               
               </div>:
@@ -545,7 +569,7 @@ if(r!=undefined){
               
               <div className="relative mr-2  mb-1 max-w-[4.1rem] min-w-[4.1rem]  max-h-[4.1rem] min-h-[4.1rem] " ><div className={online ? 
               `  absolute top-0 right-0 bg-gradient-to-r bg-[#B50BBA] from-[#0295FF] via-[#664BFF] to-[#B50BBA] w-full h-full rounded-full` : 
-              `  absolute top-0 right-0 bg-transparent w-full h-full rounded-full`}></div ><Profilepic className={online ? `absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-60 dark:opacity-30  rounded-full w-[3.575rem] h-[3.575rem] mr-2.5`:`absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-60 dark:opacity-30 rounded-full w-[4.55rem] h-[4.55rem] mr-2.5`} onClick={get} /></div>}
+              `  absolute top-0 right-0 bg-transparent w-full h-full rounded-full`}></div ><Profilepic className={online ? `absolute  text-[#8fc4ff] dark:text-[#484745]  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black  rounded-full w-[3.575rem] h-[3.575rem] mr-2.5`:`absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-60 dark:opacity-30 rounded-full w-[4.55rem] h-[4.55rem] mr-2.5`} onClick={get} /></div>}
              
               <div className={`flex flex-col w-full  justify-end  overflow-hidden    ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base px-1 xs:break-words`} onClick={get}>
               <span className="relative">{de}</span>

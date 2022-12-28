@@ -28,7 +28,7 @@ import { App as app } from '@capacitor/app';
 //70A1D7
 let mp
 let sd
-function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
+function Chat({ppch,ppcheck,setppcheck,pprenew,peop,setpeop,prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
   let bgfordarkmode="dark:bg-[#1a1a1a]"
   let bgblue ="bg-[#A6D1FF]"
   let specialwhitetextdark="dark:text-[#F0EFE9]"
@@ -54,7 +54,7 @@ function Chat({prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1
     const [ani, setAni] = useState(true);
     const [bni, setBni] = useState(true);
     const [height, setheight] = useState();
-    const[peop,setpeop]=useState([])
+    //const[peop,setpeop]=useState([])
     const [check,setcheck]=useState()
     const [ppc,setppc]=useState()
     //const[all,setall]=useState([])
@@ -210,7 +210,7 @@ setviewpp(null)
   useEffect(()=>{
     setdelorchange(false)
     async function send(){
-      console.log("resim değişti")
+      
       const time=new Date(Date.now()).toISOString()
       if(profilepicture!==undefined){
       if(profilepicture!==null&&profilepicture!=="null")
@@ -224,7 +224,7 @@ console.log("56")
         profilepicture:profilepicture,
        },{headers}).then(async(res)=>{ 
         await db.set("profilepicture",profilepicture)
-       
+        sock.current.emit("newpp",na.id)
         //setwrite("")
         
          //console.log(messages)
@@ -233,15 +233,15 @@ console.log("56")
        }).catch((err)=>{
         console.log("hata")
       })}else if(profilepicture==="null"){
-        console.log("65")
+       
         //setuserpp(null)
-        console.log("nullbu")
+        
         await axios.put(`${prt}/user`,{
           name:na.name,
           profilepicture:null,
          },{headers}).then(async(res)=>{ 
           await db.set("profilepicture","null")
-         
+         sock.current.emit("newpp",na.id)
           //setwrite("")
           
            //console.log(messages)
@@ -262,13 +262,8 @@ console.log("56")
 
    useEffect(()=>{
   
-console.log("88889")
+
     async function get1(){
-
-
-
-
-
       const convers = await axios.get(`${prt}/all`,{headers}).then(async(res)=>{
         if(res.data==="tokExp"){
           localStorage.clear()
@@ -279,7 +274,8 @@ console.log("88889")
        //await db.remove("pp")
         setpeop(res.data)
         setAni(true)
-        
+        setppcheck(true)
+        ppch.current=res.data
         setpeopbackup(res.data)
        //console.log(res.data)
     }).catch((err)=>{
@@ -287,7 +283,7 @@ console.log("88889")
       })
     }
    get1()
-   },[all])
+   },[all,pprenew])
 
 
    /* useEffect(()=>{
@@ -367,8 +363,6 @@ useEffect(()=>{
    
    useEffect(()=>{
 
-    
-    console.log("ok")
     setmessages([])
     let sd
     async function a(){
@@ -751,7 +745,7 @@ size={30}
               if (a.updatedAt > b.updatedAt)
                 return -1;
               return 0;
-            }).map((c, i) => (<Conv setppc={setppc} all={all} viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
+            }).map((c, i) => (<Conv ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} e={e} setppc={setppc} all={all} viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
 
 
             )}

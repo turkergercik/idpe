@@ -57,6 +57,8 @@ function App() {
   const [ name, setname ] = useState("")
 	const [ stream, setStream ] = useState(null)
   const [ camt, setcamt ] = useState(true)
+  const [ pprenew, setpprenew ] = useState()
+  const [ppcheck,setppcheck]=useState(true)
 	const [ receivingCall, setReceivingCall ] = useState(false)
 	const [ caller, setCaller ] = useState("")
 	const [ callerSignal, setCallerSignal ] = useState()
@@ -80,10 +82,12 @@ function App() {
   
   let nav =useNavigate()
   const messagesfromdb = useRef("getget")
+  const ppch = useRef(null)
   const [isDarkMode, setDarkMode]=useState(false)
   const curref =useRef(["null"])
   const[messages,setmessages]=useState([])
   const[mpeop,setmpeop]=useState([])
+  const[peop,setpeop]=useState([])
   const id = useRef()
  
   const[e,sete]=useState()
@@ -123,7 +127,7 @@ function App() {
          
 
      }
-     let prt="http://192.168.1.104:3001"
+     let prt="https://smartifier.onrender.com"
 const socket = useRef()
 async function as() {
   if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});
@@ -194,11 +198,11 @@ setflag(true)
      
      let bb=await store.current.create();
  await store.current.set("socket",false)
-     console.log(store.current)
+    // console.log(store.current)
 if(Capacitor.getPlatform()==="web"){
-  console.log("evet")
+  //console.log("evet")
     if(localStorage.getItem("is_reloaded")){
-console.log("ok")
+//console.log("ok")
     }else{
       console.log("pl")
       localStorage.clear()
@@ -215,7 +219,9 @@ console.log("ok")
   useEffect(()=>{
     async function delseen(){
 await store.current.remove("chatsbackup")
-
+//await store.current.remove("pp")
+setpeop([])
+//  setall([])
     }
     setTimeout(() => {
     
@@ -354,8 +360,21 @@ async function bb(){
   /* socket.current.on("ho",(e)=> console.log(e)) */
   socket.current.on("get",(e)=> {
     //setinchat(false)
+    
     setall(e)
   //console.log(e)
+})
+socket.current.on("newpp",async(e)=> {
+  //setinchat(false)
+let n =await store.current.get("chatsbackup")
+n.forEach((a)=>{
+if(a.members[0]===e||a.members[1]===e){
+setpprenew([])
+  console.log("wwe")
+}
+})
+  
+//console.log(e)
 })
 socket.current.on("inchat",async(e)=> {
   console.log("9999")
@@ -442,8 +461,8 @@ let tream
     
 
     })
-  socket.current.emit("no",na.id)
-  socket.current.on("get",e=>console.log(e))
+  socket.current.emit("no",na?.id)
+  //socket.current.on("get",e=>console.log(e))
   socket.current.on("m",(r)=>{
     console.log(all)
     if(r.conid===undefined){
@@ -632,6 +651,12 @@ bb()
   
   
     },[])
+    useEffect(()=>{
+      console.log("abababab")
+setppcheck(peop)
+
+
+    },[ppch.current])
 /* useEffect(()=>{
   console.log(loc.pathname)
   if(loc.pathname==="/webcam"){
@@ -900,8 +925,8 @@ return (
 
         </Route>
         <Route element={<Protect1 />}><Route path="/r" element={<Redirect1 sock={socket.current} />} /></Route>
-        <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat  profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur} curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current} />} /></Route>
-        <Route element={<Protect1 />}><Route path="/chat/:id" e={e} element={<Chatid  chatsbackup={chatsbackup} seen={seen} setseen={setseen} inchat={inchat} setinchat={setinchat} all={all} prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode} db={store.current} setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />} /></Route>
+        <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat ppch={ppch} ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop} profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur} curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current} />} /></Route>
+        <Route element={<Protect1 />}><Route path="/chat/:id" e={e} element={<Chatid ppch={ppch} ppcheck={ppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop}  chatsbackup={chatsbackup} seen={seen} setseen={setseen} inchat={inchat} setinchat={setinchat} all={all} prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode} db={store.current} setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />} /></Route>
         <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam prt={prt} cur={cur} cr={cr} setcr={setcr} conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid} />} /></Route>
         <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid} />} /></Route>
 

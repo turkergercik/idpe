@@ -45,7 +45,7 @@ function Log({prt}) {
 
 
 
-    async function a(){
+    async function a(event){
       setBni(false)
       //event.preventDefault() 
         await axios.post(`${prt}/login`,{

@@ -59,7 +59,7 @@ let c =false
 
 let d=false
 let result1
-function Chatid({chatsbackup,seen,setseen,inchat,setinchat,all,prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
+function Chatid({ppch,peop,setpeop,ppcheck,pprenew,chatsbackup,seen,setseen,inchat,setinchat,all,prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
  
 
 
@@ -97,7 +97,7 @@ function Chatid({chatsbackup,seen,setseen,inchat,setinchat,all,prt,db,isDarkMode
   const [bni, setBni] = useState(true);
   const [first1, setfirst1] = useState(false);
   const [Files, setFiles] = useState([]);
-  const [peop,setpeop]=useState([])
+  //const [peop,setpeop]=useState([])
   //const [all,setall]=useState([])
   const [online,setonline]=useState(false)
   //const [seen,setseen]=useState(null)
@@ -225,7 +225,7 @@ const messagesfromdb = useRef(null)
      }
      setsendimage([resized])
     };
- console.log(first1)
+ 
  
  useEffect(()=>{
 
@@ -343,7 +343,7 @@ const messagesfromdb = useRef(null)
     chats.forEach((v,i)=>{
 
 if(v._id===id){
-console.log(v)
+//console.log(v)
 cur=[v]
 result1=i
 
@@ -376,7 +376,7 @@ result1=i
            //curref.current=up.cid
         }
         sock.current.emit("inchat",up.cri,up.cid,up.csi)
-        let pp1 = await db.get("pp")
+       /*  let pp1 = await db.get("pp")
         if(pp1){
           console.log(pp1)
        
@@ -387,7 +387,7 @@ result1=i
               
             }
             })
-        }
+        } */
       }
       }else{
         
@@ -426,7 +426,7 @@ result1=i
       })}}
       
       if(messagesfromdb.current!==null){
-        console.log("77")
+        
         const newmessages10 = messagesfromdb.current.slice(0,10)
         const newmessages20 = messagesfromdb.current.slice(0,20)
         
@@ -452,17 +452,113 @@ result1=i
      }
   
     },[db,e])
-    console.log(online)
+
+    useEffect(()=>{
+console.log("ık")
+      async function pp(){
+        let pp1 = await db.get("pp")
+  
+        console.log("g")
+        let resulte
+        let pp2=[]
+        if(pp1===null&&peop.length!==0){
+         console.log("ko")
+       /*   person.forEach(e => {
+    
+           x.forEach(a=>{
+            
+           if(a.members[0]!==na.id &&a.members[0]===e._id||a.members[1]!==na.id &&a.members[1]==e._id){
+             
+           pp2=[...pp2,e]
+           }
+           })
+         }); */
+         await db.set("pp",peop)
+         let filtered= peop.forEach((v,i) => {
+       
+           if(v._id===cur.cri){
+             resulte=i
+           }})
+         
+           setpp(peop[resulte].profilepicture)
+          
+     
+        }else{
+          if(pp1!==null&&peop.length!==0&&peop!==1){
+         console.log(0)
+       /*  let filtered=  person.forEach((e,i) => {
+    
+          pp1.forEach(a=>{
+           
+          if(a._id===e._id&&a.profilepicture!==e.profilepicture&&e._id===kar){
+            console.log(i)
+         resulte=i
+          }
+          })
+        }) */
+        let filtered= peop.forEach((v,i) => {
+    
+          if(v._id===cur.cri){
+     
+            resulte=i
+          }})
+       await db.set("pp",peop)
+        setpp(peop[resulte].profilepicture)
+      
+        //setppcheck(null)
+      }else{
+        if(pp1!==null){
+        let filtered= pp1.forEach((v,i) => {
+    
+          if(v._id===cur.cri){
+     
+            resulte=i
+          }})
+     
+        
+         setpp(pp1[resulte].profilepicture)
+         //setppcheck(2)
+    }
+      }
+       } 
+         }
+
+
+
+
+/* async function pp(){
+console.log("ppppp")
+  let pp1 = await db.get("pp")
+  
+
+        if(pp1){
+          //console.log(pp1)
+       
+            pp1.forEach(a=>{
+            
+            if(a._id!==na.id&&a._id===cur.cri){
+              setpp(a.profilepicture)
+              
+            }
+            })
+        }
+} */
+ 
+  pp()
+
+    },[ppch.current,ppcheck])
+console.log(ppch.current)
     useEffect(()=>{
       
       
-      console.log(all)
-      console.log("er")
+      //console.log(all)
+     
       
       //sock.current.emit("inchat",cur.cri)
       let x= false
     if(all!==null){
     all.forEach(e => {
+      
       if(!x){
      if( e.userId===curref.current?.cri){
       
@@ -561,7 +657,7 @@ result1=i
 
 
     }
-     if(db!==null&&!inchat)ff()
+     if(db!==null&&update&&!inchat)ff()
 
 
     },[messages[0],db])
@@ -960,14 +1056,13 @@ useEffect(()=>{
  let see
 
   async function seen(){
-console.log(inchat)
-      console.log("inchat")
+
     //chatsbackup.current=await db?.get("chatsbackup")
     chatsbackup.current?.forEach(async(c,i)=>{
 if(c._id===curref.current?.cid){
-console.log("12")
+/* console.log("12")
 console.log(c.seen)
-console.log(messages)
+console.log(messages) */
   if(messages[0]?.sender!==na.id&&c.seen[1]!==messages[0].createdAt){
     console.log("neee")
     chatsbackup.current[result1].seen=[true,messages[0].createdAt] 
@@ -1439,8 +1534,8 @@ t= setTimeout(() => {
               <div className={inchat &&online ? 
               `absolute inset-0 bg-[#0BDA51]  from-[#0295FF] via-[#664BFF] to-[#B50BBA]  w-full h-full rounded-full`: online ?
               `absolute inset-0 bg-gradient-to-r   from-[#0295FF] via-[#664BFF] to-[#B50BBA]  w-full h-full rounded-full`:`absolute inset-0 bg-transparent  w-full h-full rounded-full`}></div><img src={pp} alt="s" className={ online ?`  p-0.5  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[3.75rem] min-h-[3.75rem]  max-w-[3.75rem] min-w-[3.75rem]  `:`  p-0.5  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mb-1 object-cover rounded-full max-h-[4.35rem] min-h-[4.35rem]  max-w-[4.35rem] min-w-[4.35rem]  `} onClick={() => {  } } /></div>:
-              <div className="relative mr-2  max-w-[4.1rem] min-w-[4.1rem]  max-h-[4.1rem] min-h-[4.1rem] " ><div className={inchat ? 
-              `  absolute top-0 right-0 bg-[#0BDA51]  from-[#0295FF] via-[#664BFF] to-[#B50BBA] w-full h-full rounded-full` : !online? `  absolute top-0 right-0 bg-gradient-to-r bg-[#B50BBA] from-[#0295FF] via-[#664BFF] to-[#B50BBA] w-full h-full rounded-full`:
+              <div className="relative mr-2  max-w-[4.1rem] min-w-[4.1rem]  max-h-[4.1rem] min-h-[4.1rem] " ><div className={inchat&&online ? 
+              `  absolute top-0 right-0 bg-[#0BDA51]  from-[#0295FF] via-[#664BFF] to-[#B50BBA] w-full h-full rounded-full` : online? `  absolute top-0 right-0 bg-gradient-to-r bg-[#B50BBA] from-[#0295FF] via-[#664BFF] to-[#B50BBA] w-full h-full rounded-full`:
               `  absolute top-0 right-0 bg-transparent w-full h-full rounded-full`}></div ><Profilepic className={online ? `absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-100  rounded-full w-[3.575rem] h-[3.575rem] mr-2.5`:`absolute  ${textcolorblue}  ${darktext} top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-100  rounded-full w-[4.575rem] h-[4.575rem] mr-2.5`} /></div>}
 </div>
           <span className={`bg-gradient-to-r  bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
@@ -1473,7 +1568,7 @@ t= setTimeout(() => {
 
         if(i===0){
 
-          return <div k={i} key={i} id="last" ref={scroll} className="flex flex-col" ><div  className={`flex ml-3.5 mb-5 mt-6 self-center items-center justify-center  px-2 rounded-lg text-sm ${darktext} ${bg7} ${specialwhitetext}  ${bgfordarkmode}`}>{opt==="today" ? "Bugün":new Date((f[i]).createdAt).toLocaleDateString("tr-TR",opt)}</div><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
+          return <div k={i} key={i} id="last" ref={scroll} className="flex flex-col" ><div  className={` flex ml-3.5 mb-5 mt-6 self-center items-center justify-center  px-2 rounded-lg text-sm ${darktext} ${bg7} ${specialwhitetext}  ${bgfordarkmode}`}>{opt==="today" ? "Bugün":new Date((f[i]).createdAt).toLocaleDateString("tr-TR",opt)}</div><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
 
         }else{
           return <div className="flex flex-col" key={i} ><div  className={`flex ml-3.5 mb-5 mt-6 self-center items-center justify-center  px-2 rounded-lg text-sm ${darktext} ${bg7} ${specialwhitetext}  ${bgfordarkmode}`}>{opt==="today" ? "Bugün":new Date((f[i]).createdAt).toLocaleDateString("tr-TR",opt)}</div><Mess key={i} open={setisopened} own={messages[i].sender} on={setimage} message={messages[i]} setmessage={setmessages} images={sendedimage} /></div>
