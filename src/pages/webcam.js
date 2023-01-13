@@ -123,6 +123,7 @@ export default function Webcam({prt,cur,cr,setcr,conid,userVideo,peer2,me,setMe,
   
   
   const [ani, setAni] = useState(false);
+  const [myvid, setmyvid] = useState(true);
   const [bni, setBni] = useState(false);
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
@@ -132,6 +133,7 @@ export default function Webcam({prt,cur,cr,setcr,conid,userVideo,peer2,me,setMe,
   const [current, setcurrent] = useState({cid:"",cnm:""})
   const [room, setroom] = useState(v4());
   const [playing, setPlaying] = useState(false);
+  const [click, setclick] = useState(false);
   const [ stream1, setStream1 ] = useState(true)
   let nav = useNavigate()
   //const [ me, setMe ] = useState("")
@@ -216,7 +218,10 @@ console.log(cr)
     let button =document.getElementById("ll")
     setTimeout(() => {
       button?.click()
+     
     }, 0);
+
+    
         /* console.log("kıkıkı")
         sock.current.emit("who",location.state.userid,na.id,location.state.conid)
         call() */
@@ -294,7 +299,39 @@ console.log(cr)
      // sock.current.disconnect()
 }
 	},[])
+  /* useEffect(()=>{
+
+
+    console.log(callAccepted)
+  },[callAccepted]) */
   
+  useEffect(()=>{
+    let r
+    console.log(callAccepted)
+if(callAccepted){
+clearTimeout(r)
+console.log(peer.current)
+}else{
+console.log("şşşş")
+ r= setTimeout(() => {
+    console.log(stream)
+    console.log(sock.current)
+    if(stream!==null&&stream.active===true&&!callAccepted&&peer.current.initiator&&idToCall&&sock.current&&!receivingCall){
+     console.log(callAccepted)
+      stream.getTracks().forEach((t) => t.stop())
+      leaveCall()
+      
+      //nav(`/chat/${location.state.conid}`,{replace:true})
+
+      }
+  }, 15000);
+
+}
+return ()=>{
+
+  clearTimeout(r)
+}
+  },[stream,sock.current,idToCall,callAccepted])
 	function call(){
      const  callUser = async() => {
      peer1.current = new Peer({
@@ -401,14 +438,17 @@ console.log(caller)
 
 	const leaveCall = () => {
    // console.log({me:me,caller:caller,receiver:idToCall})
-
-    sock.current.emit("ending",idToCall,me,caller)
+console.log(idToCall)
+console.log(me)
+console.log(caller)
+sock.current.emit("ending",idToCall,me,caller)
 		//setCallEnded(true)
     //setReceivingCall(false)
 		//connectionRef.current.destroy()
     //window.location.reload()
 	}
   const toggle=async()=>{
+    console.log(myvid)
   /*   window.stream.getTracks().forEach((t) => t.stop())
     const tream = await navigator.mediaDevices.getUserMedia({ video: {
       facingMode:{exact:"environment"}// Or 'environment'
@@ -437,8 +477,16 @@ console.log(caller)
       peer.current.replaceTrack(b,tream1.getVideoTracks()[0],stream)
       stream.addTrack(tream1.getVideoTracks()[0])
   
-      v.current.srcObject=stream
-      v.current.play()
+      if(myvid){
+
+        v.current.srcObject=stream
+        v.current.play()
+        
+      }else{
+       userVideo.current.srcObject=stream
+        userVideo.current.play()
+
+      }
       //setStream(tream1)
       //setStreamf(tream1)
         cam.current=false
@@ -449,7 +497,16 @@ console.log(caller)
        
         //console.log(window.stream.getTracks())
         //console.log(window.stream.getTracks())
-        v.current.srcObject=stream
+        if(myvid){
+
+          v.current.srcObject=stream
+          v.current.play()
+          
+        }else{
+         userVideo.current.srcObject=stream
+          userVideo.current.play()
+
+        }
         //v.current.play()
         cam.current=false
         setcamt(false)
@@ -465,14 +522,30 @@ console.log(caller)
           //peer1.current.addStream(tream1)
           peer.current.replaceTrack(b,tream1.getVideoTracks()[0],stream)
           stream.addTrack(tream1.getVideoTracks()[0])
-          v.current.srcObject=stream
-          v.current.play()
+          if(myvid){
+
+            v.current.srcObject=stream
+            v.current.play()
+            
+          }else{
+           userVideo.current.srcObject=stream
+            userVideo.current.play()
+
+          }
           cam.current=true
           setcamt(true)
         }else if(tream1){
           stream.addTrack(tream1.getVideoTracks()[0])
-          v.current.srcObject=stream
-          v.current.play()
+          if(myvid){
+
+            v.current.srcObject=stream
+            v.current.play()
+            
+          }else{
+           userVideo.current.srcObject=stream
+            userVideo.current.play()
+
+          }
           cam.current=true
           setcamt(true)
         }
@@ -526,10 +599,12 @@ console.log(caller)
   function change(){
     
     //console.log(userVideo.current.srcObject)
-let user  =userVideo.current.srcObject
+    
+let user =userVideo.current.srcObject
 let my =v.current.srcObject
 userVideo.current.srcObject=my
 v.current.srcObject=user
+setmyvid(!myvid)
   }
    function camforweb(){
 		setPlaying(true);
@@ -580,9 +655,7 @@ v.current.srcObject=user
         
           })
         
-          return ()=>{
-            app.removeAllListeners()
-          }
+          
          },[])
 
 
@@ -603,14 +676,22 @@ call()
     )} */}
    <div className="flex flex-col h-full w-full  bg-black xs:text-md md:text-xl text-indigo-700 "> 
    <div className=" video-container h-full w-full">
-    { camt? <div className="video my-rotate-y-180 h-full w-full">
-					{ <video playsInline autoPlay muted ref={v} className="w-full h-full object-contain"  onClick={()=>{
-    console.log("ok")
-    setisclick(!isclick)}} />}
+    { camt? <div className="video my-rotate-y-180 h-full w-full">{
+            !stream ? <div className="absolute z-0 inset-0 w-full h-full bg-red-700"></div>:null
+          }
+    
+					 <><video playsInline autoPlay  muted ref={v} className="w-full h-full object-contain" onClick={() => {
+            console.log("ok");
+            setisclick(!isclick);
+          } } /></>
 				</div>:<div className="video h-full w-full">
-					{ <video playsInline autoPlay muted ref={v} className="w-full h-full object-contain"  onClick={()=>{
-    console.log("ok")
-    setisclick(!isclick)}} />}
+        {
+            !stream ? <div className="absolute z-0 inset-0 w-full h-full bg-red-700"></div>:null
+          }
+					 <><div className="absolute  z-0 w-full h-full bg-red-700"></div><video playsInline autoPlay muted ref={v} className="w-full h-full object-contain" onClick={() => {
+              console.log("ok");
+              setisclick(!isclick);
+            } } /></>
 				</div>}
 				
 				
@@ -644,7 +725,7 @@ call()
 				</div>
         {isclick && !callAccepted ? <><div className="h-20 absolute top-0 w-full opacity-60 bg-black">
           </div>
-          <Back className={`absolute opacity-100 text-white h-20 left-[1.7rem] `} width="1.5rem" height="1.7rem" onClick={()=>{
+          <Back id="tt" className={`absolute opacity-100 text-white h-20 left-[1.7rem] `} width="1.5rem" height="1.7rem" onClick={()=>{
             if(stream!==null&&stream.active===true){
             stream.getTracks().forEach((t) => t.stop())
             leaveCall()

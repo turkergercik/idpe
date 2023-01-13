@@ -13,7 +13,7 @@ import { setPlatform } from "@capacitor/core";
 import { ReactComponent as Profilepic } from "../pages/images/user.svg"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 /* import IonPhotoViewer from '@codesyntax/ionic-react-photo-viewer'; */
-export default function Conv({ppcheck,setppcheck,pprenew,e,setppc,all,viewpp,setviewpp,check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
+export default function Conv({ typing,ppcheck,setppcheck,pprenew,e,setppc,all,viewpp,setviewpp,check,setcheck,k,mesa,person,flag1,height,setflag1,convs,db,changeconv,setmessage,setcur,setnewm,messageler,curref}){
   let svgslide="text-[#90C5FF]"
   let svgslidedark="dark:text-[#F0EFE9]"
   let textcolorblue="text-[#459DFF]"
@@ -21,7 +21,8 @@ export default function Conv({ppcheck,setppcheck,pprenew,e,setppc,all,viewpp,set
   let bg="bg-[#fcfbf4]"
   let maincolor="bg-white"
   let bordercolor="border-[#90C5FF]"
-  let prt="https://smartifier.onrender.com"
+  //let prt="https://smartifier.onrender.com"
+  let prt="http://192.168.1.130:3001"
   const a = localStorage.getItem("token")
   const na=jose.decodeJwt(a)
   const headers = { Authorization:a};
@@ -44,6 +45,7 @@ export default function Conv({ppcheck,setppcheck,pprenew,e,setppc,all,viewpp,set
   const [divw,setdiv]=useState()
   let resp=[]
   let result
+  let arr
   if(convs.members[1]===na.id){
      de =convs.members[2]
    kar=convs.members[0]
@@ -51,12 +53,19 @@ export default function Conv({ppcheck,setppcheck,pprenew,e,setppc,all,viewpp,set
     kar=convs.members[1]
     de =convs.members[3]
   }
+  arr=de.split(" ");
+         
+        for (let i = 0; i < arr.length; i++) {
+         arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
+     
+         }
+         de = arr.join(" ");
  /*  if(convs.members[0]===na.id){
     convs.members[4]=false}else{
       convs.members[5]=false
     } */
 useEffect(()=>{
-console.log(all)
+
   let x= false
 if(all!==null&&all.length!==0){
 all.forEach(e => {
@@ -256,7 +265,7 @@ useEffect(()=>{
     let pp1 = await db.get("pp")
     let x= await db.get("chatsbackup")
  
-    console.log("g")
+    //console.log("g")
     let resulte
     let pp2=[]
     if(pp1===null&&person.length!==0){
@@ -283,7 +292,7 @@ useEffect(()=>{
        setppcheck([])
     }else{
       if(pp1!==null&&person.length!==0&&person!==1){
-     console.log(0)
+     //console.log(0)
    /*  let filtered=  person.forEach((e,i) => {
 
       pp1.forEach(a=>{
@@ -319,13 +328,25 @@ useEffect(()=>{
 }
   }
    }  setTimeout(() => {
-    setppc(true)
+    //setppc(true)
     
-  }, 25);
+  }, 0);
      }
      pp()
 
-},[person,db,pprenew])
+},[person,db])
+useEffect(()=>{
+  
+if(pp.length!==0){
+ 
+  setTimeout(() => {
+    
+    setppc(true)
+    
+  }, 25);
+
+}
+},[pp])
 
     useEffect(()=>{
   
@@ -333,7 +354,14 @@ useEffect(()=>{
     
         let last =  await db.get(convs._id)
         if(last!==null&&last.length!==0){
-          setlast(last[0].text)
+          if(last[0].text!==undefined){
+            let r ={text:last[0].text,media:false}
+          setlast(r)
+        }else{
+          let r ={text:"Resim Gönderdi",media:true}
+          setlast(r)
+
+        }
           if(new Date(last[0].createdAt).toLocaleDateString("tr-TR")===new Date().toLocaleDateString("tr-TR")){
             const mest=new Date(last[0].createdAt).toLocaleTimeString("tr",{hour: '2-digit', minute:'2-digit'})
             settime(mest)
@@ -382,6 +410,9 @@ if(r!=undefined){
   
   
      },[nos.current,mesa])
+    /*  useEffect(()=>{
+console.log(last)
+     },[last]) */
   function slide(bool){
     /* setTimeout(() => {
       swiperightBol1.current=true
@@ -573,7 +604,14 @@ if(r!=undefined){
              
               <div className={`flex flex-col w-full  justify-end  overflow-hidden    ${textcolorblue} ${darktext} font-semibold  xs:text-lg md:text-base px-1 xs:break-words`} onClick={get}>
               <span className="relative">{de}</span>
-              <span id="1" className={`relative ${darktext}    font-normal ${textcolorblue} truncate  text-base`} >{last}</span>
+              {typing.status==true&&typing.conversationid===convs._id ? <div className="relative text-[#B50BBA]  font-normal text-base">yazıyor
+              <span className={`text-[#B50BBA]  dot1 mx-[1.5px]`}>.</span>
+       <span className={`text-[#B50BBA] dot2 mr-[1.5px]`}>.</span>
+       <span className={`text-[#B50BBA] dot3`}>.</span>
+              
+              </div>:
+              <span id="1" className={last?.media===true? `relative text-[#B50BBA] font-normal truncate  text-base`:`relative ${darktext} font-normal ${textcolorblue} truncate  text-base`} >{last?.text}</span>
+            }
               </div>
               <span className={`flex items-center h-full ${textcolorblue} ${darktext} ml-auto text-sm text- self-center mr-2 font-normal`} onClick={get}  >{time}</span>
 

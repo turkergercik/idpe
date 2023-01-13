@@ -28,7 +28,7 @@ import { App as app } from '@capacitor/app';
 //70A1D7
 let mp
 let sd
-function Chat({ppch,ppcheck,setppcheck,pprenew,peop,setpeop,prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
+function Chat({ typing,ppch,ppcheck,setppcheck,pprenew,peop,setpeop,prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
   let bgfordarkmode="dark:bg-[#1a1a1a]"
   let bgblue ="bg-[#A6D1FF]"
   let specialwhitetextdark="dark:text-[#F0EFE9]"
@@ -155,7 +155,7 @@ setviewpp(null)
       })
     
       return ()=>{
-        app.removeAllListeners()
+        //app.removeAllListeners()
       }
      },[isOpenedPeople,isOpenedSettings,viewpp,delorchange])
   const opengallery = async () => {
@@ -709,7 +709,7 @@ if(ani&&bni){
       return(
         <div className={isDarkMode ? "absolute  bg-black top-0 bottom-0 right-0 left-0 ":null}>
           <div className="animate-wiggle1">
-          <div className={ !ppc &&isDarkMode ? `absolute z-10 bg-black inset-0 `:null || !ppc&&!isDarkMode&&!ppc ? `absolute z-10 bg-white inset-0 `:null}></div><div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
+          <div className={ !ppc&&isDarkMode ? `absolute z-10 bg-black inset-0 `:null || !ppc&&!isDarkMode ? `absolute z-10 bg-white inset-0 `:null}></div><div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
 
           <div id="msj" className={isDarkMode? `snow3 pointer-events-auto flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white  p-1`:`flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white  p-1`}>
   
@@ -745,7 +745,7 @@ size={30}
               if (a.updatedAt > b.updatedAt)
                 return -1;
               return 0;
-            }).map((c, i) => (<Conv ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} e={e} setppc={setppc} all={all} viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
+            }).map((c, i) => (<Conv  typing={typing} ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} e={e} setppc={setppc} all={all} viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
 
 
             )}

@@ -31,6 +31,7 @@ import { ReactComponent as Accept } from "./pages/images/accept.svg"
 import { ReactComponent as Decline } from "./pages/images/decline.svg"
 //import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/';
 //import { CameraPreview } from '@capacitor-community/camera-preview';
+
 export const Pro = createContext()
 
 function App() {
@@ -53,12 +54,13 @@ function App() {
   let divisioncolor="divide-[#90C5FF]"
   let divisioncolorforfirstline="border-[#90C5FF]"
   let maincolor="bg-white"
+ 
   const [ me, setMe ] = useState("")
   const [ name, setname ] = useState("")
 	const [ stream, setStream ] = useState(null)
   const [ camt, setcamt ] = useState(true)
-  const [ pprenew, setpprenew ] = useState()
-  const [ppcheck,setppcheck]=useState(true)
+  const [ pprenew, setpprenew ] = useState(true)
+  const [ppcheck,setppcheck]=useState()
 	const [ receivingCall, setReceivingCall ] = useState(false)
 	const [ caller, setCaller ] = useState("")
 	const [ callerSignal, setCallerSignal ] = useState()
@@ -70,6 +72,7 @@ function App() {
 	const [ callEnded, setCallEnded] = useState(false)
   const [ cr, setcr] = useState(false)
   const [ inchat, setinchat] = useState(false)
+  const[typing,settyping]=useState(false)
   const[all,setall]=useState([])
 	const userVideo = useRef(null)
   const chatsbackup = useRef(null)
@@ -100,6 +103,7 @@ function App() {
   const[ne,setne]=useState([])
   let na 
   const aa = localStorage.getItem("token")
+  const headers = { Authorization:aa}
   let front={
     audio: false,
     video: {
@@ -127,7 +131,8 @@ function App() {
          
 
      }
-     let prt="https://smartifier.onrender.com"
+     //let prt="https://smartifier.onrender.com"
+     let prt="http://192.168.1.130:3001"
 const socket = useRef()
 async function as() {
   if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});
@@ -164,7 +169,38 @@ setflag(true)
   const vid= useRef(null)
   const store= useRef(null)
   const [ s, sets ] = useState(null)
- 
+  const [ i, seti ] = useState(true)
+
+  useEffect(()=>{
+    
+    app.addListener("pause",()=>{
+      seti(true)
+      //socket.current.emit("outchat",cur.cri)
+      socket.current.emit("dc")
+      //setinchat(false)
+
+    })
+    app.addListener("resume",()=>{
+      seti(false)
+
+    
+      socket.current.emit("no",na.id)
+        })
+
+        return ()=>{
+          app.removeAllListeners()
+        }
+    
+},[])
+useEffect(()=>{
+if((cur.cri!==undefined||cur.length!==0)&&!i){
+
+  socket.current.emit("inchat",cur.cri,cur.cid,cur.csi)
+seti(true)
+
+
+}
+},[i,cur])
   useEffect(()=>{
 
    /*  document.addEventListener("visibilitychange", (event) => {
@@ -178,7 +214,7 @@ setflag(true)
         sessionStorage.clear()
       }}
     }); */
-
+   
     document.addEventListener("visibilitychange", (event) => {
    
       if (document.visibilityState == "visible") {
@@ -244,7 +280,6 @@ setpeop([])
    
 
   },[f])
- // console.log(isDarkMode  )
   useEffect(()=>{
 
     //sete([])
@@ -356,11 +391,12 @@ async function bb(){
  
   let n
   socket.current=io(prt)
+  
   socket.current.emit("no",na?.id)
   /* socket.current.on("ho",(e)=> console.log(e)) */
   socket.current.on("get",(e)=> {
     //setinchat(false)
-    
+    console.log(e)
     setall(e)
   //console.log(e)
 })
@@ -377,7 +413,8 @@ setpprenew([])
 //console.log(e)
 })
 socket.current.on("inchat",async(e)=> {
-  console.log("9999")
+  setinchat(true)
+  console.log("9991")
  //let back=await store.current.get("chatsbackup")
 let result
  chatsbackup.current?.forEach(async(c,i)=>{
@@ -399,8 +436,9 @@ await store.current.set("chatsbackup",chatsbackup.current)
 
 socket.current.emit("inchat",e.s)
   }
-setinchat(true)
- console.log(e)
+
+
+  
 //console.log(e)
 })
 socket.current.on("outchat",(e)=> {
@@ -408,7 +446,18 @@ socket.current.on("outchat",(e)=> {
   console.log("çıktı")
  //console.log(e)
  })
+ socket.current.on("typing",(e,w)=> {
+  
+  settyping({status:true,conversationid:w})
 
+ //console.log(e)
+ })
+ socket.current.on("nottyping",(e)=> {
+
+  settyping({status:false})
+
+ //console.log(e)
+ })
 
 let c= front
    front.audio={echoCancellation:true}
@@ -449,6 +498,7 @@ let tream
 		}) */
     if(socket.current){
     socket.current.on("ended",()=>{
+     
       console.log("bitti")
       setCallEnded(false)
       //peer.destroy()
@@ -651,12 +701,30 @@ bb()
   
   
     },[])
+    
+
     useEffect(()=>{
-      console.log("abababab")
-setppcheck(peop)
+  
 
-
-    },[ppch.current])
+      async function get1(e){
+        console.log("ololol")
+        const convers = await axios.get(`${prt}/all`,{headers}).then(async(res)=>{
+          if(res.data==="tokExp"){
+            localStorage.clear()
+            nav("/login")
+            window.location.reload()
+            //localStorage.setItem("aut",JSON.stringify({"isA":false,"tok":"tokExp"}))
+          }
+         //await db.remove("pp")
+          setpeop(res.data)
+        
+         //console.log(res.data)
+      }).catch((err)=>{
+          console.log(err)
+        })
+      }
+      if(na!==undefined)get1()
+     },[pprenew])
 /* useEffect(()=>{
   console.log(loc.pathname)
   if(loc.pathname==="/webcam"){
@@ -680,7 +748,10 @@ setppcheck(peop)
     
   }, 5000);
   setmessages([])
- },[cur])
+  
+  setseen(null)
+  //setppcheck(true)
+},[cur])
  const answerCall =() =>  {
   setCallAccepted(true)
    peer2.current = new Peer({
@@ -724,7 +795,6 @@ setppcheck(peop)
    }
    
   } */
-
   
   if(Capacitor.getPlatform()!=="web")
  { /* PushNotifications.addListener("pushNotificationActionPerformed", async(notification) => { 
@@ -925,8 +995,8 @@ return (
 
         </Route>
         <Route element={<Protect1 />}><Route path="/r" element={<Redirect1 sock={socket.current} />} /></Route>
-        <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat ppch={ppch} ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop} profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur} curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current} />} /></Route>
-        <Route element={<Protect1 />}><Route path="/chat/:id" e={e} element={<Chatid ppch={ppch} ppcheck={ppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop}  chatsbackup={chatsbackup} seen={seen} setseen={setseen} inchat={inchat} setinchat={setinchat} all={all} prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode} db={store.current} setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />} /></Route>
+        <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat  typing={typing} ppch={ppch}  ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop} profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur} curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current} />} /></Route>
+        <Route element={<Protect1 />}><Route path="/chat/:id" e={e}  element={<Chatid settyping={settyping} typing={typing} ppch={ppch} ppcheck={ppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop}  chatsbackup={chatsbackup} seen={seen} setseen={setseen} inchat={inchat} setinchat={setinchat} all={all} prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode} db={store.current} setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />} /></Route>
         <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam prt={prt} cur={cur} cr={cr} setcr={setcr} conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid} />} /></Route>
         <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid} />} /></Route>
 

@@ -51,11 +51,10 @@ module.exports = {
                 "0%":{opacity: "0"}, "100%": { opacity:"1"},
                 
                        }
-
+                    
               },animation: {
-                wiggle: "wiggle 0.2s ease-in",
-                wiggle1: "wiggle1 0.4s ease-out ",
-
+                wiggle: "wiggle 0.3s ease-in",
+                wiggle1: "wiggle1 0.6s ease-out "
                           },
    colors:{
     spec:"#c4b5fd",
