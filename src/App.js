@@ -215,7 +215,6 @@ setflag(true)
 useEffect(()=>{
 if((cur.cri!==undefined||cur.length!==0)&&!i){
 
-  socket.current.emit("inchat",cur.cri,cur.cid,cur.csi)
 seti(true)
 
 
@@ -446,40 +445,7 @@ setpprenew([])
   
 //console.log(e)
 })
-socket.current.on("inchat",async(e)=> {
-  setinchat(true)
-  console.log("9991")
- //let back=await store.current.get("chatsbackup")
-let result
- chatsbackup.current?.forEach(async(c,i)=>{
-if(c._id===e.b){
-  result=i
-  if(c.seen[0]===false){
-    console.log("ok***")
-c.seen[0]=true
-await store.current.set("chatsbackup",chatsbackup.current)
 
-}
-
-
-}
-
- })
- console.log(chatsbackup.current)
-  if(curref.current?.cid===e.b){
-
-socket.current.emit("inchat",e.s)
-  }
-
-
-  
-//console.log(e)
-})
-socket.current.on("outchat",(e)=> {
-  setinchat(false)
-  console.log("çıktı")
- //console.log(e)
- })
  socket.current.on("typing",(e,w)=> {
   
   settyping({status:true,conversationid:w})

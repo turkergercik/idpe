@@ -277,7 +277,6 @@ const messagesfromdb = useRef(null)
       // alert(c)
     }else{
   
-      sock.current.emit("outchat",cur.cri)
       nav("/chat")
       //d=false
   
@@ -434,7 +433,7 @@ result1=i
            up ={cid:cur[0]._id,cnm:de,cri:cur[0].members[0],csi:cur[0].members[1],cam:[cur[0].members[1],cur[0].members[0]]}
            //curref.current=up.cid
         }
-        sock.current.emit("inchat",up.cri,up.cid,up.csi)
+        
       
          
         
@@ -713,7 +712,7 @@ console.log("ppppp")
       //console.log(all)
      
       
-      //sock.current.emit("inchat",cur.cri)
+     
       let x= false
     if(all!==null){
     all.forEach(e => {
@@ -1549,7 +1548,6 @@ let goback = window.onpopstate = e => {
   //your code...
   //setmessages([])
   setTimeout(() => {
-    sock.current.emit("outchat",cur.cri)
     nav(-1)
   }, 0);
   
