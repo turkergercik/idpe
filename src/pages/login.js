@@ -72,7 +72,7 @@ function Log({prt}) {
             
           }, 100); */
           
-          nav("/user")
+          nav("/chat")
           
       
         }

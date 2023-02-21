@@ -60,7 +60,10 @@ let typing1 = false;
     let timeout = undefined;
 let d=false
 let result1
-function Chatid({typing,settyping,ppch,peop,setpeop,ppcheck,pprenew,chatsbackup,seen,setseen,inchat,setinchat,all,prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
+let result11
+let checkforseen=false
+let opt
+function Chatid({lastref,typing,settyping,ppch,peop,setpeop,ppcheck,pprenew,chatsbackup,seen,setseen,inchat,setinchat,all,prt,db,isDarkMode,setmessages,messages,sock,curref,setcur,cur,ne,flag1,setflag1,e}) {
  
 
 
@@ -102,9 +105,12 @@ function Chatid({typing,settyping,ppch,peop,setpeop,ppcheck,pprenew,chatsbackup,
   //const [all,setall]=useState([])
   const [online,setonline]=useState(false)
   const [load1,setload1]=useState(false)
+  const [lastseen,setlastseen]=useState(null)
   //const [seen,setseen]=useState(null)
   const [pp,setpp]=useState([])
+  const [peops,setpeops]=useState([])
   const load = useRef(false)
+  //const peops = useRef(null)
   const page =useRef(1)
   const media =useRef(null)
   const takp =useRef(null)
@@ -288,7 +294,15 @@ const messagesfromdb = useRef(null)
   }
  },[])
     useEffect(()=>{
-     
+      async function as(){
+    
+          
+       let pp1 = await db.get("pp")
+      setpeops(pp1)
+       
+      
+      }
+   as()
       async function send(){
         const time=new Date(Date.now()).toISOString()
         if(sendimage.length!==0)
@@ -330,18 +344,17 @@ const messagesfromdb = useRef(null)
 
 
 
-useEffect(()=>{
 
 
-},[inchat])
-
-    useEffect(()=>{ 
+    useEffect(()=>{
+   
       
       setmessages([])
      
       
       setcur([])
       async function conv(){
+        
         //console.log("1")
        /*  console.log(`${prt}/conversations/exact/${id}`)
         await axios.get(`${prt}/conversations/exact/${id}`,{headers}).then(async(e)=>{
@@ -422,18 +435,46 @@ result1=i
            //curref.current=up.cid
         }
         sock.current.emit("inchat",up.cri,up.cid,up.csi)
-        let pp1 = await db.get("pp")
-        if(pp1){
-          //console.log(pp1)
+      
+         
+        
+       //let pp1=peops.current
+     
+      
+
+     
+        let pp1
+       //pp1=[...peops]
+       pp1=await db.get("pp") 
        
-            pp1.forEach(a=>{
+    
+        /* setTimeout(async() => {
+          pp1 =await db.get("pp")
+        }, 0); */
+       //pp1=peops.current
+       //console.log(pp1===pp2)
+      
+ 
+        if(pp1!==undefined&&pp1!==null){
+       
+       
+            pp1.forEach((a,i)=>{
             
-            if(a._id!==na.id&&a._id===up.cri){
-              setpp(a.profilepicture)
-              
+          if(a._id!==na.id&&a._id===up.cri){
+             result11=i
+    
+         setpp(a.profilepicture)
+         //console.log(new Date(pp1[result11].lastseen).toLocaleTimeString("tr-TR"))
+         if(!online){
+          
+          // setlastseen({last:a.lastseen,when:"En Son Görülme"})
+
+         }
+
             }
-            })
+          })
         }
+   
       }
       }else{
         setload1(true)
@@ -443,9 +484,8 @@ result1=i
       curref.current=up
       //console.log(up.cnm)
       //console.log("1",up.cid)
-   chatsbackup.current=await db.get("chatsbackup")
-        messagesfromdb.current = await db.get(id)
-    
+      chatsbackup.current=await db.get("chatsbackup")
+      messagesfromdb.current = await db.get(id)
       
        //===null
        //console.log(messagesfromdb)
@@ -490,23 +530,74 @@ result1=i
         }}else{
           setseen([])
         }
-       // console.log(messagesfromdb.current)
+        // console.log(messagesfromdb.current)
       }
      /*    }).catch((err)=>{
           console.log(err)
           //nav("/chat")
         }) */}
       }
+    
      conv()
+        
+      
      return ()=>{
       curref.current=null
      }
   
     },[db,e])
+/* useEffect(()=>{
+async function we(){
+  let x= [...peop]
+  if(x.length!==0){
+console.log(x)
+      //x[result11].lastseen=lastseen
+      setlastseen(x[result11].lastseen)
+      console.log(x)
+      await db.set("pp",x)
 
+  }
+
+}
+we()
+
+},[peop]) */
+useEffect(()=>{
+
+  async function we(){
+    if(lastref){
+    lastref.forEach((a,i)=>{
+if(a._id===cur.cri){
+setlastseen(a.lastseen)
+}
+
+    })
+  }
+  }
+  we()
+
+  
+  },[lastref])
+/* useEffect(()=>{
+  console.log("ok")
+  peop.forEach((v,i) => {
+   
+    if(v._id===cur.cri&&v.lastseen!==undefined){
+      if(!online){
+console.log(v.lastseen)
+
+        setlastseen(v.lastseen)
+      }
+     
+    }})
+
+
+
+},[peop]) */
     useEffect(()=>{
 
       async function pp(){
+        console.log("ok7")
         let pp1 = await db.get("pp")
   
         //console.log("g")
@@ -524,13 +615,14 @@ result1=i
            }
            })
          }); */
-         await db.set("pp",peop)
+         //await db.set("pp",peop)
          let filtered= peop.forEach((v,i) => {
        
            if(v._id===cur.cri){
              resulte=i
            }})
-         
+           //setlastseen(new Date(peop[resulte].lastseen).toLocaleTimeString("tr-TR"))
+
            setpp(peop[resulte].profilepicture)
           
      
@@ -553,9 +645,9 @@ result1=i
      
             resulte=i
           }})
-       await db.set("pp",peop)
+       //await db.set("pp",peop)
+       //setlastseen(new Date(peop[resulte].lastseen).toLocaleTimeString("tr-TR"))
         setpp(peop[resulte]?.profilepicture)
-      
         //setppcheck(null)
       }else{
         if(pp1!==null){
@@ -566,7 +658,8 @@ result1=i
             resulte=i
           }})
      
-        
+         // setlastseen(new Date(peop[resulte].lastseen).toLocaleTimeString("tr-TR"))
+
          setpp(pp1[resulte].profilepicture)
          //setppcheck(2)
     }
@@ -600,11 +693,14 @@ console.log("ppppp")
 
     },[peop,pprenew])
     
+   
+    
 
     useEffect(()=>{
       if(!online){
       setinchat(false)
       settyping({status:false})
+      //setlastseen(new Date(Date.now()).toLocaleTimeString("tr-TR"))
       }
       
       },[online])
@@ -1478,6 +1574,9 @@ const sortMarkets = (array, sortArray) => {
 } */
 //console.log(sortMarkets(coreMarkets,marketFocus))
 
+
+// E.g.
+
 useEffect(()=>{
 if(doubletap1){
   
@@ -1595,10 +1694,10 @@ t= setTimeout(() => {
 
          <div id="src2" className={`min-h-full w-full flex flex-col ${bg} dark:bg-black rounded-lg pr-1  pt-1 `}>
           
-         <div className={`flex flex-row   justify-between dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1.5 ml-2.5 mt-0.5 h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
-         <div className="flex items-center   h-full">
+         <div className={`flex flex-row  dark:bg-[#0f0f0f] border-[#097EFE] ${specialwhitebg} border-solid border-[0.15rem] ${darkborderinput} items-center mr-1.5 ml-2.5 mt-0.5 h-[5rem] text-white xs:text-lg font-medium md:text-lg rounded-2xl`}>
+         <div className="flex items-center w-full h-full">
 
-       {!isopened ?<Back className={`flex ml-2.5 ${textcolorblue} ${specialwhitetextdark}`} width="1.5rem" height="1.7rem" onClick={()=>goback()} />:null}
+       {!isopened ?<Back className={`flex ml-2.5 min-w-min ${textcolorblue} ${specialwhitetextdark}`} width="1.25rem" height="1.25rem" onClick={()=>goback()} />:null}
 <div className="flex items-center mr-2 ml-1  h-full rounded-full  p-2 aspect-square ">
 {pp!==null && pp!==undefined ? <div className="mr-2.5 relative max-w-[4.1rem] min-w-[4.1rem]  max-h-[4.1rem] min-h-[4.1rem]  " >
               <div className={inchat &&online ? 
@@ -1609,24 +1708,77 @@ t= setTimeout(() => {
               `  absolute top-0 right-0 bg-transparent w-full h-full rounded-full`}></div ><Profilepic className={online ? `absolute  text-[#8fc4ff] dark:text-[#484745] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-100  rounded-full w-[3.575rem] h-[3.575rem] mr-2.5`:`absolute text-[#8fc4ff] dark:text-[#484745] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black opacity-100  rounded-full w-[4.575rem] h-[4.575rem] mr-2.5`} /></div>}
 
 </div>
-         <div className="flex-col flex h-full">
+         <div className="flex-col flex h-full w-full ">
           <div className="h-4/6 flex flex-col  justify-end">
 
-       <span className={`bg-gradient-to-r  justify-center bg-clip-text items-center text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</span>
+       <div className={`bg-gradient-to-r  justify-center bg-clip-text items-center text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] `}>{!image? cur.cnm:null}</div>
 
           </div>
-          <div className="relative h-3.5">
-          {typing.status&&typing.conversationid===cur?.cid? 
+          <div className="relative h-3.5 ">
+            <div className=" absolute bottom-0 inset-0 ">{typing.status&&typing.conversationid===cur?.cid? 
        <div className={`${textcolorblue} ${darktext} absolute bottom-0 text-xs`}>yazıyor
        <span className={`${textcolorblue} ${darktext} dot1 mx-[1.5px]`}>.</span>
        <span className={`${textcolorblue} ${darktext} dot2 mr-[1.5px]`}>.</span>
        <span className={`${textcolorblue} ${darktext} dot3`}>.</span>
        
-       </div>:null}</div>
+       </div>: !typing.status&&!online? <div className={`${textcolorblue} ${darktext}  absolute bottom-0 text-xs`}>
+       {(() => {
+       
+              if(new Date().toLocaleDateString("tr-TR",{year:"numeric"})===new Date(lastseen).toLocaleDateString("tr-TR",{year:"numeric"})){
+               if(new Date().toLocaleDateString("tr-TR")===new Date(lastseen).toLocaleDateString("tr-TR")){
+opt="today"
+}else{
+  const date1 = new Date( new Date().toLocaleString("en-US",{timeZone:"Europe/Moscow"}))
+const date2 = new Date( new Date(lastseen).toLocaleString("en-US",{timeZone:"Europe/Moscow"}))
+const diffTime = Math.abs(date2 - date1);
+const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))-1; 
+if(diffDays<=5){
+
+  opt ={weekday:"long", hour: "2-digit", minute: "2-digit"}
+}else{
+
+
+  opt ={day:"numeric",month:"long", hour: "2-digit", minute: "2-digit"}
+}
+
+
+               }
+               
+               
+            
+                return (
+                     <div></div>
+                  )
+              }else{
+                opt=  {day:"numeric",month:"long",year:"numeric"}
+              }
+              
+             
+            })()}
+        
+        
+        {lastseen&&opt==="today" ? `Bugün ${new Date(lastseen).toLocaleTimeString("tr-TR",{hour: "2-digit", minute: "2-digit"})} `:lastseen&&opt!=="today"? ` ${new Date(lastseen).toLocaleTimeString("tr-TR", opt)} `:null }</div>:null}</div>
+      {/*  if(year===new Date(f[i].createdAt).toLocaleDateString("tr-TR").slice(-4)){
+    if(dat===new Date(f[i].createdAt).toLocaleDateString("tr-TR")){
+     opt="today"
+ 
+    }else{
+      opt ={day:"numeric",month:"long"}
+      
+
+    }
+    }else{
+    opt=  {day:"numeric",month:"long",year:"numeric"}
+    } */}
+          
+          
+          
+          
+          </div>
        </div>
 </div>
 <div className="min-w-8 max-w-8 min-h-8 max-h-8 mr-2">
-          <Camicon className={`flex  justify-end w-8 h-8 ${textcolorblue} ml-1 `} onClick={()=>nav("/webcam",{ state: { userid: cur.cri , conid: id },replace:true})} />
+          <Camicon className={`flex  w-8 h-8 ${textcolorblue} ml-1 `} onClick={()=>nav("/webcam",{ state: { userid: cur.cri , conid: id },replace:true})} />
           </div>
          </div>
 

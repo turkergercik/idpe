@@ -24,11 +24,11 @@ import { Storage,Drivers } from '@ionic/storage';
 import OneSignal from "onesignal-cordova-plugin"
 import { create } from 'filepond';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
-import { async } from '@firebase/util';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { CameraSource } from '@capacitor/camera';
 import { ReactComponent as Accept } from "./pages/images/accept.svg"
 import { ReactComponent as Decline } from "./pages/images/decline.svg"
+
 //import { Push, PushObject, PushOptions } from '@awesome-cordova-plugins/push/';
 //import { CameraPreview } from '@capacitor-community/camera-preview';
 
@@ -36,7 +36,7 @@ export const Pro = createContext()
 
 function App() {
  
-
+  
   let darktext="dark:text-[#F0EFE9]"
   let bgfordarkmode="dark:bg-[#1a1a1a]"
   let whitefordark="dark:text-[#F0EFE9]"
@@ -72,6 +72,7 @@ function App() {
 	const [ callEnded, setCallEnded] = useState(false)
   const [ cr, setcr] = useState(false)
   const [ inchat, setinchat] = useState(false)
+  const [ lastseen, setlastseen] = useState(null)
   const[typing,settyping]=useState(false)
   const[all,setall]=useState([])
 	const userVideo = useRef(null)
@@ -99,6 +100,7 @@ function App() {
   const[flag,setflag]=useState(false)
   const[cur1,setcur1]=useState([])
   const no = useRef(false)
+  const lastref = useRef([])
   const [flag1,setflag1] = useState([])
   const[ne,setne]=useState([])
   let na 
@@ -131,14 +133,15 @@ function App() {
          
 
      }
-     //let prt="https://smartifier.onrender.com"
-     let prt="http://192.168.1.130:3001"
+    let prt="https://smartifier.onrender.com"
+    //let prt="http://192.168.1.101:3001"
 const socket = useRef()
 async function as() {
   if(Capacitor.getPlatform()!=="web"){//await StatusBar.setStyle({ style: Style.Light});
   
   ///StatusBar.setOverlaysWebView({ overlay:true});
   await StatusBar.setBackgroundColor({color:"#000000"})
+
 }
   const contents = await Filesystem.readFile({
     path: 'out.json',
@@ -168,21 +171,38 @@ setflag(true)
   const loc = useLocation()
   const vid= useRef(null)
   const store= useRef(null)
+  const profilepictures= useRef(null)
   const [ s, sets ] = useState(null)
   const [ i, seti ] = useState(true)
 
   useEffect(()=>{
-    
-    app.addListener("pause",()=>{
+    console.log( new Date(Date.now()).toISOString())
+    app.addListener("pause",async()=>{
       seti(true)
-      //socket.current.emit("outchat",cur.cri)
       socket.current.emit("dc")
+      socket.current.emit("lastseen",na.id,new Date(Date.now()).toISOString())
+      await axios.put(`${prt}/user`,{
+        name:na.name,
+        lastseen:new Date(Date.now()).toISOString(),
+       },{headers}).then(async(res)=>{ 
+        console.log(res)
+        //await db.set("profilepicture",profilepicture)
+        //sock.current.emit("newpp",na.id)
+        //setwrite("")
+        
+         //console.log(messages)
+         
+         
+       }).catch((err)=>{
+        console.log("hata")
+      })
+      
       //setinchat(false)
 
     })
     app.addListener("resume",()=>{
       seti(false)
-
+     
     
       socket.current.emit("no",na.id)
         })
@@ -234,6 +254,7 @@ seti(true)
      
      let bb=await store.current.create();
  await store.current.set("socket",false)
+ profilepictures.current= await store.current.get("pp")
     // console.log(store.current)
 if(Capacitor.getPlatform()==="web"){
   //console.log("evet")
@@ -280,6 +301,10 @@ setpeop([])
    
 
   },[f])
+
+
+
+  
   useEffect(()=>{
 
     //sete([])
@@ -393,6 +418,15 @@ async function bb(){
   socket.current=io(prt)
   
   socket.current.emit("no",na?.id)
+  socket.current.on("all",async(e)=> {
+    //setinchat(false)
+ /*    console.log(e)
+    lastref.current=e
+    await store.current.set("pp",e)
+    setpeop(e) */
+ 
+  //console.log(e)
+})
   /* socket.current.on("ho",(e)=> console.log(e)) */
   socket.current.on("get",(e)=> {
     //setinchat(false)
@@ -458,7 +492,35 @@ socket.current.on("outchat",(e)=> {
 
  //console.log(e)
  })
+ socket.current.on("lastseen",async(e,b)=> {
+  let a = await store.current.get("pp")
+  
+  if(a){
+   
+a.forEach(async(c,i)=>{
+if(c.lastseen!==undefined&&c._id===e){
+  console.log("şş")
+  c.lastseen=b
+  console.log(b)
+  setlastseen(b)
+}
+})
+setpeop(a)
+lastref.current=a
+console.log(peop)
+//await store.current.set("pp",a)
+/* let r = await store.current.get("pp")
+if(r){
+  console.log(r)
 
+} */
+
+  }
+
+/* s */
+
+ //console.log(e)
+ })
 let c= front
    front.audio={echoCancellation:true}
 
@@ -704,9 +766,11 @@ bb()
     
 
     useEffect(()=>{
-  
-
       async function get1(e){
+        socket.current.emit("all")
+      }
+
+      async function get2(e){
         console.log("ololol")
         const convers = await axios.get(`${prt}/all`,{headers}).then(async(res)=>{
           if(res.data==="tokExp"){
@@ -716,14 +780,21 @@ bb()
             //localStorage.setItem("aut",JSON.stringify({"isA":false,"tok":"tokExp"}))
           }
          //await db.remove("pp")
-          setpeop(res.data)
+         console.log(res.data)
+         lastref.current=res.data
+         profilepictures.current=res.data
+         await store.current.set("pp",res.data)
+         setpeop(res.data)
         
          //console.log(res.data)
       }).catch((err)=>{
           console.log(err)
         })
       }
-      if(na!==undefined)get1()
+      if(na!==undefined){
+        get1()
+        get2()
+      }
      },[pprenew])
 /* useEffect(()=>{
   console.log(loc.pathname)
@@ -738,7 +809,14 @@ bb()
 
 },[loc]) */
 
+useEffect(()=>{
+if(!inchat){
+  console.log("lll")
+settyping(false)
 
+}
+  //setppcheck(true)
+},[inchat])
 
 
  useEffect(()=>{
@@ -748,9 +826,14 @@ bb()
     
   }, 5000);
   setmessages([])
-  
+setlastseen(null)
   setseen(null)
-  //setppcheck(true)
+  async function sss()
+{
+
+
+  await store.current.get("")
+}  //setppcheck(true)
 },[cur])
  const answerCall =() =>  {
   setCallAccepted(true)
@@ -863,7 +946,7 @@ const leaveCall = () => {
 
 
 return (
-    <><div id='11' className={isDarkMode ? "dark unselectable z-10":"unselectable"}>
+    <><div id='11' className={isDarkMode ? "dark unselectable":"unselectable"}>
 
 
 
@@ -995,8 +1078,8 @@ return (
 
         </Route>
         <Route element={<Protect1 />}><Route path="/r" element={<Redirect1 sock={socket.current} />} /></Route>
-        <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat  typing={typing} ppch={ppch}  ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop} profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur} curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current} />} /></Route>
-        <Route element={<Protect1 />}><Route path="/chat/:id" e={e}  element={<Chatid settyping={settyping} typing={typing} ppch={ppch} ppcheck={ppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop}  chatsbackup={chatsbackup} seen={seen} setseen={setseen} inchat={inchat} setinchat={setinchat} all={all} prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode} db={store.current} setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />} /></Route>
+        <Route element={<Protect1 />}><Route exact path="/chat" element={<Chat profilepictures={profilepictures.current} settyping={settyping}  typing={typing} ppch={ppch}  ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop} profilepicture={profilepicture} setprofilepicture={setprofilepicture} prt={prt} e={e} all={all} setDarkMode={setDarkMode} isDarkMode={isDarkMode} setcur={setcur} cur={cur} curref={curref} setflag1={setflag1} flag1={flag1} sock={socket} db={store.current} />} /></Route>
+        <Route element={<Protect1 />}><Route path="/chat/:id" e={e}  element={<Chatid lastref={lastref.current} lastseen={lastseen} setlastseen={setlastseen} settyping={settyping} typing={typing} ppch={ppch} ppcheck={ppcheck} pprenew={pprenew} peop={peop} setpeop={setpeop}  chatsbackup={chatsbackup} seen={seen} setseen={setseen} inchat={inchat} setinchat={setinchat} all={all} prt={prt} ne={ne} setflag1={setflag1} flag1={flag1} isDarkMode={isDarkMode} db={store.current} setcur={setcur} cur={cur} curref={curref} setmessages={setmessages} messages={messages} sock={socket} />} /></Route>
         <Route element={<Protect1 />}><Route exact path="/webcam" element={<Webcam prt={prt} cur={cur} cr={cr} setcr={setcr} conid={conid} id={id} setMe={setMe} me={me} name={name} setname={setname} stream={stream} setStream={setStream} receivingCall={receivingCall} setReceivingCall={setReceivingCall} caller={caller} setCaller={setCaller} callerSignal={callerSignal} setCallerSignal={setCallerSignal} idToCall={idToCall} setIdToCall={setIdToCall} callEnded={callEnded} setCallEnded={setCallEnded} peer1={peer1} userVideo={userVideo} peer2={peer2} sock={socket} ss={sets} v={vid} />} /></Route>
         <Route element={<Protect1 />}><Route exact path="/image" element={<Images ss={sets} v={vid} />} /></Route>
 

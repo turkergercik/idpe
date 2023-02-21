@@ -28,7 +28,7 @@ import { App as app } from '@capacitor/app';
 //70A1D7
 let mp
 let sd
-function Chat({ typing,ppch,ppcheck,setppcheck,pprenew,peop,setpeop,prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
+function Chat({profilepictures,settyping,typing,ppch,ppcheck,setppcheck,pprenew,peop,setpeop,prt,profilepicture,setprofilepicture,all,sock,db,e,setflag1,flag1,setDarkMode,isDarkMode,setcur,cur,curref}) {
   let bgfordarkmode="dark:bg-[#1a1a1a]"
   let bgblue ="bg-[#A6D1FF]"
   let specialwhitetextdark="dark:text-[#F0EFE9]"
@@ -235,7 +235,7 @@ console.log("56")
       })}else if(profilepicture==="null"){
        
         //setuserpp(null)
-        
+        console.log("ık")
         await axios.put(`${prt}/user`,{
           name:na.name,
           profilepicture:null,
@@ -709,7 +709,10 @@ if(ani&&bni){
       return(
         <div className={isDarkMode ? "absolute  bg-black top-0 bottom-0 right-0 left-0 ":null}>
           <div className="animate-wiggle1">
-          <div className={ !ppc&&isDarkMode ? `absolute z-10 bg-black inset-0 `:null || !ppc&&!isDarkMode ? `absolute z-10 bg-white inset-0 `:null}></div><div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
+          <div className={ !check&&isDarkMode ? `absolute z-10 bg-black inset-0 `:null || !check&&!isDarkMode ? `absolute z-10 bg-white inset-0 `:null}></div>
+          
+{/*           <div className={ !check&&isDarkMode ? `absolute z-10 bg-black inset-0 `:null || !check&&!isDarkMode ? `absolute z-10 bg-white inset-0 `:null}></div>
+ */}          <div ref={href} id="main" className={` dark:bg-black ${maincolor} h-screen flex flex-col px-2 lg:px-2 w-screen`}>
 
           <div id="msj" className={isDarkMode? `snow3 pointer-events-auto flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white  p-1`:`flex flex-row  items-center${maincolor} md:text-xl xs:text-lg text-white  p-1`}>
   
@@ -745,7 +748,7 @@ size={30}
               if (a.updatedAt > b.updatedAt)
                 return -1;
               return 0;
-            }).map((c, i) => (<Conv  typing={typing} ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} e={e} setppc={setppc} all={all} viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
+            }).map((c, i) => (<Conv profilepictures={profilepictures}  settyping={settyping}  typing={typing} ppcheck={ppcheck} setppcheck={setppcheck} pprenew={pprenew} e={e} ppc={ppc} setppc={setppc} all={all} viewpp={viewpp} setviewpp={setviewpp} pp={pp} check={check} setcheck={setcheck} db={db} person={peop} height={height} curref={curref} setflag1={setflag1} flag1={flag1} key={i} k={i} mesa={mpeop} changeconv={setmpeop} setmessage={setmessages} messageler={messages} setcur={setcur} convs={mpeop[i]} setnewm={ne} />)
 
 
             )}
@@ -768,7 +771,7 @@ size={30}
           <span className={`fixed bottom-10 left-1/2 -translate-x-1/2 rounded-full bg-[#097EFE] dark:bg-black opacity-90 dark:opacity-100  ${textcolorblue}`}>
             <Add width="2.5rem" height="2.5rem" className={`${svgsearch} ${darktext}`} onClick={() => open()} />
           </span>
-{/* {viewpp!==null ? <><div id="view" className={`absolute bg-black inset-0 h-screen w-screen`} onClick={()=>setshowback(!showback)}>
+{viewpp!==null ? <><div id="view" className={`absolute bg-black inset-0 h-screen w-screen`} onClick={()=>setshowback(!showback)}>
 
 
              <TransformWrapper > 
@@ -787,7 +790,7 @@ size={30}
 
 
 
-} */}
+}
           {isOpenedPeople ? <div className={`absolute  inset-0 h-screen dark:bg-black bg-white ${divisioncolor}`}><div className="flex pt-2 flex-col h-full w-full p-2 ">
             <div className="flex flex-row">
               <span className={`font-bold bg-gradient-to-r bg-clip-text text-transparent from-[#0295FF] via-[#664BFF] to-[#B50BBA] text-[2.3rem] px-1 py-8 mb-1 transparent `}>

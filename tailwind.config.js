@@ -54,7 +54,7 @@ module.exports = {
                     
               },animation: {
                 wiggle: "wiggle 0.3s ease-in",
-                wiggle1: "wiggle1 0.6s ease-out "
+                wiggle1: "wiggle1 0.3s ease-out "
                           },
    colors:{
     spec:"#c4b5fd",

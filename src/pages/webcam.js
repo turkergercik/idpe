@@ -677,7 +677,7 @@ call()
    <div className="flex flex-col h-full w-full  bg-black xs:text-md md:text-xl text-indigo-700 "> 
    <div className=" video-container h-full w-full">
     { camt? <div className="video my-rotate-y-180 h-full w-full">{
-            !stream ? <div className="absolute z-0 inset-0 w-full h-full bg-red-700"></div>:null
+            v.current?.srcObject===null  ? <div className="absolute z-0 inset-0 w-full h-full bg-black"></div>:null
           }
     
 					 <><video playsInline autoPlay  muted ref={v} className="w-full h-full object-contain" onClick={() => {
@@ -686,9 +686,9 @@ call()
           } } /></>
 				</div>:<div className="video h-full w-full">
         {
-            !stream ? <div className="absolute z-0 inset-0 w-full h-full bg-red-700"></div>:null
+           v.current?.srcObject===null ? <div className="absolute z-0 inset-0 w-full h-full bg-black"></div>:null
           }
-					 <><div className="absolute  z-0 w-full h-full bg-red-700"></div><video playsInline autoPlay muted ref={v} className="w-full h-full object-contain" onClick={() => {
+					 <><video playsInline autoPlay muted ref={v} className="w-full h-full object-contain" onClick={() => {
               console.log("ok");
               setisclick(!isclick);
             } } /></>
@@ -696,10 +696,14 @@ call()
 				
 				
           {callAccepted && !callEnded ?
-        <div className=" absolute rounded-lg w-2/6   left-auto  top-0 right-0 m-2 ">
+        <div className=" absolute z-0 rounded-lg w-2/6   left-auto  top-2 right-2">
 
-					<video playsInline ref={userVideo} autoPlay className="rounded-lg object-contain h-full w-full" onClick={()=>change()}/> </div>:
-					null}
+          { userVideo.current?.srcObject===null? <div className=" absolute  rounded-md w-full h-full mx-0 top-0 bg-black"></div>:null}
+					<video playsInline ref={userVideo} autoPlay className="rounded-lg object-contain h-full w-full" onClick={()=>change()}/>
+
+           </div>:
+					
+          null}
 				</div>
        
 			
@@ -712,6 +716,7 @@ call()
               </button>
             </span> */}
         <div>
+
 					{callAccepted && !callEnded && !isclick ? 
             <><span className="absolute  left-1/2 transform -translate-x-1/2  bottom-2  rounded-md px-2">
             <div className="flex" >
